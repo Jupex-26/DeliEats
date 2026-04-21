@@ -12,10 +12,9 @@ public class CarritoOutputDto {
     private Long id;
     private Long clienteId;
     private String nombreCliente;
-    private String estado; // Ej: "ACTIVO"
+    private String estado;
 
     private List<DetalleCarritoOutputDto> detalles;
 
-    // Campo calculado para facilitar el trabajo al Frontend
     private BigDecimal precioTotal;
 }
