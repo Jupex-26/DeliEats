@@ -13,7 +13,7 @@ public class Apertura {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // En el diagrama es un ENUM, lo mapeamos como String para mayor flexibilidad
+
     @Column(nullable = false)
     private String dia;
 
