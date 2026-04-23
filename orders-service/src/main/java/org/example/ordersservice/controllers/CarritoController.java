@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,5 +70,10 @@ public class CarritoController {
 
         Carrito actualizado = carritoService.addProducto(id, productoId, cantidad);
         return ResponseEntity.ok(carritoMapper.toDto(actualizado));
+    }
+
+    @GetMapping("/{id}/total")
+    public ResponseEntity<BigDecimal> calculateTotal(@PathVariable Long id) {
+        return ResponseEntity.ok(carritoService.calculateTotal(id));
     }
 }
