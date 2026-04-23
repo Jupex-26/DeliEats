@@ -2,6 +2,7 @@ package org.example.ordersservice.repositories;
 
 import org.example.ordersservice.models.DetallePedido;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
@@ -13,4 +14,7 @@ public interface DetallePedidoRepository extends JpaRepository<DetallePedido, Lo
 
     // Para obtener estadísticas: ¿cuántas veces se ha vendido un producto específico?
     List<DetallePedido> findByProductoId(Long productoId);
+
+    @Modifying
+    void deleteByPedidoId(Long pedidoId);
 }
