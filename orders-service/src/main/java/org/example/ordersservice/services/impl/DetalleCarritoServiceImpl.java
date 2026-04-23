@@ -43,7 +43,7 @@ public class DetalleCarritoServiceImpl implements DetalleCarritoService {
 
     @Override
     public void deleteById(Long id) {
-
+        detalleCarritoRepository.deleteById(id);
     }
 
     @Override
