@@ -19,6 +19,4 @@ public interface DetallePedidoService {
     void deleteById(Long id);
 
     void deleteByPedidoId(Long pedidoId);
-
-    Double sumSubtotalesByPedidoId(Long pedidoId);
 }

@@ -20,4 +20,8 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 
     // 4. Por estado (Está bien, usa estado_id de tu imagen)
     List<Pedido> findByEstado_Nombre(String nombreEstado);
+
+    List<Pedido> findAllByClienteId(Long clienteId);
+
+    List<Pedido> findAllByEstadoId(Long estadoId);
 }

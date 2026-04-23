@@ -1,5 +1,6 @@
 package org.example.ordersservice.services.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.models.DetallePedido;
 import org.example.ordersservice.repositories.DetallePedidoRepository;
@@ -15,41 +16,40 @@ public class DetallePedidoServiceImpl implements DetallePedidoService {
 
     @Override
     public DetallePedido save(DetallePedido detallePedido) {
-        return null;
+        return detallePedidoRepository.save(detallePedido);
     }
 
     @Override
     public List<DetallePedido> findAll() {
-        return List.of();
+        return detallePedidoRepository.findAll();
     }
 
     @Override
     public DetallePedido findById(Long id) {
-        return null;
+        return detallePedidoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Detalle Pedido no encontrado con ID: " + id));
     }
 
     @Override
     public List<DetallePedido> findByPedidoId(Long pedidoId) {
-        return List.of();
+        return detallePedidoRepository.findByPedidoId(pedidoId);
     }
 
     @Override
     public DetallePedido update(Long id, DetallePedido detallePedido) {
-        return null;
+        DetallePedido exists = findById(id);
+        detallePedido.setId(exists.getId());
+
+        return detallePedidoRepository.save(detallePedido);
     }
 
     @Override
     public void deleteById(Long id) {
-
+        detallePedidoRepository.deleteById(id);
     }
 
     @Override
     public void deleteByPedidoId(Long pedidoId) {
-
-    }
-
-    @Override
-    public Double sumSubtotalesByPedidoId(Long pedidoId) {
-        return 0.0;
+        detallePedidoRepository.deleteByPedidoId(pedidoId);
     }
 }

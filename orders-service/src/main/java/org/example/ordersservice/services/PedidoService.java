@@ -2,6 +2,7 @@ package org.example.ordersservice.services;
 
 import org.example.ordersservice.models.Pedido;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface PedidoService {
@@ -22,5 +23,5 @@ public interface PedidoService {
 
     void deleteById(Long id);
 
-    Double calculateTotal(Long id);
+    BigDecimal calculateTotal(Long id);
 }
