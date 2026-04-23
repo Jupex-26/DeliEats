@@ -76,4 +76,13 @@ public class CarritoController {
     public ResponseEntity<BigDecimal> calculateTotal(@PathVariable Long id) {
         return ResponseEntity.ok(carritoService.calculateTotal(id));
     }
+
+    @DeleteMapping("/{id}/productos/{productoId}")
+    public ResponseEntity<CarritoOutputDto> removeProducto(
+            @PathVariable Long id,
+            @PathVariable Long productoId) {
+
+        Carrito actualizado = carritoService.addProducto(id, productoId, 0);
+        return ResponseEntity.ok(carritoMapper.toDto(actualizado));
+    }
 }
