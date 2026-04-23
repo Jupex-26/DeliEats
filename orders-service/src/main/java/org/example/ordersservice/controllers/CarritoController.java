@@ -60,4 +60,14 @@ public class CarritoController {
         carritoService.clearCarrito(id);
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/{id}/productos/{productoId}")
+    public ResponseEntity<CarritoOutputDto> updateCantidad(
+            @PathVariable Long id,
+            @PathVariable Long productoId,
+            @RequestParam Integer cantidad) {
+
+        Carrito actualizado = carritoService.addProducto(id, productoId, cantidad);
+        return ResponseEntity.ok(carritoMapper.toDto(actualizado));
+    }
 }
