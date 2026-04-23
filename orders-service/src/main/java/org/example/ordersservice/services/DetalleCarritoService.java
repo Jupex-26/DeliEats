@@ -20,5 +20,4 @@ public interface DetalleCarritoService {
 
     void deleteByCarritoId(Long carritoId);
 
-    Double calculateSubtotal(Long id);
 }

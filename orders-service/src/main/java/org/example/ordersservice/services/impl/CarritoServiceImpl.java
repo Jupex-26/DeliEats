@@ -3,17 +3,25 @@ package org.example.ordersservice.services.impl;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.models.Carrito;
+import org.example.ordersservice.models.DetalleCarrito;
+import org.example.ordersservice.models.Producto;
 import org.example.ordersservice.repositories.CarritoRepository;
 import org.example.ordersservice.services.CarritoService;
+import org.example.ordersservice.services.DetalleCarritoService;
+import org.example.ordersservice.services.ProductoService;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
 public class CarritoServiceImpl implements CarritoService {
     private final CarritoRepository carritoRepository;
+    private final ProductoService productoService;
+    private final DetalleCarritoService detalleCarritoService;
 
     @Override
     public List<Carrito> findAll() {
@@ -45,38 +53,34 @@ public class CarritoServiceImpl implements CarritoService {
     @Override
     public Carrito addProducto(Long carritoId, Long productoId, Integer cantidad) {
         Carrito carrito = findById(carritoId);
+        Producto producto = productoService.findById(productoId);
 
-       /* TODO */
-        return carrito;
-    }
+        carrito.agregarProducto(producto,cantidad);
 
-    @Override
-    public Carrito updateCantidad(Long carritoId, Long productoId, Integer nuevaCantidad) {
-        Carrito carrito = findById(carritoId);
-
-        /* TODO */
-
-        return null;
+        return carritoRepository.save(carrito);
     }
 
     @Override
     public Carrito removeProducto(Long carritoId, Long productoId) {
         Carrito carrito = findById(carritoId);
 
-        /* TODO */
+        carrito.eliminarProducto(productoId);
 
-        return null;
+        return carritoRepository.save(carrito);
     }
 
     @Override
     public void clearCarrito(Long carritoId) {
         Carrito carrito = findById(carritoId);
 
-        carrito.setDetalles(new ArrayList<>());
+        detalleCarritoService.deleteByCarritoId(carrito.getId());
     }
 
     @Override
-    public Double calculateTotal(Long carritoId) {
-        return 0.0;
+    public BigDecimal calculateTotal(Long carritoId) {
+        Carrito carrito = findById(carritoId);
+
+        return carrito.getPrecioTotal();
     }
+
 }

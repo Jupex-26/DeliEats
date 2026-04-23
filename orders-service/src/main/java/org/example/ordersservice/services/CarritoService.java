@@ -2,6 +2,7 @@ package org.example.ordersservice.services;
 
 import org.example.ordersservice.models.Carrito;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface CarritoService {
@@ -17,11 +18,9 @@ public interface CarritoService {
 
     Carrito addProducto(Long carritoId, Long productoId, Integer cantidad);
 
-    Carrito updateCantidad(Long carritoId, Long productoId, Integer nuevaCantidad);
-
     Carrito removeProducto(Long carritoId, Long productoId);
 
     void clearCarrito(Long carritoId);
 
-    Double calculateTotal(Long carritoId);
+    BigDecimal calculateTotal(Long carritoId);
 }

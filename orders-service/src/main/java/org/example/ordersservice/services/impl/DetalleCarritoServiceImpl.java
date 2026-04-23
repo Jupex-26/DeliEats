@@ -8,7 +8,6 @@ import org.example.ordersservice.services.DetalleCarritoService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,12 +32,16 @@ public class DetalleCarritoServiceImpl implements DetalleCarritoService {
 
     @Override
     public List<DetalleCarrito> findByCarritoId(Long carritoId) {
-        return List.of();
+        return detalleCarritoRepository.findByCarritoId(carritoId);
     }
 
     @Override
     public DetalleCarrito update(Long id, DetalleCarrito detalleCarrito) {
-        return null;
+        DetalleCarrito exists = findById(id);
+
+        detalleCarrito.setId(exists.getId());
+
+        return detalleCarritoRepository.save(detalleCarrito);
     }
 
     @Override
@@ -48,11 +51,7 @@ public class DetalleCarritoServiceImpl implements DetalleCarritoService {
 
     @Override
     public void deleteByCarritoId(Long carritoId) {
-
+        detalleCarritoRepository.deleteByCarritoId(carritoId);
     }
 
-    @Override
-    public Double calculateSubtotal(Long id) {
-        return 0.0;
-    }
 }

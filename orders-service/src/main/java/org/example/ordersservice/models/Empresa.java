@@ -1,15 +1,17 @@
 package org.example.ordersservice.models;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
+
 import java.util.List;
 
 @Entity
 @Table(name = "empresa")
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString(callSuper = true)
 public class Empresa extends User {
 
@@ -32,4 +34,17 @@ public class Empresa extends User {
     @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<Apertura> aperturas;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return super.getId() != null && super.getId().equals(user.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
