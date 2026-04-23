@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 @Entity
 @Table(name = "carrito")
@@ -67,7 +66,6 @@ public class Carrito {
 
         addDetalles(nuevos);
     }
-
     public BigDecimal getPrecioTotal(){
         if (this.detalles == null || this.detalles.isEmpty()) {
             return BigDecimal.ZERO;
@@ -77,5 +75,4 @@ public class Carrito {
                 .map(detalle -> detalle.getProducto().getPrecio())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
-
 }
