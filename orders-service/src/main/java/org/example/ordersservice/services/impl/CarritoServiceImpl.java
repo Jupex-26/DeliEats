@@ -3,7 +3,6 @@ package org.example.ordersservice.services.impl;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.models.Carrito;
-import org.example.ordersservice.models.DetalleCarrito;
 import org.example.ordersservice.models.Producto;
 import org.example.ordersservice.repositories.CarritoRepository;
 import org.example.ordersservice.services.CarritoService;
@@ -12,9 +11,7 @@ import org.example.ordersservice.services.ProductoService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
