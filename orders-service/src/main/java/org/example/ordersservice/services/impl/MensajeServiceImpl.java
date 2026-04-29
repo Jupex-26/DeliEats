@@ -1,60 +1,61 @@
 package org.example.ordersservice.services.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.models.Mensaje;
 import org.example.ordersservice.repositories.MensajeRepository;
 import org.example.ordersservice.services.MensajeService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class MensajeServiceImpl implements MensajeService {
+
     private final MensajeRepository mensajeRepository;
 
     @Override
     public Mensaje save(Mensaje mensaje) {
-        return null;
+        return mensajeRepository.save(mensaje);
     }
 
     @Override
-    public List<Mensaje> findAll() {
-        return List.of();
+    public Page<Mensaje> findAll(Pageable pageable) {
+        return mensajeRepository.findAll(pageable);
     }
 
     @Override
     public Mensaje findById(Long id) {
-        return null;
+        return mensajeRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Mensaje no encontrado con ID: " + id));
     }
 
     @Override
-    public List<Mensaje> findByEmisorId(Long emisorId) {
-        return List.of();
+    public Page<Mensaje> findByEmisorId(Long emisorId, Pageable pageable) {
+        return mensajeRepository.findByEmisor_Id(emisorId, pageable);
     }
 
     @Override
-    public List<Mensaje> findByReceptorId(Long receptorId) {
-        return List.of();
+    public Page<Mensaje> findByReceptorId(Long receptorId, Pageable pageable) {
+        return mensajeRepository.findByReceptor_Id(receptorId, pageable);
     }
 
-    @Override
-    public List<Mensaje> findByConversacionId(Long conversacionId) {
-        return List.of();
-    }
 
     @Override
     public void deleteById(Long id) {
-
+        mensajeRepository.deleteById(id);
     }
 
     @Override
     public Long countUnreadByReceptorId(Long receptorId) {
-        return 0L;
+        return mensajeRepository.countByReceptor_IdAndLeidoFalse(receptorId);
     }
 
     @Override
     public void markAsRead(Long id) {
-
+        Mensaje mensaje = findById(id);
+        mensaje.setLeido(true);
+        mensajeRepository.save(mensaje);
     }
 }

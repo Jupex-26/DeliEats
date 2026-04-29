@@ -6,12 +6,12 @@ import org.example.ordersservice.dtos.empresa.EmpresaOutputDto;
 import org.example.ordersservice.models.Empresa;
 import org.example.ordersservice.mappers.EmpresaMapper;
 import org.example.ordersservice.services.EmpresaService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/empresas")
@@ -29,11 +29,9 @@ public class EmpresaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<EmpresaOutputDto>> findAll() {
-        List<EmpresaOutputDto> dtos = empresaService.findAll()
-                .stream()
-                .map(empresaMapper::toDto)
-                .collect(Collectors.toList());
+    public ResponseEntity<Page<EmpresaOutputDto>> findAll(@PageableDefault Pageable pageable) {
+        Page<EmpresaOutputDto> dtos = empresaService.findAll(pageable)
+                .map(empresaMapper::toDto);
         return ResponseEntity.ok(dtos);
     }
 

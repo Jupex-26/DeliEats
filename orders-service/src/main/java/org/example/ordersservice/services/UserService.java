@@ -1,14 +1,14 @@
 package org.example.ordersservice.services;
 
 import org.example.ordersservice.models.User;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface UserService {
 
     User save(User user);
 
-    List<User> findAll();
+    Page<User> findAll(Pageable pageable);
 
     User findById(Long id);
 

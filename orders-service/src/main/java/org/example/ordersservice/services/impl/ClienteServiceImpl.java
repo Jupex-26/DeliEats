@@ -5,14 +5,14 @@ import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.models.Cliente;
 import org.example.ordersservice.repositories.ClienteRepository;
 import org.example.ordersservice.services.ClienteService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ClienteServiceImpl implements ClienteService {
+
     private final ClienteRepository clienteRepository;
 
     @Override
@@ -21,8 +21,8 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
-    public List<Cliente> findAll() {
-        return clienteRepository.findAll();
+    public Page<Cliente> findAll(Pageable pageable) {
+        return clienteRepository.findAll(pageable);
     }
 
     @Override

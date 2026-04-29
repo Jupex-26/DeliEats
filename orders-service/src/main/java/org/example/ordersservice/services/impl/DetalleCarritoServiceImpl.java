@@ -12,6 +12,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class DetalleCarritoServiceImpl implements DetalleCarritoService {
+
     private final DetalleCarritoRepository detalleCarritoRepository;
 
     @Override
@@ -27,7 +28,7 @@ public class DetalleCarritoServiceImpl implements DetalleCarritoService {
     @Override
     public DetalleCarrito findById(Long id) {
         return detalleCarritoRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("DetalleCarrito no encontrado con ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Detalle de carrito no encontrado con ID: " + id));
     }
 
     @Override
@@ -37,10 +38,8 @@ public class DetalleCarritoServiceImpl implements DetalleCarritoService {
 
     @Override
     public DetalleCarrito update(Long id, DetalleCarrito detalleCarrito) {
-        DetalleCarrito exists = findById(id);
-
-        detalleCarrito.setId(exists.getId());
-
+        DetalleCarrito existingDetalleCarrito = findById(id);
+        detalleCarrito.setId(existingDetalleCarrito.getId());
         return detalleCarritoRepository.save(detalleCarrito);
     }
 
@@ -53,5 +52,4 @@ public class DetalleCarritoServiceImpl implements DetalleCarritoService {
     public void deleteByCarritoId(Long carritoId) {
         detalleCarritoRepository.deleteByCarritoId(carritoId);
     }
-
 }

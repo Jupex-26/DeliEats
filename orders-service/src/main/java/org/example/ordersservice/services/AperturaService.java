@@ -1,14 +1,14 @@
 package org.example.ordersservice.services;
 
 import org.example.ordersservice.models.Apertura;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface AperturaService {
 
     Apertura save(Apertura apertura);
 
-    List<Apertura> findAll();
+    Page<Apertura> findAll(Pageable pageable);
 
     Apertura findById(Long id);
 

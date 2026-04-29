@@ -6,12 +6,12 @@ import org.example.ordersservice.dtos.mensaje.MensajeOutputDto;
 import org.example.ordersservice.models.Mensaje;
 import org.example.ordersservice.mappers.MensajeMapper;
 import org.example.ordersservice.services.MensajeService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/mensajes")
@@ -29,11 +29,9 @@ public class MensajeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<MensajeOutputDto>> findAll() {
-        List<MensajeOutputDto> dtos = mensajeService.findAll()
-                .stream()
-                .map(mensajeMapper::toDto)
-                .collect(Collectors.toList());
+    public ResponseEntity<Page<MensajeOutputDto>> findAll(@PageableDefault Pageable pageable) {
+        Page<MensajeOutputDto> dtos = mensajeService.findAll(pageable)
+                .map(mensajeMapper::toDto);
         return ResponseEntity.ok(dtos);
     }
 
@@ -41,15 +39,6 @@ public class MensajeController {
     public ResponseEntity<MensajeOutputDto> findById(@PathVariable Long id) {
         Mensaje entity = mensajeService.findById(id);
         return ResponseEntity.ok(mensajeMapper.toDto(entity));
-    }
-
-    @GetMapping("/conversacion/{conversacionId}")
-    public ResponseEntity<List<MensajeOutputDto>> findByConversacionId(@PathVariable Long conversacionId) {
-        List<MensajeOutputDto> dtos = mensajeService.findByConversacionId(conversacionId)
-                .stream()
-                .map(mensajeMapper::toDto)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(dtos);
     }
 
     @DeleteMapping("/{id}")
