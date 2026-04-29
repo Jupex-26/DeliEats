@@ -5,9 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.models.DetalleCarrito;
 import org.example.ordersservice.repositories.DetalleCarritoRepository;
 import org.example.ordersservice.services.DetalleCarritoService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -21,8 +21,8 @@ public class DetalleCarritoServiceImpl implements DetalleCarritoService {
     }
 
     @Override
-    public List<DetalleCarrito> findAll() {
-        return detalleCarritoRepository.findAll();
+    public Page<DetalleCarrito> findAll(Pageable pageable) {
+        return detalleCarritoRepository.findAll(pageable);
     }
 
     @Override
@@ -32,8 +32,8 @@ public class DetalleCarritoServiceImpl implements DetalleCarritoService {
     }
 
     @Override
-    public List<DetalleCarrito> findByCarritoId(Long carritoId) {
-        return detalleCarritoRepository.findByCarritoId(carritoId);
+    public Page<DetalleCarrito> findByCarritoId(Long carritoId, Pageable pageable) {
+        return detalleCarritoRepository.findByCarritoId(carritoId, pageable);
     }
 
     @Override

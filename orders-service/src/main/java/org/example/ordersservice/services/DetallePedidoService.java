@@ -1,18 +1,18 @@
 package org.example.ordersservice.services;
 
 import org.example.ordersservice.models.DetallePedido;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface DetallePedidoService {
 
     DetallePedido save(DetallePedido detallePedido);
 
-    List<DetallePedido> findAll();
+    Page<DetallePedido> findAll(Pageable pageable);
 
     DetallePedido findById(Long id);
 
-    List<DetallePedido> findByPedidoId(Long pedidoId);
+    Page<DetallePedido> findByPedidoId(Long pedidoId, Pageable pageable);
 
     DetallePedido update(Long id, DetallePedido detallePedido);
 
