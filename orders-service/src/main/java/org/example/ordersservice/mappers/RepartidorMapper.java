@@ -12,8 +12,7 @@ public interface RepartidorMapper {
     @Mapping(target = "nombreRol", source = "rol.nombre")
     RepartidorOutputDto toDto(Repartidor repartidor);
 
-    @Mapping(target = "rol", ignore = true) // Se asigna ROLE_REPARTIDOR en el Service
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "password", source = "password")
+
+    @Mapping(target = "pedidos", ignore = true)
     Repartidor toEntity(RepartidorInputDto dto);
 }
