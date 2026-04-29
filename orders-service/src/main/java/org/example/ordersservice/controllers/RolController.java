@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/roles")
+@RequestMapping("/roles")
 @RequiredArgsConstructor
 public class RolController {
 

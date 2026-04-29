@@ -15,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/clientes")
+@RequestMapping("/clientes")
 @RequiredArgsConstructor
 public class ClienteController {
 

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 
 @RestController
-@RequestMapping("/api/carritos")
+@RequestMapping("/carritos")
 @RequiredArgsConstructor
 public class CarritoController {
 
