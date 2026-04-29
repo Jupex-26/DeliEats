@@ -1,7 +1,7 @@
 package org.example.ordersservice.services.impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.example.ordersservice.exception.custom.NotFoundException;
 import org.example.ordersservice.models.Carrito;
 import org.example.ordersservice.models.Producto;
 import org.example.ordersservice.repositories.CarritoRepository;
@@ -29,13 +29,13 @@ public class CarritoServiceImpl implements CarritoService {
     @Override
     public Carrito findById(Long id) {
         return carritoRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Carrito no encontrado con ID: " + id));
+                .orElseThrow(() -> new NotFoundException("Carrito no encontrado con ID: " + id));
     }
 
     @Override
     public Carrito findByClienteId(Long usuarioId) {
         return carritoRepository.findByClienteId(usuarioId)
-                .orElseThrow(() -> new EntityNotFoundException("Carrito no encontrado con ID de usuario: " + usuarioId));
+                .orElseThrow(() -> new NotFoundException("Carrito no encontrado con ID de usuario: " + usuarioId));
     }
 
     @Override

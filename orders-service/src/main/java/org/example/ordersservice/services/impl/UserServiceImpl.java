@@ -1,7 +1,8 @@
 package org.example.ordersservice.services.impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.example.ordersservice.exception.custom.ConflictException;
+import org.example.ordersservice.exception.custom.NotFoundException;
 import org.example.ordersservice.models.User;
 import org.example.ordersservice.repositories.UserRepository;
 import org.example.ordersservice.services.UserService;
@@ -17,6 +18,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(User user) {
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new ConflictException("El email ya está en uso: " + user.getEmail());
+        }
         return userRepository.save(user);
     }
 
@@ -28,30 +32,36 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
+                .orElseThrow(() -> new NotFoundException("Usuario no encontrado con ID: " + id));
     }
 
     @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con email: " + email));
+                .orElseThrow(() -> new NotFoundException("Usuario no encontrado con email: " + email));
     }
 
     @Override
     public User findByUsername(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con: " + email));
+                .orElseThrow(() -> new NotFoundException("Usuario no encontrado con: " + email));
     }
 
     @Override
     public User update(Long id, User user) {
         User existingUser = findById(id);
+        if (user.getEmail() != null && !user.getEmail().equals(existingUser.getEmail()) && userRepository.existsByEmail(user.getEmail())) {
+            throw new ConflictException("El email ya está en uso: " + user.getEmail());
+        }
         user.setId(existingUser.getId());
         return userRepository.save(user);
     }
 
     @Override
     public void deleteById(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new NotFoundException("Usuario no encontrado con ID: " + id);
+        }
         userRepository.deleteById(id);
     }
 

@@ -1,7 +1,7 @@
 package org.example.ordersservice.services.impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.example.ordersservice.exception.custom.NotFoundException;
 import org.example.ordersservice.models.Cliente;
 import org.example.ordersservice.repositories.ClienteRepository;
 import org.example.ordersservice.services.ClienteService;
@@ -28,7 +28,7 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     public Cliente findById(Long id) {
         return clienteRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Cliente no encontrado con ID: " + id));
+                .orElseThrow(() -> new NotFoundException("Cliente no encontrado con ID: " + id));
     }
 
     @Override
