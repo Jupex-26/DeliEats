@@ -1,7 +1,7 @@
 package org.example.ordersservice.services.impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.example.ordersservice.exception.custom.NotFoundException;
 import org.example.ordersservice.models.Apertura;
 import org.example.ordersservice.repositories.AperturaRepository;
 import org.example.ordersservice.services.AperturaService;
@@ -27,7 +27,7 @@ public class AperturaServiceImpl implements AperturaService {
     @Override
     public Apertura findById(Long id) {
         return aperturaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Apertura no encontrada con ID: " + id));
+                .orElseThrow(() -> new NotFoundException("Apertura no encontrada con ID: " + id));
     }
 
     @Override

@@ -1,7 +1,7 @@
 package org.example.ordersservice.services.impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.example.ordersservice.exception.custom.NotFoundException;
 import org.example.ordersservice.models.Repartidor;
 import org.example.ordersservice.repositories.RepartidorRepository;
 import org.example.ordersservice.services.RepartidorService;
@@ -28,7 +28,7 @@ public class RepartidorServiceImpl implements RepartidorService {
     @Override
     public Repartidor findById(Long id) {
         return repartidorRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Repartidor no encontrado con ID: " + id));
+                .orElseThrow(() -> new NotFoundException("Repartidor no encontrado con ID: " + id));
     }
 
     @Override

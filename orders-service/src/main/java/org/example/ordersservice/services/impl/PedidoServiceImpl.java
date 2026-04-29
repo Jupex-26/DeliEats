@@ -1,7 +1,7 @@
 package org.example.ordersservice.services.impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.example.ordersservice.exception.custom.NotFoundException;
 import org.example.ordersservice.models.Estado;
 import org.example.ordersservice.models.Pedido;
 import org.example.ordersservice.repositories.PedidoRepository;
@@ -33,7 +33,7 @@ public class PedidoServiceImpl implements PedidoService {
     @Override
     public Pedido findById(Long id) {
         return pedidoRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Pedido no encontrado con ID: " + id));
+                .orElseThrow(() -> new NotFoundException("Pedido no encontrado con ID: " + id));
     }
 
     @Override
