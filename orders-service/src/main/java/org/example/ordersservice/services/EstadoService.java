@@ -1,14 +1,14 @@
 package org.example.ordersservice.services;
 
 import org.example.ordersservice.models.Estado;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface EstadoService {
 
     Estado save(Estado estado);
 
-    List<Estado> findAll();
+    Page<Estado> findAll(Pageable pageable);
 
     Estado findById(Long id);
 

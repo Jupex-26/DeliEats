@@ -1,20 +1,18 @@
 package org.example.ordersservice.services;
 
 import org.example.ordersservice.models.Repartidor;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface RepartidorService {
 
     Repartidor save(Repartidor repartidor);
 
-    List<Repartidor> findAll();
+    Page<Repartidor> findAll(Pageable pageable);
 
     Repartidor findById(Long id);
 
-    List<Repartidor> findByDisponible(boolean disponible);
-
-    List<Repartidor> findByVehiculoTipo(String tipoVehiculo);
+    Page<Repartidor> findByDisponible(boolean disponible, Pageable pageable);
 
     Repartidor update(Long id, Repartidor repartidor);
 

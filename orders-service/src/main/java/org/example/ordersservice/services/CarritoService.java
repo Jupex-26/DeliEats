@@ -1,12 +1,13 @@
 package org.example.ordersservice.services;
 
 import org.example.ordersservice.models.Carrito;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 public interface CarritoService {
-    List<Carrito> findAll();
+    Page<Carrito> findAll(Pageable pageable);
 
     Carrito findById(Long id);
 

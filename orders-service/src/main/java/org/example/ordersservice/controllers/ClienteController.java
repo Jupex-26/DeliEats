@@ -7,12 +7,12 @@ import org.example.ordersservice.dtos.cliente.ClienteOutputDto;
 import org.example.ordersservice.mappers.ClienteMapper;
 import org.example.ordersservice.models.Cliente;
 import org.example.ordersservice.services.ClienteService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/clientes")
@@ -30,11 +30,9 @@ public class ClienteController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ClienteOutputDto>> findAll() {
-        List<ClienteOutputDto> dtos = clienteService.findAll()
-                .stream()
-                .map(clienteMapper::toDto)
-                .collect(Collectors.toList());
+    public ResponseEntity<Page<ClienteOutputDto>> findAll(@PageableDefault Pageable pageable) {
+        Page<ClienteOutputDto> dtos = clienteService.findAll(pageable)
+                .map(clienteMapper::toDto);
         return ResponseEntity.ok(dtos);
     }
 

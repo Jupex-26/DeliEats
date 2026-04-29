@@ -6,12 +6,12 @@ import org.example.ordersservice.dtos.producto.ProductoOutputDto;
 import org.example.ordersservice.models.Producto;
 import org.example.ordersservice.mappers.ProductoMapper;
 import org.example.ordersservice.services.ProductoService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/productos")
@@ -29,11 +29,9 @@ public class ProductoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductoOutputDto>> findAll() {
-        List<ProductoOutputDto> dtos = productoService.findAll()
-                .stream()
-                .map(productoMapper::toDto)
-                .collect(Collectors.toList());
+    public ResponseEntity<Page<ProductoOutputDto>> findAll(@PageableDefault Pageable pageable) {
+        Page<ProductoOutputDto> dtos = productoService.findAll(pageable)
+                .map(productoMapper::toDto);
         return ResponseEntity.ok(dtos);
     }
 
@@ -44,11 +42,9 @@ public class ProductoController {
     }
 
     @GetMapping("/categoria/{categoriaId}")
-    public ResponseEntity<List<ProductoOutputDto>> findByCategoriaId(@PathVariable Long categoriaId) {
-        List<ProductoOutputDto> dtos = productoService.findByCategoriaId(categoriaId)
-                .stream()
-                .map(productoMapper::toDto)
-                .collect(Collectors.toList());
+    public ResponseEntity<Page<ProductoOutputDto>> findByCategoriaId(@PathVariable Long categoriaId, @PageableDefault Pageable pageable) {
+        Page<ProductoOutputDto> dtos = productoService.findByCategoriaId(categoriaId, pageable)
+                .map(productoMapper::toDto);
         return ResponseEntity.ok(dtos);
     }
 

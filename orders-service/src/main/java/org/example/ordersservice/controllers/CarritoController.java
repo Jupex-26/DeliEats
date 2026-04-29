@@ -6,13 +6,14 @@ import org.example.ordersservice.dtos.carrito.CarritoOutputDto;
 import org.example.ordersservice.mappers.CarritoMapper;
 import org.example.ordersservice.models.Carrito;
 import org.example.ordersservice.services.CarritoService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/carritos")
@@ -30,11 +31,9 @@ public class CarritoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CarritoOutputDto>> findAll() {
-        List<CarritoOutputDto> dtos = carritoService.findAll()
-                .stream()
-                .map(carritoMapper::toDto)
-                .collect(Collectors.toList());
+    public ResponseEntity<Page<CarritoOutputDto>> findAll(@PageableDefault Pageable pageable) {
+        Page<CarritoOutputDto> dtos = carritoService.findAll(pageable)
+                .map(carritoMapper::toDto);
         return ResponseEntity.ok(dtos);
     }
 

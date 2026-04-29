@@ -1,40 +1,45 @@
 package org.example.ordersservice.services.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.models.Empresa;
 import org.example.ordersservice.repositories.EmpresaRepository;
 import org.example.ordersservice.services.EmpresaService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class EmpresaServiceImpl implements EmpresaService {
+
     private final EmpresaRepository empresaRepository;
 
     @Override
     public Empresa save(Empresa empresa) {
-        return null;
+        return empresaRepository.save(empresa);
     }
 
     @Override
-    public List<Empresa> findAll() {
-        return List.of();
+    public Page<Empresa> findAll(Pageable pageable) {
+        return empresaRepository.findAll(pageable);
     }
 
     @Override
     public Empresa findById(Long id) {
-        return null;
+        return empresaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Empresa no encontrada con ID: " + id));
     }
 
     @Override
     public Empresa update(Long id, Empresa empresa) {
-        return null;
+        Empresa existingEmpresa = findById(id);
+        empresa.setId(existingEmpresa.getId());
+        return empresaRepository.save(empresa);
     }
 
     @Override
     public void deleteById(Long id) {
-
+        empresaRepository.deleteById(id);
     }
 }

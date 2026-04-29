@@ -6,12 +6,12 @@ import org.example.ordersservice.dtos.repartidor.RepartidorOutputDto;
 import org.example.ordersservice.models.Repartidor;
 import org.example.ordersservice.mappers.RepartidorMapper;
 import org.example.ordersservice.services.RepartidorService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/repartidores")
@@ -29,11 +29,9 @@ public class RepartidorController {
     }
 
     @GetMapping
-    public ResponseEntity<List<RepartidorOutputDto>> findAll() {
-        List<RepartidorOutputDto> dtos = repartidorService.findAll()
-                .stream()
-                .map(repartidorMapper::toDto)
-                .collect(Collectors.toList());
+    public ResponseEntity<Page<RepartidorOutputDto>> findAll(@PageableDefault Pageable pageable) {
+        Page<RepartidorOutputDto> dtos = repartidorService.findAll(pageable)
+                .map(repartidorMapper::toDto);
         return ResponseEntity.ok(dtos);
     }
 
@@ -44,11 +42,9 @@ public class RepartidorController {
     }
 
     @GetMapping("/disponibles")
-    public ResponseEntity<List<RepartidorOutputDto>> findByDisponible() {
-        List<RepartidorOutputDto> dtos = repartidorService.findByDisponible(true)
-                .stream()
-                .map(repartidorMapper::toDto)
-                .collect(Collectors.toList());
+    public ResponseEntity<Page<RepartidorOutputDto>> findByDisponible(@PageableDefault Pageable pageable) {
+        Page<RepartidorOutputDto> dtos = repartidorService.findByDisponible(true, pageable)
+                .map(repartidorMapper::toDto);
         return ResponseEntity.ok(dtos);
     }
 

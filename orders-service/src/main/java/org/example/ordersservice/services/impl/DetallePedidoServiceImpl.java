@@ -12,6 +12,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class DetallePedidoServiceImpl implements DetallePedidoService {
+
     private final DetallePedidoRepository detallePedidoRepository;
 
     @Override
@@ -27,7 +28,7 @@ public class DetallePedidoServiceImpl implements DetallePedidoService {
     @Override
     public DetallePedido findById(Long id) {
         return detallePedidoRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Detalle Pedido no encontrado con ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Detalle de pedido no encontrado con ID: " + id));
     }
 
     @Override
@@ -37,9 +38,8 @@ public class DetallePedidoServiceImpl implements DetallePedidoService {
 
     @Override
     public DetallePedido update(Long id, DetallePedido detallePedido) {
-        DetallePedido exists = findById(id);
-        detallePedido.setId(exists.getId());
-
+        DetallePedido existingDetallePedido = findById(id);
+        detallePedido.setId(existingDetallePedido.getId());
         return detallePedidoRepository.save(detallePedido);
     }
 

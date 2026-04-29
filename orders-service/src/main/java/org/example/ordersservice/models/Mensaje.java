@@ -32,6 +32,8 @@ public class Mensaje {
     @JoinColumn(name = "receptor_id")
     private User receptor;
 
+    private boolean leido;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -44,4 +46,6 @@ public class Mensaje {
     public int hashCode() {
         return getClass().hashCode();
     }
+
+
 }

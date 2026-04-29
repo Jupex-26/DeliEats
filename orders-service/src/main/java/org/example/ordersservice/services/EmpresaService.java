@@ -1,14 +1,14 @@
 package org.example.ordersservice.services;
 
 import org.example.ordersservice.models.Empresa;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface EmpresaService {
 
     Empresa save(Empresa empresa);
 
-    List<Empresa> findAll();
+    Page<Empresa> findAll(Pageable pageable);
 
     Empresa findById(Long id);
 

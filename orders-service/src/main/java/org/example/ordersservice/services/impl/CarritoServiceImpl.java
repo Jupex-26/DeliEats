@@ -8,10 +8,11 @@ import org.example.ordersservice.repositories.CarritoRepository;
 import org.example.ordersservice.services.CarritoService;
 import org.example.ordersservice.services.DetalleCarritoService;
 import org.example.ordersservice.services.ProductoService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -21,8 +22,8 @@ public class CarritoServiceImpl implements CarritoService {
     private final DetalleCarritoService detalleCarritoService;
 
     @Override
-    public List<Carrito> findAll() {
-        return carritoRepository.findAll();
+    public Page<Carrito> findAll(Pageable pageable) {
+        return carritoRepository.findAll(pageable);
     }
 
     @Override

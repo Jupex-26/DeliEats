@@ -5,10 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.models.Apertura;
 import org.example.ordersservice.repositories.AperturaRepository;
 import org.example.ordersservice.services.AperturaService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,8 +20,8 @@ public class AperturaServiceImpl implements AperturaService {
     }
 
     @Override
-    public List<Apertura> findAll() {
-        return aperturaRepository.findAll();
+    public Page<Apertura> findAll(Pageable pageable) {
+        return aperturaRepository.findAll(pageable);
     }
 
     @Override
