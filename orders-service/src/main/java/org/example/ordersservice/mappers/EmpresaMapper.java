@@ -12,9 +12,8 @@ public interface EmpresaMapper {
     @Mapping(target = "nombreRol", source = "rol.nombre")
     EmpresaOutputDto toDto(Empresa empresa);
 
-    @Mapping(target = "rol", ignore = true) // Se asigna el rol de Empresa en el Service
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "productos", ignore = true) // Los productos se gestionan aparte
-    @Mapping(target = "password", source = "password")
+
+    @Mapping(target = "productos", ignore = true)
+    @Mapping(target = "aperturas", ignore = true)
     Empresa toEntity(EmpresaInputDto dto);
 }

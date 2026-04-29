@@ -14,8 +14,7 @@ public interface ClienteMapper {
     ClienteOutputDto toDto(Cliente cliente);
 
     // DTO -> Entidad (Para crear el Cliente en el registro)
-    @Mapping(target = "rol", ignore = true) // Se asigna en el Service
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "password", source = "password") // Se mapea, pero recuerda encriptar en el Service
+    @Mapping(target = "pedidos", ignore = true)
+    @Mapping(target = "carritos", ignore = true)
     Cliente toEntity(ClienteInputDto dto);
 }
