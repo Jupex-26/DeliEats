@@ -43,7 +43,7 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         
                         // Endpoints públicos de lectura (ver menú, locales, etc.)
-                        .requestMatchers(HttpMethod.GET, "/productos/**", "/restaurantes/**", "/categorias/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/productos/**", "/restaurantes/**", "/categorias/**", "/aperturas/**").permitAll()
                         
                         // Endpoints de gestión (crear/editar productos y restaurantes)
                         .requestMatchers(HttpMethod.POST, "/productos/**", "/restaurantes/**", "/categorias/**").hasAnyRole("ADMIN", "RESTAURANTE")

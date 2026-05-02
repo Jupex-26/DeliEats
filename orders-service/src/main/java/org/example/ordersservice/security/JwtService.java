@@ -52,11 +52,11 @@ public class JwtService {
     * Comprueba si un token ha expirado
     * */
     public boolean isTokenExpired(String token) {
-        Date expiration = Jwts.parserBuilder()
-                .setSigningKey(secretKey)
+        Date expiration = Jwts.parser()
+                .verifyWith(secretKey)
                 .build()
-                .parseClaimsJws(token)
-                .getBody()
+                .parseSignedClaims(token)
+                .getPayload()
                 .getExpiration();
         return expiration.before(new Date());
     }
@@ -65,11 +65,11 @@ public class JwtService {
     * leer el token que envía el cliente y averiguar a qué usuario pertenece
     * */
     public String extractEmail(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(secretKey)
+        return Jwts.parser()
+                .verifyWith(secretKey)
                 .build()
-                .parseClaimsJws(token)
-                .getBody()
+                .parseSignedClaims(token)
+                .getPayload()
                 .getSubject();
     }
 
