@@ -1,0 +1,104 @@
+@import '../../../styles/variables';
+
+:host {
+  --color-primary: #{$color-primary};
+  --color-secondary: #{$color-secondary};
+  --color-text-main: #{$color-text-main};
+  --color-bg-base: #{$color-bg-base};
+  --color-bg-alt: #{$color-bg-alt};
+  --color-success: #{$color-success};
+  --color-error: #{$color-error};
+  --color-warning: #{$color-warning};
+}
+
+ion-content {
+  --background: var(--color-bg-base);
+}
+
+.login-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 1.5rem;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  background-color: var(--color-bg-alt);
+  border-radius: 1rem;
+  padding: 2.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.logo-title {
+  text-align: center;
+  color: var(--color-primary);
+  font-size: 2.25rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.025em;
+}
+
+.subtitle {
+  text-align: center;
+  color: var(--color-text-main);
+  opacity: 0.8;
+  margin-bottom: 2rem;
+}
+
+.input-group {
+  margin-bottom: 1.5rem;
+}
+
+ion-item {
+  --background: transparent;
+  --color: var(--color-text-main);
+  --border-color: var(--color-text-main);
+  --highlight-color-focused: var(--color-primary);
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  margin-bottom: 1rem;
+}
+
+ion-input {
+  --placeholder-color: var(--color-text-main);
+  --placeholder-opacity: 0.5;
+  color: var(--color-text-main);
+  font-size: 1rem;
+}
+
+.error-text {
+  color: var(--color-error);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  padding-left: 0.5rem;
+}
+
+.submit-btn {
+  --background: var(--color-secondary);
+  --background-hover: rgba(126, 30, 21, 0.9);
+  --color: white;
+  --border-radius: 9999px;
+  margin-top: 1.5rem;
+  font-weight: bold;
+  height: 3rem;
+}
+
+.register-link {
+  text-align: center;
+  margin-top: 1.5rem;
+  color: var(--color-text-main);
+  font-size: 0.875rem;
+}
+
+.register-link a {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.register-link a:hover {
+  text-decoration: underline;
+}

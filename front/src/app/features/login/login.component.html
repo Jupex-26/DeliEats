@@ -1,0 +1,62 @@
+<ion-content>
+  <div class="login-container">
+    <div class="login-card">
+      <div class="logo-title">DeliEats</div>
+      <p class="subtitle">Bienvenido de nuevo. ¡Qué hambre!</p>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+        <div class="input-group">
+          <ion-item lines="full">
+            <ion-input
+              formControlName="email"
+              type="email"
+              placeholder="Tu correo electrónico"
+              >
+            </ion-input>
+          </ion-item>
+          @if (loginForm.get('email')?.touched && loginForm.get('email')?.hasError('required')) {
+            <div class="error-text">El correo es obligatorio.</div>
+          }
+          @if (loginForm.get('email')?.touched && loginForm.get('email')?.hasError('email')) {
+            <div class="error-text">Debe ser un correo válido.</div>
+          }
+
+          <ion-item lines="full">
+            <ion-input
+              formControlName="password"
+              type="password"
+              placeholder="Tu contraseña"
+              >
+            </ion-input>
+          </ion-item>
+          @if (loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required')) {
+            <div class="error-text">La contraseña es obligatoria.</div>
+          }
+          @if (loginForm.get('password')?.touched && loginForm.get('password')?.hasError('minlength')) {
+            <div class="error-text">Debe tener al menos 8 caracteres.</div>
+          }
+        </div>
+
+        @if (errorMessage) {
+          <div class="error-text" style="text-align: center; margin-bottom: 1rem;">
+            {{ errorMessage }}
+          </div>
+        }
+
+        <ion-button expand="block" type="submit" class="submit-btn" [disabled]="loginForm.invalid || isLoading">
+          @if (isLoading) {
+            <ion-spinner name="crescent"></ion-spinner>
+          } @else {
+            Iniciar Sesión
+          }
+        </ion-button>
+
+      </form>
+
+      <div class="register-link">
+        ¿No tienes cuenta? <a href="#">Regístrate aquí</a>
+      </div>
+    </div>
+  </div>
+</ion-content>
