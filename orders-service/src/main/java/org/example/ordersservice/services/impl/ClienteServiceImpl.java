@@ -7,16 +7,23 @@ import org.example.ordersservice.repositories.ClienteRepository;
 import org.example.ordersservice.services.ClienteService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class ClienteServiceImpl implements ClienteService {
 
     private final ClienteRepository clienteRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Cliente save(Cliente cliente) {
+        if (Objects.nonNull(cliente.getPassword())) {
+            cliente.setPassword(passwordEncoder.encode(cliente.getPassword()));
+        }
         return clienteRepository.save(cliente);
     }
 
@@ -36,6 +43,12 @@ public class ClienteServiceImpl implements ClienteService {
         Cliente existente = findById(id);
 
         cliente.setId(existente.getId());
+        
+        if (Objects.nonNull(cliente.getPassword()) && !cliente.getPassword().isEmpty()) {
+            cliente.setPassword(passwordEncoder.encode(cliente.getPassword()));
+        } else {
+            cliente.setPassword(existente.getPassword());
+        }
 
         return clienteRepository.save(cliente);
     }
