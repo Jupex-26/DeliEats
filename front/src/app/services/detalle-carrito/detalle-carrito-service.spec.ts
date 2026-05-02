@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { AuthService } from './auth-service';
+import { DetalleCarritoService } from './detalle-carrito-service';
 
-describe('AuthService', () => {
-  let service: AuthService;
+describe('DetalleCarritoService', () => {
+  let service: DetalleCarritoService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -13,7 +13,7 @@ describe('AuthService', () => {
         provideHttpClientTesting()
       ]
     });
-    service = TestBed.inject(AuthService);
+    service = TestBed.inject(DetalleCarritoService);
   });
 
   it('should be created', () => {
