@@ -1,0 +1,7 @@
+export enum EstadoCarrito {
+    ACTIVO = 'ACTIVO',
+    PENDIENTE = 'PENDIENTE',
+    COMPLETADO = 'COMPLETADO',
+    ABANDONADO = 'ABANDONADO',
+    VACIADO = 'VACIADO'
+}
