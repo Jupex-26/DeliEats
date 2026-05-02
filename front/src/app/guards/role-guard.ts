@@ -1,8 +1,20 @@
 import { CanActivateFn } from '@angular/router';
 import { AuthService } from '../services/auth/auth-service';
-import { inject } from '@angular/core/primitives/di';
+import { inject } from '@angular/core';
 
 export const roleGuard: CanActivateFn = (route, state) => {
-  const authService: AuthService = inject(AuthService);
-  return route.data['role'].includes(authService.getRol());
+  const authService = inject(AuthService);
+  const requiredRoles = route.data['role'] as string[];
+
+  if (!requiredRoles) {
+    return true; // Si no hay roles requeridos en la ruta, permitimos el acceso
+  }
+
+  const userRole = authService.getRol();
+
+  if (!userRole) {
+    return false; // Si no hay rol (usuario no logueado), denegamos el acceso
+  }
+
+  return requiredRoles.includes(userRole);
 };
