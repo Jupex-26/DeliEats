@@ -1,0 +1,59 @@
+@import '../../../styles/variables';
+
+ion-content {
+  --background: #{$color-bg-base};
+}
+
+.bg-base {
+  background-color: $color-bg-base;
+}
+
+.bg-alt {
+  background-color: $color-bg-alt;
+}
+
+.bg-primary {
+  background-color: $color-primary;
+}
+
+.bg-secondary {
+  background-color: $color-secondary;
+}
+
+.bg-warning {
+  background-color: $color-warning;
+}
+
+.text-main {
+  color: $color-text-main;
+}
+
+.text-primary {
+  color: $color-primary;
+}
+
+.text-secondary {
+  color: $color-secondary;
+}
+
+.text-warning {
+  color: $color-warning;
+}
+
+.text-alt {
+  color: $color-bg-alt;
+}
+
+.placeholder-main::placeholder {
+  color: rgba($color-text-main, 0.6);
+}
+
+.focus-ring-primary:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px $color-primary;
+}
+
+.hero-placeholder-overlay {
+  background-color: $color-primary;
+  opacity: 0.1;
+}
