@@ -1,7 +1,7 @@
 package org.example.ordersservice.services.impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.example.ordersservice.exception.custom.NotFoundException;
 import org.example.ordersservice.models.Rol;
 import org.example.ordersservice.repositories.RolRepository;
 import org.example.ordersservice.services.RolService;
@@ -28,13 +28,13 @@ public class RolServiceImpl implements RolService {
     @Override
     public Rol findById(Long id) {
         return rolRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Rol no encontrado con ID: " + id));
+                .orElseThrow(() -> new NotFoundException("Rol no encontrado con ID: " + id));
     }
 
     @Override
     public Rol findByNombre(String nombre) {
         return rolRepository.findByNombre(nombre)
-                .orElseThrow(() -> new EntityNotFoundException("Rol no encontrado con nombre: " + nombre));
+                .orElseThrow(() -> new NotFoundException("Rol no encontrado con nombre: " + nombre));
     }
 
     @Override

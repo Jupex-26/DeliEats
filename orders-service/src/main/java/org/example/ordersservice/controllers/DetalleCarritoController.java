@@ -3,18 +3,18 @@ package org.example.ordersservice.controllers;
 import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.dtos.detallecarrito.DetalleCarritoInputDto;
 import org.example.ordersservice.dtos.detallecarrito.DetalleCarritoOutputDto;
-import org.example.ordersservice.models.DetalleCarrito;
 import org.example.ordersservice.mappers.DetalleCarritoMapper;
+import org.example.ordersservice.models.DetalleCarrito;
 import org.example.ordersservice.services.DetalleCarritoService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @RestController
-@RequestMapping("/api/detalles-carrito")
+@RequestMapping("/detalles-carrito")
 @RequiredArgsConstructor
 public class DetalleCarritoController {
 
@@ -29,11 +29,9 @@ public class DetalleCarritoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DetalleCarritoOutputDto>> findAll() {
-        List<DetalleCarritoOutputDto> dtos = detalleCarritoService.findAll()
-                .stream()
-                .map(detalleCarritoMapper::toDto)
-                .collect(Collectors.toList());
+    public ResponseEntity<Page<DetalleCarritoOutputDto>> findAll(@PageableDefault Pageable pageable) {
+        Page<DetalleCarritoOutputDto> dtos = detalleCarritoService.findAll(pageable)
+                .map(detalleCarritoMapper::toDto);
         return ResponseEntity.ok(dtos);
     }
 
@@ -44,11 +42,9 @@ public class DetalleCarritoController {
     }
 
     @GetMapping("/carrito/{carritoId}")
-    public ResponseEntity<List<DetalleCarritoOutputDto>> findByCarritoId(@PathVariable Long carritoId) {
-        List<DetalleCarritoOutputDto> dtos = detalleCarritoService.findByCarritoId(carritoId)
-                .stream()
-                .map(detalleCarritoMapper::toDto)
-                .collect(Collectors.toList());
+    public ResponseEntity<Page<DetalleCarritoOutputDto>> findByCarritoId(@PathVariable Long carritoId, @PageableDefault Pageable pageable) {
+        Page<DetalleCarritoOutputDto> dtos = detalleCarritoService.findByCarritoId(carritoId, pageable)
+                .map(detalleCarritoMapper::toDto);
         return ResponseEntity.ok(dtos);
     }
 

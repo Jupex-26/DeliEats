@@ -12,7 +12,7 @@ import java.nio.charset.StandardCharsets;
 @Configuration
 public class JwtConfig {
 
-    @Value("${jwt.secret}")
+    @Value("${jwt.secret:valor_por_defecto_en_caso_de_error}")
     private String jwtSecret;
 
     @Bean

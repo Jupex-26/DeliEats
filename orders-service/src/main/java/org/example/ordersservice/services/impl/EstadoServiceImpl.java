@@ -1,7 +1,7 @@
 package org.example.ordersservice.services.impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.example.ordersservice.exception.custom.NotFoundException;
 import org.example.ordersservice.models.Estado;
 import org.example.ordersservice.repositories.EstadoRepository;
 import org.example.ordersservice.services.EstadoService;
@@ -28,13 +28,13 @@ public class EstadoServiceImpl implements EstadoService {
     @Override
     public Estado findById(Long id) {
         return estadoRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Estado no encontrado con ID: " + id));
+                .orElseThrow(() -> new NotFoundException("Estado no encontrado con ID: " + id));
     }
 
     @Override
     public Estado findByNombre(String nombre) {
         return estadoRepository.findByNombre(nombre)
-                .orElseThrow(() -> new EntityNotFoundException("Estado no encontrado con nombre: " + nombre));
+                .orElseThrow(() -> new NotFoundException("Estado no encontrado con nombre: " + nombre));
     }
 
     @Override

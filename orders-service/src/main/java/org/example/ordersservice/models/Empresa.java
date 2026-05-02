@@ -2,6 +2,7 @@ package org.example.ordersservice.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
 @Table(name = "empresa")
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true)

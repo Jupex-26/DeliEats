@@ -2,6 +2,7 @@ package org.example.ordersservice.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 @Table(name = "cliente")
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true)

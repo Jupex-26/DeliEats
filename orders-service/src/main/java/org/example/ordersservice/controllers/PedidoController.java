@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/pedidos")
+@RequestMapping("/pedidos")
 @RequiredArgsConstructor
 public class PedidoController {
 
