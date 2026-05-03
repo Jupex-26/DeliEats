@@ -1,0 +1,102 @@
+// ==========================================
+// DeliEats - Formularios e Inputs
+// ==========================================
+@import "variables";
+@layer components {
+  .form-group {
+    @apply flex flex-col mb-6;
+
+    // Etiquetas Tradicionales (siempre visibles)
+    .form-label {
+      font-family: 'Lora', serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: $color-text-main;
+      margin-bottom: 8px;
+      @apply transition-colors duration-300;
+    }
+
+    // Input Nativo / Clases de Tailwind
+    .form-input {
+      background-color: #FFFFFF;
+      color: $color-text-main;
+      border: 1.5px solid $color-bg-alt; //
+      border-radius: 8px; //
+      padding: 12px 16px;
+      font-family: 'Lora', serif;
+      font-size: 16px;
+      @apply w-full outline-none transition-all duration-300;
+
+      &::placeholder {
+        color: $color-text-main;
+        opacity: 0.55; //
+      }
+
+      // Estado de Foco
+      &:focus {
+        border-color: $color-primary;
+        border-width: 2px;
+        box-shadow: 0 0 0 3px rgba(32, 74, 51, 0.1);
+      }
+
+      // Estados de Validación
+      &.is-valid {
+        border-color: $color-success;
+      }
+
+      &.is-invalid {
+        border-color: $color-error; //
+      }
+    }
+
+    // Mensajes de Error
+    .form-error-msg {
+      color: $color-error;
+      font-size: 12px;
+      margin-top: 4px;
+      font-weight: 500;
+      @apply animate-in fade-in slide-in-from-top-1;
+    }
+  }
+}
+
+// ==========================================
+// Integración con Ionic (Sin !important)
+// ==========================================
+// Usamos las variables específicas de Ionic para inyectar nuestro estilo
+ion-item.deli-input-item {
+  --background: transparent;
+  --border-style: none;
+  --inner-padding-end: 0;
+  --padding-start: 0;
+
+  ion-input, ion-textarea {
+    --background: #FFFFFF;
+    --color: #{$color-text-main};
+    --placeholder-color: #{$color-text-main};
+    --placeholder-opacity: 0.55;
+    --padding-start: 12px;
+    --padding-end: 12px;
+    --padding-top: 12px;
+    --padding-bottom: 12px;
+
+    // Aplicamos el radio de 8px a través de la sombra o el contenedor nativo
+    border: 1.5px solid $color-bg-alt;
+    border-radius: 8px;
+    min-height: 48px;
+    transition: border-color 0.3s ease;
+
+    &.ion-focused {
+      border-color: $color-primary;
+      border-width: 2px;
+    }
+
+    &.ion-invalid {
+      border-color: $color-error;
+    }
+
+    &.ion-valid {
+      border-color: $color-success;
+    }
+  }
+}

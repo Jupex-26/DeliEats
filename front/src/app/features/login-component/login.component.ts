@@ -6,7 +6,7 @@ import { AuthService } from '../../services/auth/auth-service';
 import { LoginRequestDto } from '../../types';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-login-component',
   standalone: true,
   imports: [IonContent, IonInput, IonItem, IonButton, IonSpinner, ReactiveFormsModule],
   templateUrl: './login.component.html',

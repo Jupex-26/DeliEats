@@ -1,0 +1,86 @@
+// ==========================================
+// DeliEats - Estilos Base & Reseteo Global
+// ==========================================
+@import "variables";
+@layer base {
+
+  // 1. Configuración del documento y scroll
+  html {
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+    // Evita saltos visuales bruscos al cargar imágenes
+  }
+
+  body {
+    background-color: $color-bg-base; // Floral White
+    color: $color-text-main;          // Evergreen
+    font-family: 'Lora', 'Verdana', serif; // Fuente secundaria legible
+    font-size: 16px;                  // Texto Base
+    line-height: 1.6;                 // Interlineado anti-fatiga
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  // 2. Jerarquía Tipográfica (Merriweather)
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Merriweather', serif;
+    font-weight: 700;
+    color: $color-text-main;
+    margin-top: 0;
+  }
+
+  h1 {
+    font-size: 40px; //
+    @apply mb-6;
+  }
+
+  h2 {
+    font-size: 32px; //
+    @apply mb-4;
+  }
+
+  // 3. Estilos Globales de Ionic (Optimización UX)
+  ion-content {
+    --background: #{$color-bg-base};
+    --color: #{$color-text-main};
+  }
+
+  // Botones e Interacciones (Micro-interacciones)
+  button, .button, ion-button {
+    --border-radius: 8px !important; // Bordes redondeados obligatorios
+    transition: all 0.3s ease-in-out !important; //
+
+    &:active {
+      transform: scale(0.98); // Efecto de presión táctil
+    }
+  }
+
+  // 4. Sombras Orgánicas (No negras pesadas)
+  .shadow-organic {
+    box-shadow: 0 4px 12px rgba(27, 46, 36, 0.08);
+  }
+
+  // 5. Adaptación Responsive para Títulos
+  @media (max-width: 768px) {
+    h1, h2, h3 {
+      font-size: 85%; // Reducción del 15% en móvil
+    }
+  }
+
+  // 6. Accesibilidad - Focus Ring visible en Verde Bosque
+  :focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+}
+
+// 7. Utilidades de Transiciones (Fade-in)
+.fade-in-load {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
