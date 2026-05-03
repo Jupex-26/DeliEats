@@ -38,12 +38,6 @@
           }
         </div>
 
-        @if (errorMessage) {
-          <div class="error-text error-message-container">
-            {{ errorMessage }}
-          </div>
-        }
-
         <ion-button expand="block" type="submit" class="submit-btn" [disabled]="loginForm.invalid || isLoading">
           @if (isLoading) {
             <ion-spinner name="crescent"></ion-spinner>
@@ -62,4 +56,14 @@
       </div>
     </div>
   </div>
+
+  <!-- Info Modal -->
+  <app-info-modal
+    [isOpen]="isModalOpen"
+    [title]="modalTitle"
+    [message]="modalMessage"
+    [type]="modalType"
+    [errorData]="errorData"
+    (modalClosed)="onModalClosed()">
+  </app-info-modal>
 </ion-content>

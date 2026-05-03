@@ -16,12 +16,6 @@
         @if (currentStep === 'empresa') { Registra tu local y llega a más clientes. }
       </p>
 
-      @if (errorMessage) {
-        <div class="error-message-container">
-          {{ errorMessage }}
-        </div>
-      }
-
       @if (isLoading) {
         <div class="loading-container">
           <ion-spinner name="crescent"></ion-spinner>
@@ -61,4 +55,14 @@
 
     </div>
   </div>
+
+  <!-- Info Modal -->
+  <app-info-modal
+    [isOpen]="isModalOpen"
+    [title]="modalTitle"
+    [message]="modalMessage"
+    [type]="modalType"
+    [errorData]="errorData"
+    (modalClosed)="onModalClosed()">
+  </app-info-modal>
 </ion-content>

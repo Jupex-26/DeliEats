@@ -1,14 +1,29 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonModal, IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonIcon, IonList, IonItem, IonLabel } from '@ionic/angular/standalone';
+import { IonModal, IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonList, IonItem, IonLabel,
+  IonIcon
+} from '@ionic/angular/standalone';
 import { CustomError } from '../../types';
 
 @Component({
   selector: 'app-info-modal',
   standalone: true,
-  imports: [CommonModule, IonModal, IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonIcon, IonList, IonItem, IonLabel],
+  imports: [
+    CommonModule,
+    IonModal,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonButton,
+    IonButtons,
+    IonList,
+    IonItem,
+    IonLabel,
+    IonIcon,
+  ],
   templateUrl: './info-modal.component.html',
-  styleUrls: ['./info-modal.component.scss']
+  styleUrls: ['./info-modal.component.scss'],
 })
 export class InfoModalComponent {
   @Input() isOpen = false;
@@ -28,12 +43,12 @@ export class InfoModalComponent {
     return !!this.errorData?.fieldErrors && Object.keys(this.errorData.fieldErrors).length > 0;
   }
 
-  getFieldErrorsList(): {field: string, message: string}[] {
+  getFieldErrorsList(): { field: string; message: string }[] {
     if (!this.hasFieldErrors()) return [];
 
     return Object.entries(this.errorData!.fieldErrors!).map(([key, value]) => ({
       field: key,
-      message: value
+      message: value,
     }));
   }
 }

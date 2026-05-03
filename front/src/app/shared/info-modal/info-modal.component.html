@@ -1,52 +1,38 @@
-<ion-modal [isOpen]="isOpen" (didDismiss)="closeModal()" class="custom-modal">
+<ion-modal [isOpen]="isOpen" (didDismiss)="closeModal()" class="custom-modal" [backdropDismiss]="false">
   <ng-template>
     <ion-header class="ion-no-border">
-      <ion-toolbar>
-        <ion-title [ngClass]="{'text-success': type === 'success', 'text-error': type === 'error', 'text-primary': type === 'info'}">
-          {{ title }}
-        </ion-title>
-        <ion-buttons slot="end">
-          <ion-button (click)="closeModal()" color="medium">
-            <!-- Icono de X simple usando caracteres si no hay iconos cargados -->
-            ✕
-          </ion-button>
-        </ion-buttons>
+      <ion-toolbar class="deli-toolbar">
+        <ion-title class="font-header">{{ title }}</ion-title>
       </ion-toolbar>
     </ion-header>
+    <ion-content class="ion-padding transparent-content">
+      <!-- Contenedor principal de altura dinámica -->
+      <div class="modal-body-wrapper custom-bg">
 
-    <ion-content class="ion-padding">
-      <div class="modal-body">
+        <div class="main-message font-body">
+          {{ message }}
+        </div>
 
-        <!-- Mensaje principal simple o del CustomError -->
-        <p class="main-message">
-          {{ errorData?.message || message }}
-        </p>
-
-        <!-- Lista de errores de campos si existen -->
         @if (hasFieldErrors()) {
-          <div class="field-errors-container mt-4">
-            <h4 class="text-error font-medium mb-2">Errores de validación:</h4>
-            <ion-list class="bg-transparent">
-              @for (error of getFieldErrorsList(); track error.field) {
-                <ion-item lines="none" class="error-item">
-                  <ion-label class="ion-text-wrap text-sm">
-                    <strong>{{ error.field }}:</strong> {{ error.message }}
+          <div class="field-errors-container">
+            <ion-list lines="none" class="bg-transparent">
+              @for (err of getFieldErrorsList(); track err.field) {
+                <ion-item class="error-item">
+                  <ion-label class="ion-text-wrap">
+                    <strong>{{ err.field }}:</strong> {{ err.message }}
                   </ion-label>
                 </ion-item>
               }
             </ion-list>
           </div>
         }
-      </div>
 
-      <div class="modal-footer mt-6 flex justify-center">
-        <ion-button expand="block" (click)="closeModal()" [ngClass]="{
-          'btn-success': type === 'success',
-          'btn-error': type === 'error',
-          'btn-primary': type === 'info'
-        }" class="w-full font-bold">
-          Aceptar
-        </ion-button>
+        <div class="ion-margin-top">
+          <ion-button expand="block" type="submit" class="submit-btn" (click)="closeModal()">
+          Entendido
+          </ion-button>
+        </div>
+
       </div>
     </ion-content>
   </ng-template>
