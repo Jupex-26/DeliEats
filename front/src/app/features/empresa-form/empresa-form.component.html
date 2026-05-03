@@ -1,0 +1,52 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
+  <div class="input-group">
+    <ion-item lines="full">
+      <ion-input formControlName="nombre" type="text" placeholder="Nombre del Restaurante / Empresa"></ion-input>
+    </ion-item>
+    @if (form.get('nombre')?.touched && form.get('nombre')?.hasError('required')) {
+      <div class="error-text">El nombre es obligatorio.</div>
+    }
+    <ion-item lines="full">
+      <ion-input formControlName="email" type="email" placeholder="Correo electrónico de usuario"></ion-input>
+    </ion-item>
+    @if (form.get('email')?.touched && form.get('email')?.hasError('required')) {
+      <div class="error-text">El correo es obligatorio.</div>
+    }
+    @if (form.get('email')?.touched && form.get('email')?.hasError('email')) {
+      <div class="error-text">Debe ser un correo válido.</div>
+    }
+    <ion-item lines="full">
+      <ion-input formControlName="password" type="password" placeholder="Contraseña"></ion-input>
+    </ion-item>
+    @if (form.get('password')?.touched && form.get('password')?.hasError('required')) {
+      <div class="error-text">La contraseña es obligatoria.</div>
+    }
+    @if (form.get('password')?.touched && form.get('password')?.hasError('minlength')) {
+      <div class="error-text">Debe tener al menos 8 caracteres.</div>
+    }
+    <ion-item lines="full">
+      <ion-input formControlName="direccion" type="text" placeholder="Dirección del local"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-input formControlName="telefonoContacto" type="tel" placeholder="Teléfono del local"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-input formControlName="correoContacto" type="email" placeholder="Correo público de contacto"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-input formControlName="tipoCocina" type="text" placeholder="Tipo de Cocina (Ej: Italiana, Sushi...)"></ion-input>
+    </ion-item>
+    @if (form.get('tipoCocina')?.touched && form.get('tipoCocina')?.hasError('required')) {
+      <div class="error-text">El tipo de cocina es obligatorio.</div>
+    }
+    <ion-item lines="full" class="textarea-item">
+      <ion-textarea formControlName="descripcion" placeholder="Descripción breve del restaurante" [autoGrow]="true"></ion-textarea>
+    </ion-item>
+    @if (form.get('descripcion')?.touched && form.get('descripcion')?.hasError('required')) {
+      <div class="error-text">La descripción es obligatoria.</div>
+    }
+  </div>
+  <ion-button type="submit" class="submit-btn" expand="block" [disabled]="form.invalid">
+    Completar Registro
+  </ion-button>
+</form>

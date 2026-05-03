@@ -1,0 +1,37 @@
+@import '../../../styles/styles';
+
+:host {
+  display: block;
+}
+
+.input-group {
+  margin-bottom: 1.5rem;
+}
+
+ion-item {
+  --background: transparent;
+  --color: #{$color-text-main};
+  --border-color: #{$color-text-main};
+  --highlight-color-focused: #{$color-primary};
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  margin-bottom: 1rem;
+}
+
+ion-input, ion-textarea {
+  --placeholder-color: #{$color-text-main};
+  --placeholder-opacity: 0.5;
+  color: #{$color-text-main};
+  font-size: 1rem;
+}
+
+.textarea-item {
+  margin-top: 1rem;
+}
+
+.error-text {
+  color: #{$color-error};
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  padding-left: 0.5rem;
+}

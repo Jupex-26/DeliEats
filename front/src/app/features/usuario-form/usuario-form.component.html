@@ -1,0 +1,43 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
+  <div class="input-group">
+    <ion-item lines="full">
+      <ion-input formControlName="nombre" type="text" placeholder="Nombre completo"></ion-input>
+    </ion-item>
+    @if (form.get('nombre')?.touched && form.get('nombre')?.hasError('required')) {
+      <div class="error-text">El nombre es obligatorio.</div>
+    }
+    <ion-item lines="full">
+      <ion-input formControlName="email" type="email" placeholder="Correo electrónico"></ion-input>
+    </ion-item>
+    @if (form.get('email')?.touched && form.get('email')?.hasError('required')) {
+      <div class="error-text">El correo es obligatorio.</div>
+    }
+    @if (form.get('email')?.touched && form.get('email')?.hasError('email')) {
+      <div class="error-text">Debe ser un correo válido.</div>
+    }
+    <ion-item lines="full">
+      <ion-input formControlName="password" type="password" placeholder="Contraseña"></ion-input>
+    </ion-item>
+    @if (form.get('password')?.touched && form.get('password')?.hasError('required')) {
+      <div class="error-text">La contraseña es obligatoria.</div>
+    }
+    @if (form.get('password')?.touched && form.get('password')?.hasError('minlength')) {
+      <div class="error-text">Debe tener al menos 8 caracteres.</div>
+    }
+    <ion-item lines="full">
+      <ion-input formControlName="telefono" type="number" placeholder="Teléfono (Opcional)"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-input formControlName="direccion" type="text" placeholder="Dirección (Opcional)"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-input formControlName="fechaNacimiento" type="date" placeholder="Fecha de Nacimiento"></ion-input>
+    </ion-item>
+    @if (form.get('fechaNacimiento')?.touched && form.get('fechaNacimiento')?.hasError('required')) {
+      <div class="error-text">La fecha de nacimiento es obligatoria.</div>
+    }
+  </div>
+  <ion-button expand="block" type="submit" class="submit-btn" [disabled]="form.invalid">
+    Completar Registro
+  </ion-button>
+</form>

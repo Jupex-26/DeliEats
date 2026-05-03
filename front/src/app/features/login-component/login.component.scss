@@ -1,4 +1,4 @@
-@import '../../../styles/variables';
+@import '../../../styles/styles';
 
 :host {
   --color-primary: #{$color-primary};
@@ -76,16 +76,6 @@ ion-input {
   padding-left: 0.5rem;
 }
 
-.submit-btn {
-  --background: var(--color-secondary);
-  --background-hover: rgba(126, 30, 21, 0.9);
-  --color: white;
-  --border-radius: 9999px;
-  margin-top: 1.5rem;
-  font-weight: bold;
-  height: 3rem;
-}
-
 .register-link {
   text-align: center;
   margin-top: 1.5rem;
@@ -94,11 +84,35 @@ ion-input {
 }
 
 .register-link a {
-  color: var(--color-primary);
+  color: var(--color-secondary);
   font-weight: 600;
   text-decoration: none;
 }
 
+.error-message-container {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
 .register-link a:hover {
   text-decoration: underline;
+}
+
+.home-link {
+  margin-top: $spacing-m;
+  text-align: center;
+
+  a {
+    color: $color-secondary;
+    text-decoration: underline;
+    font-weight: 500;
+    transition: color 0.3s ease-in-out;
+    &:hover {
+      color: $color-primary;
+      text-decoration: none;
+    }
+    &:active {
+      opacity: 0.7;
+    }
+  }
 }

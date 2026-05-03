@@ -30,6 +30,11 @@ export const routes: Routes = [
       import('./features/login-component/login.component').then((m) => m.LoginComponent),
   },
   {
+    path: 'registro',
+    loadComponent: () =>
+      import('./features/registro/registro.component').then((m) => m.RegistroComponent),
+  },
+  {
     path: '**',
     redirectTo: '',
     pathMatch: 'full',

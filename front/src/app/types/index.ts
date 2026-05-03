@@ -13,3 +13,4 @@ export * from './producto';
 export * from './repartidor';
 export * from './rol';
 export * from './user';
+export * from './custom-error';

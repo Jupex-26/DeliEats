@@ -1,8 +1,7 @@
-
-
 <ion-content>
   <div class="max-w-7xl mx-auto px-6 py-8">
 
+    <!-- Buscador y Categorías (Se mantienen igual) -->
     <div class="flex flex-wrap items-center gap-6 mb-12">
       <div class="search-container relative flex-1 min-w-[300px]">
         <span class="search-icon">🔍</span>
@@ -28,27 +27,23 @@
       </div>
     </div>
 
+    <!-- Grid de Restaurantes -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
       @for (res of filteredRestaurants(); track res.id) {
         <div class="feature-card group bg-white shadow-xl">
           <div class="image-wrapper">
-
             <img
               [src]="res.foto || 'assets/placeholder.png'"
               [alt]="res.nombre"
               class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             >
-
             <span class="category-tag">
-      {{ res.tipoCocina }}
-    </span>
-
-            <!-- Overlay sutil que aparece al hacer hover -->
+              {{ res.tipoCocina }}
+            </span>
             <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 z-10"></div>
           </div>
 
           <div class="card-content">
-            <!-- El nombre cambia de color al hacer hover -->
             <h3 class="text-2xl font-bold mb-2 text-main transition-colors duration-300 group-hover:text-primary">
               {{ res.nombre }}
             </h3>
@@ -61,6 +56,21 @@
               <span class="flex items-center gap-1">🛵 <span class="text-main/80">Envío Gratis</span></span>
             </div>
           </div>
+        </div>
+      } @empty {
+        <!-- Mensaje de No Resultados (Estilo DeliEats) -->
+        <div class="col-span-full py-20 text-center animate-in fade-in duration-500">
+          <div class="text-6xl mb-4">🍽️</div>
+          <h3 class="text-2xl font-bold text-main font-header">No se encontraron empresas</h3>
+          <p class="text-main/60 font-body mt-2">
+            Prueba a ajustar tu búsqueda o cambiar de categoría.
+          </p>
+          <button
+            (click)="searchTerm.set(''); selectedCategory.set('Todos')"
+            class="mt-6 text-primary font-bold hover:underline"
+          >
+            Ver todos los restaurantes
+          </button>
         </div>
       }
     </div>

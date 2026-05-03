@@ -1,0 +1,64 @@
+<ion-content>
+  <div class="registro-container">
+    <div class="registro-card">
+      <div class="header-section">
+        @if (currentStep !== 'seleccion') {
+          <button class="back-btn" (click)="setStep('seleccion')">
+            ← Volver
+          </button>
+        }
+        <div class="logo-title">DeliEats</div>
+      </div>
+
+      <p class="subtitle">
+        @if (currentStep === 'seleccion') { Únete a la familia. ¿Cómo quieres participar? }
+        @if (currentStep === 'cliente') { Crea tu cuenta para empezar a pedir. }
+        @if (currentStep === 'empresa') { Registra tu local y llega a más clientes. }
+      </p>
+
+      @if (errorMessage) {
+        <div class="error-message-container">
+          {{ errorMessage }}
+        </div>
+      }
+
+      @if (isLoading) {
+        <div class="loading-container">
+          <ion-spinner name="crescent"></ion-spinner>
+          <p>Procesando registro...</p>
+        </div>
+      } @else {
+
+        @if (currentStep === 'seleccion') {
+          <div class="selection-group">
+            <button class="option-btn btn-primary" (click)="setStep('cliente')">
+              <span class="icon">🍔</span>
+              <span class="text">Soy un Cliente</span>
+              <span class="subtext">Quiero pedir comida a domicilio</span>
+            </button>
+
+            <button class="option-btn btn-secondary" (click)="setStep('empresa')">
+              <span class="icon">🏪</span>
+              <span class="text">Soy un Restaurante</span>
+              <span class="subtext">Quiero vender mis platos</span>
+            </button>
+          </div>
+          <div class="login-link">
+            ¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a>
+          </div>
+        }
+
+        @if (currentStep === 'cliente') {
+          <app-usuario-form (submitForm)="onClienteSubmit($event)"></app-usuario-form>
+        }
+
+        @if (currentStep === 'empresa') {
+          <app-empresa-form (submitForm)="onEmpresaSubmit($event)"></app-empresa-form>
+        }
+
+      }
+
+
+    </div>
+  </div>
+</ion-content>

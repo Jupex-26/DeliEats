@@ -1,10 +1,7 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar
+  IonContent
 } from '@ionic/angular/standalone';
 import { EmpresaService } from '../../services/empresa/empresa-service';
 import { Empresa } from '../../types';
@@ -14,7 +11,7 @@ import { Empresa } from '../../types';
   templateUrl: './restaurantes.component.html',
   styleUrls: ['./restaurantes.component.scss'],
   standalone: true,
-  imports: [CommonModule, IonTitle, IonToolbar, IonHeader, IonContent],
+  imports: [CommonModule, IonContent],
 })
 export class RestaurantesComponent implements OnInit {
   private readonly empresaService = inject(EmpresaService);

@@ -2,101 +2,96 @@
 // DeliEats - Formularios e Inputs
 // ==========================================
 @import "variables";
+
+
+
 @layer components {
+
+  .submit-btn {
+    --background: #{$color-primary};
+    --background-hover: #{$color-text-main};
+    --color: white;
+    --border-radius: 9999px;
+    margin-top: 1.5rem;
+    font-weight: bold;
+    height: 3rem;
+    transition: transform 0.2s ease-out, background-color 0.2s ease-out;
+
+    &.button-focused, &:hover {
+      --background: #{$color-text-main};
+      transform: translateY(-2px);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: translateY(0);
+    }
+  }
+
   .form-group {
     @apply flex flex-col mb-6;
 
-    // Etiquetas Tradicionales (siempre visibles)
     .form-label {
-      font-family: 'Lora', serif;
-      font-weight: 600;
-      font-size: 14px;
-      color: $color-text-main;
-      margin-bottom: 8px;
-      @apply transition-colors duration-300;
+      font-family: 'Lora', serif; //
+      font-weight: 600; //
+      font-size: 14px; //[cite: 1]
+      color: $color-text-main; //[cite: 1]
+      margin-bottom: 8px; //[cite: 1]
+      @apply transition-colors duration-300; //[cite: 1]
     }
 
-    // Input Nativo / Clases de Tailwind
     .form-input {
-      background-color: #FFFFFF;
-      color: $color-text-main;
-      border: 1.5px solid $color-bg-alt; //
-      border-radius: 8px; //
-      padding: 12px 16px;
-      font-family: 'Lora', serif;
-      font-size: 16px;
+      background-color: #FFFFFF; //[cite: 1]
+      color: $color-text-main; //[cite: 1]
+      border: 1.5px solid $color-bg-alt; //[cite: 1]
+      border-radius: 8px; //[cite: 1]
+      padding: 12px 16px; //[cite: 1]
+      font-family: 'Lora', serif; //[cite: 1]
+      font-size: 16px; //[cite: 1]
       @apply w-full outline-none transition-all duration-300;
 
       &::placeholder {
-        color: $color-text-main;
-        opacity: 0.55; //
+        color: $color-text-main; //[cite: 1]
+        opacity: 0.55; //[cite: 1]
       }
 
-      // Estado de Foco
       &:focus {
-        border-color: $color-primary;
-        border-width: 2px;
-        box-shadow: 0 0 0 3px rgba(32, 74, 51, 0.1);
+        border-color: $color-primary; //[cite: 1]
+        border-width: 2px; //[cite: 1]
+        box-shadow: 0 0 0 3px rgba(32, 74, 51, 0.1); //[cite: 1]
       }
 
-      // Estados de Validación
       &.is-valid {
-        border-color: $color-success;
+        border-color: $color-success; //[cite: 1]
       }
 
       &.is-invalid {
-        border-color: $color-error; //
+        border-color: $color-error; //[cite: 1]
       }
     }
 
-    // Mensajes de Error
+    // Mensajes de Error Corregidos
     .form-error-msg {
-      color: $color-error;
-      font-size: 12px;
-      margin-top: 4px;
+      color: $color-error; //[cite: 1]
+      font-size: 12px; //[cite: 1]
+      margin-top: 4px; //[cite: 1]
       font-weight: 500;
-      @apply animate-in fade-in slide-in-from-top-1;
+      // Reemplazamos el @apply problemático por una animación nativa
+      animation: fadeInError 0.3s ease-out forwards; //[cite: 1]
     }
+
   }
 }
 
-// ==========================================
-// Integración con Ionic (Sin !important)
-// ==========================================
-// Usamos las variables específicas de Ionic para inyectar nuestro estilo
-ion-item.deli-input-item {
-  --background: transparent;
-  --border-style: none;
-  --inner-padding-end: 0;
-  --padding-start: 0;
-
-  ion-input, ion-textarea {
-    --background: #FFFFFF;
-    --color: #{$color-text-main};
-    --placeholder-color: #{$color-text-main};
-    --placeholder-opacity: 0.55;
-    --padding-start: 12px;
-    --padding-end: 12px;
-    --padding-top: 12px;
-    --padding-bottom: 12px;
-
-    // Aplicamos el radio de 8px a través de la sombra o el contenedor nativo
-    border: 1.5px solid $color-bg-alt;
-    border-radius: 8px;
-    min-height: 48px;
-    transition: border-color 0.3s ease;
-
-    &.ion-focused {
-      border-color: $color-primary;
-      border-width: 2px;
-    }
-
-    &.ion-invalid {
-      border-color: $color-error;
-    }
-
-    &.ion-valid {
-      border-color: $color-success;
-    }
+// Definición de la animación para el error
+@keyframes fadeInError {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
