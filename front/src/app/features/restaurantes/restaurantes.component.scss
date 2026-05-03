@@ -1,0 +1,118 @@
+@import '../../../styles/variables';
+
+ion-header {
+  // Eliminamos cualquier sombra o borde nativo
+  box-shadow: none;
+
+  ion-toolbar {
+    // Variables específicas de Ionic (Prioridad alta sin !important)
+    --background: #{$color-bg-base};
+    --color: #{$color-primary};
+    --border-width: 0;
+    --padding-top: 20px;
+    --padding-bottom: 10px;
+  }
+}
+
+ion-title {
+  // Ajustamos el color del título para que no herede gris/negro
+  color: $color-primary;
+  font-size: 2rem;
+}
+
+// Aseguramos que el contenido tenga el color de texto correcto de forma global
+ion-content {
+  --background: #{$color-bg-base};
+  --color: #{$color-text-main};
+}
+
+/* --- Los demás estilos se mantienen igual --- */
+.category-pill {
+  @apply px-6 py-2 rounded-full font-bold transition-all border-none shadow-sm cursor-pointer;
+  background-color: $color-bg-alt;
+  color: $color-text-main;
+
+  &.active {
+    background-color: $color-primary;
+    color: white;
+  }
+}
+
+.newsletter-input {
+  @apply h-14 rounded-xl border-none outline-none pl-14 pr-4 shadow-md w-full;
+  background-color: white;
+  color: $color-text-main;
+}
+
+// 4. El Buscador (Corrigiendo el colapso de la imagen)
+.search-container {
+  .newsletter-input {
+    @apply h-14 rounded-xl border-none outline-none pl-14 pr-4 shadow-md w-full;
+    background-color: white ;
+    color: $color-text-main ;
+    font-weight: 500;
+
+    &::placeholder {
+      color: rgba($color-text-main, 0.4) ;
+    }
+  }
+
+  .search-icon {
+    @apply absolute left-5 top-1/2 -translate-y-1/2 text-xl z-10;
+    color: $color-primary;
+  }
+}// ... (mantenemos las variables y los estilos del header anteriores)
+
+.feature-card {
+  @apply rounded-[2rem] overflow-hidden transition-all duration-500 ease-out relative flex flex-col;
+  background-color: white;
+  // Sombra inicial sutil
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+
+  &:hover {
+    // Elevación visual
+    transform: translateY(-12px);
+    // Sombra más profunda y difusa
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+
+    // Borde sutil del color primario al pasar el ratón
+    outline: 1px solid rgba($color-primary, 0.1);
+  }
+
+  .image-wrapper {
+    @apply relative w-full overflow-hidden;
+    aspect-ratio: 16 / 9;
+
+    // Aseguramos que el zoom no se salga del contenedor
+    img {
+      will-change: transform;
+    }
+  }
+
+  .card-content {
+    @apply p-6;
+    // Transición para el título si no usas Tailwind directo
+    h3 {
+      transition: color 0.3s ease;
+    }
+  }
+}
+
+.category-tag {
+  @apply absolute bottom-4 left-4 z-20 px-3 py-1.5 rounded-xl font-bold text-[10px] uppercase tracking-widest shadow-lg;
+  background-color: rgba(255, 255, 255, 0.95);
+  color: $color-secondary;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba($color-bg-alt, 0.5);
+  // Efecto de entrada para la etiqueta
+  transition: transform 0.3s ease;
+}
+
+.feature-card:hover .category-tag {
+  transform: scale(1.05);
+}
+
+.badge-rating {
+  @apply absolute top-4 right-4 z-20 bg-white/90 px-2 py-1 rounded-lg font-bold text-xs shadow-md;
+  color: $color-text-main;
+}

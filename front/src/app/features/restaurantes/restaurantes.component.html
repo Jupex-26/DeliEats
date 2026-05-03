@@ -1,0 +1,68 @@
+
+
+<ion-content>
+  <div class="max-w-7xl mx-auto px-6 py-8">
+
+    <div class="flex flex-wrap items-center gap-6 mb-12">
+      <div class="search-container relative flex-1 min-w-[300px]">
+        <span class="search-icon">🔍</span>
+        <input
+          type="text"
+          [value]="searchTerm()"
+          (input)="updateSearch($event)"
+          placeholder="Busca por nombre o comida..."
+          class="newsletter-input"
+        >
+      </div>
+
+      <div class="flex gap-3 overflow-x-auto no-scrollbar py-2">
+        @for (cat of categories(); track cat) {
+          <button
+            (click)="selectCategory(cat)"
+            class="category-pill"
+            [class.active]="selectedCategory() === cat"
+          >
+            {{ cat }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+      @for (res of filteredRestaurants(); track res.id) {
+        <div class="feature-card group bg-white shadow-xl">
+          <div class="image-wrapper">
+
+            <img
+              [src]="res.foto || 'assets/placeholder.png'"
+              [alt]="res.nombre"
+              class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            >
+
+            <span class="category-tag">
+      {{ res.tipoCocina }}
+    </span>
+
+            <!-- Overlay sutil que aparece al hacer hover -->
+            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 z-10"></div>
+          </div>
+
+          <div class="card-content">
+            <!-- El nombre cambia de color al hacer hover -->
+            <h3 class="text-2xl font-bold mb-2 text-main transition-colors duration-300 group-hover:text-primary">
+              {{ res.nombre }}
+            </h3>
+            <p class="text-sm text-main opacity-80 line-clamp-2">
+              {{ res.descripcion }}
+            </p>
+
+            <div class="flex items-center gap-4 mt-6 pt-4 border-t border-gray-100 font-bold text-primary">
+              <span class="flex items-center gap-1">🕒 <span class="text-main/80">20-30 min</span></span>
+              <span class="flex items-center gap-1">🛵 <span class="text-main/80">Envío Gratis</span></span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</ion-content>
