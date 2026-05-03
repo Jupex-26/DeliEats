@@ -28,7 +28,7 @@ export class AuthService {
   }
 
   /**
-   * Realiza el login y actualiza el estado global
+   * Realiza el login-component y actualiza el estado global
    */
   login(userData: any): Observable<any> {
     return this.http.post<any>(`${this.urlApi}/login`, userData).pipe(

@@ -1,0 +1,12 @@
+// 1. Importar Tailwind (Fundamental para el stack solicitado)
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// 2. Importar tus variables personalizadas de DeliEats
+@import 'variables';
+
+// 3. Importar los estilos de componentes que creamos antes
+@import 'base';
+@import 'buttons';
+@import 'forms';

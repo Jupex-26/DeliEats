@@ -26,13 +26,14 @@
     "@angular/build": "^21.2.8",
     "@angular/cli": "^21.2.8",
     "@angular/compiler-cli": "^21.2.0",
-    "jsdom": "^28.0.0",
-    "prettier": "^3.8.1",
-    "typescript": "~5.9.2",
-    "vitest": "^4.0.8",
     "@ionic/angular-toolkit": "latest",
-    "tailwindcss": "^3.4.1",
+    "@types/node": "^25.6.0",
+    "autoprefixer": "^10.4.18",
+    "jsdom": "^28.0.0",
     "postcss": "^8.4.35",
-    "autoprefixer": "^10.4.18"
+    "prettier": "^3.8.1",
+    "tailwindcss": "^3.4.1",
+    "typescript": "~5.9.2",
+    "vitest": "^4.0.8"
   }
 }

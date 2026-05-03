@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,7 +26,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomUserDetailsService customUsuarioDetailsService;
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) {
 
         return http
                 .cors(cors->cors.configurationSource(request -> {
@@ -36,19 +37,19 @@ public class SecurityConfig {
                     corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
                     return corsConfiguration;
                 }))
-                .csrf(csrf -> csrf.disable())
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/auth/**", "/uploads/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         
                         // Endpoints públicos de lectura (ver menú, locales, etc.)
-                        .requestMatchers(HttpMethod.GET, "/productos/**", "/restaurantes/**", "/categorias/**", "/aperturas/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/productos/**", "/empresas/**", "/categorias/**", "/aperturas/**").permitAll()
                         
-                        // Endpoints de gestión (crear/editar productos y restaurantes)
-                        .requestMatchers(HttpMethod.POST, "/productos/**", "/restaurantes/**", "/categorias/**").hasAnyRole("ADMIN", "RESTAURANTE")
-                        .requestMatchers(HttpMethod.PUT, "/productos/**", "/restaurantes/**").hasAnyRole("ADMIN", "RESTAURANTE")
-                        .requestMatchers(HttpMethod.DELETE, "/productos/**", "/restaurantes/**", "/categorias/**").hasRole("ADMIN")
+                        // Endpoints de gestión (crear/editar productos y empresas)
+                        .requestMatchers(HttpMethod.POST, "/productos/**", "/empresas/**", "/categorias/**").hasAnyRole("ADMIN", "RESTAURANTE")
+                        .requestMatchers(HttpMethod.PUT, "/productos/**", "/empresas/**").hasAnyRole("ADMIN", "RESTAURANTE")
+                        .requestMatchers(HttpMethod.DELETE, "/productos/**", "/empresas/**", "/categorias/**").hasRole("ADMIN")
                         
                         // Endpoints propios del cliente (operaciones de compra)
                         .requestMatchers("/carrito/**", "/pedidos/**", "/clientes/**").hasAnyRole("ADMIN", "CLIENTE")
@@ -67,7 +68,7 @@ public class SecurityConfig {
     }
 
     @Bean // Para que el controllador de login pueda autenticar al usuario
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+    public AuthenticationManager authenticationManager(HttpSecurity http) {
         AuthenticationManagerBuilder authenticationManagerBuilder =
                 http.getSharedObject(AuthenticationManagerBuilder.class);
 
