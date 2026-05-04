@@ -1,5 +1,6 @@
 package org.example.ordersservice.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.dtos.apertura.AperturaInputDto;
 import org.example.ordersservice.dtos.apertura.AperturaOutputDto;
@@ -22,7 +23,7 @@ public class AperturaController {
     private final AperturaMapper aperturaMapper;
 
     @PostMapping
-    public ResponseEntity<AperturaOutputDto> create(@RequestBody AperturaInputDto dto) {
+    public ResponseEntity<AperturaOutputDto> create(@Valid @RequestBody AperturaInputDto dto) {
         Apertura entity = aperturaMapper.toEntity(dto);
         Apertura saved = aperturaService.save(entity);
         return new ResponseEntity<>(aperturaMapper.toDto(saved), HttpStatus.CREATED);
@@ -42,7 +43,7 @@ public class AperturaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AperturaOutputDto> update(@PathVariable Long id, @RequestBody AperturaInputDto dto) {
+    public ResponseEntity<AperturaOutputDto> update(@PathVariable Long id, @Valid @RequestBody AperturaInputDto dto) {
         Apertura updated = aperturaService.update(id, aperturaMapper.toEntity(dto));
         return ResponseEntity.ok(aperturaMapper.toDto(updated));
     }

@@ -1,5 +1,6 @@
 package org.example.ordersservice.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.dtos.pedido.PedidoInputDto;
 import org.example.ordersservice.dtos.pedido.PedidoOutputDto;
@@ -22,7 +23,7 @@ public class PedidoController {
     private final PedidoMapper pedidoMapper;
 
     @PostMapping
-    public ResponseEntity<PedidoOutputDto> create(@RequestBody PedidoInputDto dto) {
+    public ResponseEntity<PedidoOutputDto> create(@Valid @RequestBody PedidoInputDto dto) {
         Pedido entity = pedidoMapper.toEntity(dto);
         Pedido saved = pedidoService.save(entity);
         return new ResponseEntity<>(pedidoMapper.toDto(saved), HttpStatus.CREATED);
@@ -49,7 +50,7 @@ public class PedidoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PedidoOutputDto> update(@PathVariable Long id, @RequestBody PedidoInputDto dto) {
+    public ResponseEntity<PedidoOutputDto> update(@PathVariable Long id, @Valid @RequestBody PedidoInputDto dto) {
         Pedido entity = pedidoMapper.toEntity(dto);
         Pedido updated = pedidoService.update(id, entity);
         return ResponseEntity.ok(pedidoMapper.toDto(updated));

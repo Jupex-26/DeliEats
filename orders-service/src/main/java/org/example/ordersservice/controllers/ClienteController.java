@@ -1,6 +1,7 @@
 package org.example.ordersservice.controllers;
 
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.dtos.cliente.ClienteInputDto;
 import org.example.ordersservice.dtos.cliente.ClienteOutputDto;
@@ -23,7 +24,7 @@ public class ClienteController {
     private final ClienteMapper clienteMapper;
 
     @PostMapping
-    public ResponseEntity<ClienteOutputDto> create(@RequestBody ClienteInputDto dto) {
+    public ResponseEntity<ClienteOutputDto> create(@Valid @RequestBody ClienteInputDto dto) {
         Cliente entity = clienteMapper.toEntity(dto);
         Cliente saved = clienteService.save(entity);
         return new ResponseEntity<>(clienteMapper.toDto(saved), HttpStatus.CREATED);
@@ -44,7 +45,7 @@ public class ClienteController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<ClienteOutputDto> update(@PathVariable Long id, @RequestBody ClienteInputDto dto) {
+    public ResponseEntity<ClienteOutputDto> update(@PathVariable Long id, @Valid @RequestBody ClienteInputDto dto) {
         Cliente updated = clienteService.update(id, clienteMapper.toEntity(dto));
         return ResponseEntity.ok(clienteMapper.toDto(updated));
     }
