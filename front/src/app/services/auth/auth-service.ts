@@ -7,14 +7,11 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root',
 })
 export class AuthService {
-  // Inyección moderna
   private readonly http = inject(HttpClient);
   private readonly urlApi = `${environment.apiUrl}/auth`;
 
-  // Signal para manejar el estado del usuario de forma reactiva
+  // Se inicializa leyendo 'user' del storage
   private currentUserSignal = signal<any>(this.getUserFromStorage());
-
-  // Exponemos el signal como solo lectura para los componentes
   readonly currentUser = this.currentUserSignal.asReadonly();
 
   private getUserFromStorage(): any {
@@ -22,40 +19,32 @@ export class AuthService {
     try {
       return user ? JSON.parse(user) : null;
     } catch (e) {
-      console.error('Error parseando el usuario del localStorage', e);
       return null;
     }
   }
 
-  /**
-   * Realiza el login-component y actualiza el estado global
-   */
   login(userData: any): Observable<any> {
     return this.http.post<any>(`${this.urlApi}/login`, userData).pipe(
       tap((response) => {
+        // Guardamos el objeto completo (incluye token y userOutputDto)
         localStorage.setItem('user', JSON.stringify(response));
         this.currentUserSignal.set(response);
       }),
     );
   }
 
-  /**
-   * Limpia la sesión
-   */
   logout(): void {
     localStorage.removeItem('user');
     this.currentUserSignal.set(null);
   }
 
-  /**
-   * Obtiene el nombre del rol del usuario actual
-   */
   getRol(): string | null {
-    const user = this.currentUserSignal();
-    // Acceso seguro usando encadenamiento opcional
-    return user?.user?.rol?.nombre || null;
+    // Buscamos el rol dentro de userOutputDto según tu respuesta de red
+    return this.currentUser()?.userOutputDto?.rol?.nombre || null;
   }
+
   isLogin() {
-    return !!this.currentUser()?.user;
+    // Es válido si existe el objeto y tiene el DTO del usuario
+    return !!this.currentUser()?.userOutputDto;
   }
 }

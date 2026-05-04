@@ -2,13 +2,14 @@ import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonItem, IonInput, IonTextarea, IonButton } from '@ionic/angular/standalone';
 import { EmpresaInputDto } from '../../types';
+import { Validador } from '../../validadores/validador';
 
 @Component({
   selector: 'app-empresa-form',
   standalone: true,
   imports: [IonItem, IonInput, IonTextarea, IonButton, ReactiveFormsModule],
   templateUrl: './empresa-form.component.html',
-  styleUrls: ['./empresa-form.component.scss']
+  styleUrls: ['./empresa-form.component.scss'],
 })
 export class EmpresaFormComponent {
   private fb = inject(FormBuilder);
@@ -16,16 +17,19 @@ export class EmpresaFormComponent {
   @Output() submitForm = new EventEmitter<EmpresaInputDto>();
 
   form = this.fb.group({
-    nombre: ['', Validators.required],
+    // Campos de UserInputDto (Herencia)
+    nombre: ['', [Validators.required, Validador.isNombre]],
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(8)]],
-    telefono: [null as number | null],
-    direccion: [''],
-    descripcion: ['', Validators.required],
-    correoContacto: ['', Validators.email],
-    telefonoContacto: [''],
-    tipoCocina: ['', Validators.required],
-    rolId: [3] // Asumiendo que 3 es el ROL_EMPRESA
+    password: ['', [Validators.required, Validador.isStrongPassword]],
+    telefono: ['', [Validators.required, Validador.isTelefono]], // ESTE ES EL QUE FALTA EN EL HTML
+    direccion: ['', [Validators.required]],
+    rolId: [3],
+
+    // Campos de EmpresaInputDto
+    descripcion: ['', [Validators.required]],
+    correoContacto: ['', [Validators.required, Validators.email]],
+    telefonoContacto: ['', [Validador.isTelefono]], // Opcional según tu Java
+    tipoCocina: ['', [Validators.required]],
   });
 
   onSubmit() {
@@ -42,7 +46,7 @@ export class EmpresaFormComponent {
         correoContacto: value.correoContacto!,
         telefonoContacto: value.telefonoContacto!,
         tipoCocina: value.tipoCocina!,
-        rolId: 3
+        rolId: 3,
       };
 
       this.submitForm.emit(empresaData);
