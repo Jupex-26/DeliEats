@@ -32,10 +32,10 @@ public class DataInitializer implements CommandLineRunner {
 
     private void initData() {
         // 1. Crear Roles
-        Rol rolAdmin = rolRepository.save(Rol.builder().nombre("ADMIN").build());
-        Rol rolCliente = rolRepository.save(Rol.builder().nombre("CLIENTE").build());
-        Rol rolEmpresa = rolRepository.save(Rol.builder().nombre("EMPRESA").build());
-        Rol rolRepartidor = rolRepository.save(Rol.builder().nombre("REPARTIDOR").build());
+        Rol rolAdmin = rolRepository.save(Rol.builder().nombre("ROLE_ADMIN").build());
+        Rol rolCliente = rolRepository.save(Rol.builder().nombre("ROLE_CLIENTE").build());
+        Rol rolEmpresa = rolRepository.save(Rol.builder().nombre("ROLE_EMPRESA").build());
+        Rol rolRepartidor = rolRepository.save(Rol.builder().nombre("ROLE_REPARTIDOR").build());
 
         // 2. Crear Estados de Pedido
         estadoRepository.save(Estado.builder().nombre("PENDIENTE").build());

@@ -68,9 +68,9 @@ export class LoginComponent {
         next: (res) => {
 
           // Navigation on success
-          if (res.userOutputDto.nombreRol == "ADMIN"){
-            this.router.navigate(['/admin']);
-          } else{
+          if (res.userOutputDto.nombreRol == 'ROLE_ADMIN') {
+            this.router.navigate(['/admin/clientes']);
+          } else {
             this.router.navigate(['/']);
           }
 

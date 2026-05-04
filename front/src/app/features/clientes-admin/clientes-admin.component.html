@@ -1,0 +1,122 @@
+<div class="admin-container">
+  <header class="admin-header">
+    <div class="header-content">
+      <h1 class="title">Clientes ({{ totalElements() }})</h1>
+      <button class="btn-new" (click)="abrirModalNuevo()">
+        <ion-icon name="add-circle-outline"></ion-icon>
+        NUEVO CLIENTE
+      </button>
+    </div>
+  </header>
+
+  <div class="main-content">
+    <div class="table-card">
+
+      <div class="table-toolbar">
+        <div class="search-box">
+          <ion-icon name="search-outline"></ion-icon>
+          <input
+            type="text"
+            placeholder="Buscar por nombre o email..."
+            (input)="onSearch($event)">
+        </div>
+
+        <div class="pagination-size">
+          <span>Mostrar:</span>
+          <select [ngModel]="pageSize()" (ngModelChange)="pageSize.set($event); currentPage.set(0); cargarClientes()">
+            <option [value]="5">5</option>
+            <option [value]="10">10</option>
+          </select>
+        </div>
+      </div>
+
+      <table class="data-table">
+        <thead>
+        <tr>
+          <th>NOMBRE</th>
+          <th>EMAIL</th>
+          <th class="text-right">ACCIONES</th>
+        </tr>
+        </thead>
+        <tbody>
+          @for (cliente of clientes(); track cliente.id) {
+            <tr>
+              <td class="font-bold">{{ cliente.nombre }}</td>
+              <td class="text-secondary">{{ cliente.email }}</td>
+              <td class="actions">
+                <button class="btn-icon edit" (click)="abrirModalEditar(cliente)">
+                  <ion-icon name="create-outline"></ion-icon>
+                </button>
+                <button class="btn-icon delete" (click)="confirmarEliminar(cliente.id)">
+                  <ion-icon name="trash-outline"></ion-icon>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      <footer class="table-footer">
+        <span class="page-info">Página {{ currentPage() + 1 }} de {{ totalPages() }}</span>
+        <div class="nav-buttons">
+          <button [disabled]="currentPage() === 0" (click)="cambiarPagina(-1)">
+            <ion-icon name="chevron-back-outline"></ion-icon> ANTERIOR
+          </button>
+          <button [disabled]="currentPage() >= totalPages() - 1" (click)="cambiarPagina(1)">
+            SIGUIENTE <ion-icon name="chevron-forward-outline"></ion-icon>
+          </button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <ion-modal [isOpen]="isModalOpen()" (didDismiss)="isModalOpen.set(false)">
+    <ng-template>
+      <ion-header class="ion-no-border">
+        <ion-toolbar>
+          <ion-title>{{ editingCliente() ? 'Editar' : 'Nuevo' }} Cliente</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="isModalOpen.set(false)">Cerrar</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <form (ngSubmit)="guardarCliente()" class="form-container">
+          <ion-item lines="none" class="custom-input">
+            <ion-input label="Nombre" labelPlacement="stacked" [(ngModel)]="clienteForm.nombre" name="nombre" ></ion-input>
+          </ion-item>
+          <ion-item lines="none" class="custom-input">
+            <ion-input label="Email" labelPlacement="stacked" type="email" [(ngModel)]="clienteForm.email" name="email" ></ion-input>
+          </ion-item>
+          @if (!editingCliente()) {
+            <ion-item lines="none" class="custom-input">
+              <ion-input label="Contraseña" labelPlacement="stacked" type="password" [(ngModel)]="clienteForm.password" name="password" ></ion-input>
+            </ion-item>
+          }
+          <ion-item lines="none" class="custom-input">
+            <ion-input label="Teléfono" labelPlacement="stacked" type="tel" [(ngModel)]="clienteForm.telefono" name="telefono"></ion-input>
+          </ion-item>
+          <ion-item lines="none" class="custom-input">
+            <ion-input label="Dirección" labelPlacement="stacked" [(ngModel)]="clienteForm.direccion" name="direccion"></ion-input>
+          </ion-item>
+          <ion-item lines="none" class="custom-input">
+            <ion-input label="Fecha de Nacimiento" labelPlacement="stacked" type="date" [(ngModel)]="clienteForm.fechaNacimiento" name="fechaNacimiento" ></ion-input>
+          </ion-item>
+          <button type="submit" class="btn-submit" [disabled]="!clienteForm.nombre || !clienteForm.email">
+            {{ editingCliente() ? 'GUARDAR CAMBIOS' : 'CREAR CLIENTE' }}
+          </button>
+        </form>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <app-confirm-modal
+    [isOpen]="isConfirmModalOpen()"
+    title="Eliminar Cliente"
+    message="¿Estás seguro de que deseas eliminar este cliente? Esta acción no se puede deshacer."
+    confirmText="ELIMINAR"
+    [dangerAction]="true"
+    (confirm)="ejecutarEliminacion()"
+    (cancel)="isConfirmModalOpen.set(false)">
+  </app-confirm-modal>
+</div>

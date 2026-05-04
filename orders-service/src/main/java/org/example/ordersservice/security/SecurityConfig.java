@@ -40,22 +40,26 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/auth/**", "/uploads/**").permitAll()
+                        .requestMatchers("/auth/**", "/uploads/**", "/error").permitAll() // ¡No olvides /error!
+
+                        // Reglas de ADMIN
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        
-                        // Endpoints públicos de lectura (ver menú, locales, etc.)
+
+                        // Endpoints públicos de lectura
                         .requestMatchers(HttpMethod.GET, "/productos/**", "/empresas/**", "/categorias/**", "/aperturas/**").permitAll()
-                        
-                        // Endpoints de gestión (crear/editar productos y empresas)
+
+                        // Registro (Público)
                         .requestMatchers(HttpMethod.POST, "/clientes", "/empresas").permitAll()
+
+                        // Operaciones de gestión (Admin o Restaurante)
                         .requestMatchers(HttpMethod.POST, "/productos/**", "/empresas/**", "/categorias/**").hasAnyRole("ADMIN", "RESTAURANTE")
                         .requestMatchers(HttpMethod.PUT, "/productos/**", "/empresas/**").hasAnyRole("ADMIN", "RESTAURANTE")
                         .requestMatchers(HttpMethod.DELETE, "/productos/**", "/empresas/**", "/categorias/**").hasRole("ADMIN")
-                        
-                        // Endpoints propios del cliente (operaciones de compra)
+
+                        // Acceso compartido (Admin y Cliente)
+                        // Esta regla ahora cubrirá GET /clientes y cualquier subruta
                         .requestMatchers("/carrito/**", "/pedidos/**", "/clientes/**").hasAnyRole("ADMIN", "CLIENTE")
 
-                        // 4. Cerrar el acceso
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
