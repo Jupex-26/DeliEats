@@ -1,0 +1,110 @@
+
+<nav class="flex bg-base items-center justify-between px-6 py-4 text-main relative z-50 w-full shadow-sm border-b border-alt">
+
+  <div class="flex items-center gap-4">
+    <!-- Logo / Título -->
+    <div class="text-2xl font-bold text-primary tracking-wider">
+      <a routerLink="/admin" class="text-inherit no-underline flex items-center gap-2">
+        DeliEats
+        <span class="hidden sm:inline-block px-2 py-0.5 bg-secondary text-white text-xs rounded uppercase tracking-widest">
+          Admin
+        </span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Acciones de Usuario -->
+  <div class="flex items-center gap-2 sm:gap-4">
+    @if (isLogin()) {
+      <!-- Info del Usuario (Oculto en móviles muy pequeños) -->
+      <div class="hidden sm:flex flex-col items-end mr-2 text-right">
+        <span class="text-sm font-bold text-primary leading-tight">
+          {{ user.nombre }}
+        </span>
+        <span class="text-[10px] uppercase tracking-tighter text-gray-500 font-semibold">
+          Administrador
+        </span>
+      </div>
+
+      <!-- Botones de Acción -->
+      <div class="hidden lg:flex items-center gap-4">
+        @if (isLogin()) {
+          <div class="flex items-center gap-3">
+            <!-- Botón Perfil Escritorio -->
+            <button
+              routerLink="/perfil"
+              class="btn-profile px-4 py-2 rounded-full font-medium transition border-none cursor-pointer">
+              Mi Perfil
+            </button>
+
+            <!-- Botón Cerrar Sesión Escritorio -->
+            <button
+              (click)="logout()"
+              class="btn-logout px-5 py-2 rounded-full font-semibold transition cursor-pointer">
+              Cerrar Sesión
+            </button>
+          </div>
+        } @else {
+          <button
+            routerLink="/login"
+            class="px-5 py-2 rounded-full font-semibold text-white bg-secondary hover:opacity-90 transition border-none cursor-pointer">
+            Iniciar Sesión
+          </button>
+        }
+      </div>
+    } @else {
+      <!-- Botón Login (Por si acaso se pierde la sesión) -->
+      <button
+        routerLink="/login"
+        class="px-5 py-2 rounded-full font-semibold text-white bg-secondary hover:opacity-90 transition border-none cursor-pointer">
+        Login
+      </button>
+    }
+  </div>
+  <!-- Mobile Hamburger Button -->
+  <button
+    class="lg:hidden flex flex-col justify-between items-center w-8 h-6 border-none bg-transparent cursor-pointer p-0 z-50 relative focus:outline-none"
+    (click)="toggleMenu()"
+    aria-label="Toggle menu"
+  >
+    <span class="hamburger-line block transition-all duration-300 ease-out h-1 w-full rounded-sm origin-left"
+          [class.rotate-45]="isMenuOpen"></span>
+    <span class="hamburger-line block transition-all duration-300 ease-out h-1 w-full rounded-sm"
+          [class.opacity-0]="isMenuOpen"></span>
+    <span class="hamburger-line block transition-all duration-300 ease-out h-1 w-full rounded-sm origin-left"
+          [class.-rotate-45]="isMenuOpen"></span>
+  </button>
+</nav>
+
+
+<div class="mobile-menu-panel lg:hidden w-full z-40 shadow-lg bg-base transition-all duration-300 ease-in-out overflow-hidden absolute left-0"
+     [class.menu-open]="isMenuOpen">
+  <div class="mobile-menu-container flex flex-col gap-2 p-4 border-t">
+    <div class="pt-4 mt-2 border-t border-gray-100">
+      @if (isLogin()) {
+
+        <button
+          (click)="toggleMenu()"
+          routerLink="/perfil"
+          class="btn-profile px-4 py-3 mb-3 rounded-full font-medium transition cursor-pointer text-center w-full">
+          Mi Perfil
+        </button>
+
+        <!-- Botón Cerrar Sesión -->
+        <button
+          (click)="logout(); toggleMenu()"
+          class="btn-logout mt-2 px-5 py-3 rounded-full font-semibold transition cursor-pointer w-full text-center">
+          Cerrar Sesión
+        </button>
+      } @else {
+        <!-- Opción móvil para invitados -->
+        <button
+          routerLink="/login"
+          (click)="toggleMenu()"
+          class="px-5 py-3 rounded-full font-semibold text-white bg-secondary hover:opacity-90 transition border-none cursor-pointer w-full text-center">
+          Iniciar Sesión
+        </button>
+      }
+    </div>
+  </div>
+</div>

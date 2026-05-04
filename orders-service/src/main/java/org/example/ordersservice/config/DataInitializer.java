@@ -44,7 +44,7 @@ public class DataInitializer implements CommandLineRunner {
         estadoRepository.save(Estado.builder().nombre("ENTREGADO").build());
         estadoRepository.save(Estado.builder().nombre("CANCELADO").build());
 
-        String defaultPassword = passwordEncoder.encode("admin1234");
+        String defaultPassword = passwordEncoder.encode("Admin@1234");
 
         // 3. Crear Admin
         userRepository.save(User.builder()

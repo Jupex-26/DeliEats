@@ -1,5 +1,6 @@
 package org.example.ordersservice.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.dtos.carrito.CarritoInputDto;
 import org.example.ordersservice.dtos.carrito.CarritoOutputDto;
@@ -24,7 +25,7 @@ public class CarritoController {
     private final CarritoMapper carritoMapper;
 
     @PostMapping
-    public ResponseEntity<CarritoOutputDto> create(@RequestBody CarritoInputDto dto) {
+    public ResponseEntity<CarritoOutputDto> create(@Valid @RequestBody CarritoInputDto dto) {
         Carrito entity = carritoMapper.toEntity(dto);
         Carrito saved = carritoService.create(entity);
         return new ResponseEntity<>(carritoMapper.toDto(saved), HttpStatus.CREATED);

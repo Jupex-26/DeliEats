@@ -3,7 +3,9 @@ package org.example.ordersservice.services;
 import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.dtos.auth.LoginRequestDto;
 import org.example.ordersservice.dtos.auth.LoginResponseDto;
+import org.example.ordersservice.dtos.user.UserOutputDto;
 import org.example.ordersservice.exception.custom.UnauthorizedException;
+import org.example.ordersservice.mappers.UserMapper;
 import org.example.ordersservice.models.User;
 import org.example.ordersservice.security.JwtService;
 import org.example.ordersservice.services.impl.CustomUserDetailsService;
@@ -20,6 +22,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtService jwtService;
+    private final UserMapper userMapper;
 
     public LoginResponseDto login(LoginRequestDto request) {
         try {
@@ -32,7 +35,7 @@ public class AuthService {
 
             return LoginResponseDto.builder()
                     .token(jwtToken)
-                    .email(user.getEmail())
+                    .userOutputDto(userMapper.toDto(user))
                     .build();
         } catch (AuthenticationException e) {
             throw new UnauthorizedException("Credenciales inválidas");

@@ -1,0 +1,20 @@
+<!-- El contenedor principal se desplaza según su estado -->
+<aside class="aside-container" [class.is-collapsed]="isCollapsed">
+
+  <!-- BOTÓN DE CONTROL (La flechita) -->
+  <button class="toggle-arrow-btn" (click)="toggleAside()">
+    <span class="arrow-icon">{{ isCollapsed ? '❯' : '❮' }}</span>
+  </button>
+
+  <!-- CONTENIDO DEL MENÚ -->
+  <div class="aside-content">
+    <div class="aside-header-title">
+      <span class="font-bold">Menú Gestión</span>
+    </div>
+    <nav class="aside-nav">
+      <!-- Tus links aquí -->
+      <a routerLink="dashboard" class="nav-item">📊 Dashboard</a>
+      <a routerLink="restaurantes" class="nav-item">🍴 Restaurantes</a>
+    </nav>
+  </div>
+</aside>

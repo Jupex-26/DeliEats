@@ -1,5 +1,6 @@
 package org.example.ordersservice.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.dtos.user.UserInputDto;
 import org.example.ordersservice.dtos.user.UserOutputDto;
@@ -22,7 +23,7 @@ public class UserController {
     private final UserMapper userMapper;
 
     @PostMapping
-    public ResponseEntity<UserOutputDto> create(@RequestBody UserInputDto dto) {
+    public ResponseEntity<UserOutputDto> create(@Valid @RequestBody UserInputDto dto) {
         User entity = userMapper.toEntity(dto);
         User saved = userService.save(entity);
         return new ResponseEntity<>(userMapper.toDto(saved), HttpStatus.CREATED);
@@ -48,7 +49,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserOutputDto> update(@PathVariable Long id, @RequestBody UserInputDto dto) {
+    public ResponseEntity<UserOutputDto> update(@PathVariable Long id, @Valid @RequestBody UserInputDto dto) {
         User entity = userMapper.toEntity(dto);
         User updated = userService.update(id, entity);
         return ResponseEntity.ok(userMapper.toDto(updated));

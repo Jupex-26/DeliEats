@@ -1,5 +1,6 @@
 package org.example.ordersservice.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.dtos.rol.RolInputDto;
 import org.example.ordersservice.dtos.rol.RolOutputDto;
@@ -22,7 +23,7 @@ public class RolController {
     private final RolMapper rolMapper;
 
     @PostMapping
-    public ResponseEntity<RolOutputDto> create(@RequestBody RolInputDto dto) {
+    public ResponseEntity<RolOutputDto> create(@Valid @RequestBody RolInputDto dto) {
         Rol entity = rolMapper.toEntity(dto);
         Rol saved = rolService.save(entity);
         return new ResponseEntity<>(rolMapper.toDto(saved), HttpStatus.CREATED);
@@ -42,7 +43,7 @@ public class RolController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RolOutputDto> update(@PathVariable Long id, @RequestBody RolInputDto dto) {
+    public ResponseEntity<RolOutputDto> update(@PathVariable Long id, @Valid @RequestBody RolInputDto dto) {
         Rol entity = rolMapper.toEntity(dto);
         Rol updated = rolService.update(id, entity);
         return ResponseEntity.ok(rolMapper.toDto(updated));

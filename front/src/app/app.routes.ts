@@ -35,6 +35,16 @@ export const routes: Routes = [
       import('./features/registro/registro.component').then((m) => m.RegistroComponent),
   },
   {
+    path: 'admin',
+    loadComponent: () =>
+      import('./layouts/admin-layout/admin-layout.component').then(
+        (m) => m.AdminLayoutComponent,
+      ),
+    children: [
+      // Aquí irán las rutas hijas del admin
+    ]
+  },
+  {
     path: '**',
     redirectTo: '',
     pathMatch: 'full',
