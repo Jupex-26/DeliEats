@@ -1,5 +1,6 @@
 package org.example.ordersservice.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.dtos.detallecarrito.DetalleCarritoInputDto;
 import org.example.ordersservice.dtos.detallecarrito.DetalleCarritoOutputDto;
@@ -22,7 +23,7 @@ public class DetalleCarritoController {
     private final DetalleCarritoMapper detalleCarritoMapper;
 
     @PostMapping
-    public ResponseEntity<DetalleCarritoOutputDto> create(@RequestBody DetalleCarritoInputDto dto) {
+    public ResponseEntity<DetalleCarritoOutputDto> create(@Valid @RequestBody DetalleCarritoInputDto dto) {
         DetalleCarrito entity = detalleCarritoMapper.toEntity(dto);
         DetalleCarrito saved = detalleCarritoService.save(entity);
         return new ResponseEntity<>(detalleCarritoMapper.toDto(saved), HttpStatus.CREATED);
@@ -49,7 +50,7 @@ public class DetalleCarritoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DetalleCarritoOutputDto> update(@PathVariable Long id, @RequestBody DetalleCarritoInputDto dto) {
+    public ResponseEntity<DetalleCarritoOutputDto> update(@PathVariable Long id, @Valid @RequestBody DetalleCarritoInputDto dto) {
         DetalleCarrito entity = detalleCarritoMapper.toEntity(dto);
         DetalleCarrito updated = detalleCarritoService.update(id, entity);
         return ResponseEntity.ok(detalleCarritoMapper.toDto(updated));

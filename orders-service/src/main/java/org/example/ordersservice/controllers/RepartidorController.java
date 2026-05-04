@@ -1,5 +1,6 @@
 package org.example.ordersservice.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.dtos.repartidor.RepartidorInputDto;
 import org.example.ordersservice.dtos.repartidor.RepartidorOutputDto;
@@ -22,7 +23,7 @@ public class RepartidorController {
     private final RepartidorMapper repartidorMapper;
 
     @PostMapping
-    public ResponseEntity<RepartidorOutputDto> create(@RequestBody RepartidorInputDto dto) {
+    public ResponseEntity<RepartidorOutputDto> create(@Valid @RequestBody RepartidorInputDto dto) {
         Repartidor entity = repartidorMapper.toEntity(dto);
         Repartidor saved = repartidorService.save(entity);
         return new ResponseEntity<>(repartidorMapper.toDto(saved), HttpStatus.CREATED);
@@ -49,7 +50,7 @@ public class RepartidorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RepartidorOutputDto> update(@PathVariable Long id, @RequestBody RepartidorInputDto dto) {
+    public ResponseEntity<RepartidorOutputDto> update(@PathVariable Long id, @Valid @RequestBody RepartidorInputDto dto) {
         Repartidor entity = repartidorMapper.toEntity(dto);
         Repartidor updated = repartidorService.update(id, entity);
         return ResponseEntity.ok(repartidorMapper.toDto(updated));

@@ -1,5 +1,6 @@
 package org.example.ordersservice.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.dtos.mensaje.MensajeInputDto;
 import org.example.ordersservice.dtos.mensaje.MensajeOutputDto;
@@ -22,7 +23,7 @@ public class MensajeController {
     private final MensajeMapper mensajeMapper;
 
     @PostMapping
-    public ResponseEntity<MensajeOutputDto> create(@RequestBody MensajeInputDto dto) {
+    public ResponseEntity<MensajeOutputDto> create(@Valid @RequestBody MensajeInputDto dto) {
         Mensaje entity = mensajeMapper.toEntity(dto);
         Mensaje saved = mensajeService.save(entity);
         return new ResponseEntity<>(mensajeMapper.toDto(saved), HttpStatus.CREATED);

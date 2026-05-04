@@ -23,7 +23,11 @@ public class UserInputDto {
     private String password;
 
     @NotNull(message = "El teléfono es obligatorio")
-    private Long telefono;
+    @Pattern(
+            regexp = "^[6789]\\d{8}$",
+            message = "El teléfono debe tener 9 dígitos y empezar por 6, 7, 8 o 9"
+    )
+    private String telefono;
 
     @NotBlank(message = "La dirección es obligatoria")
     private String direccion;

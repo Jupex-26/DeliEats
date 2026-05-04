@@ -1,5 +1,6 @@
 package org.example.ordersservice.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.dtos.estado.EstadoInputDto;
 import org.example.ordersservice.dtos.estado.EstadoOutputDto;
@@ -22,7 +23,7 @@ public class EstadoController {
     private final EstadoMapper estadoMapper;
 
     @PostMapping
-    public ResponseEntity<EstadoOutputDto> create(@RequestBody EstadoInputDto dto) {
+    public ResponseEntity<EstadoOutputDto> create(@Valid @RequestBody EstadoInputDto dto) {
         Estado entity = estadoMapper.toEntity(dto);
         Estado saved = estadoService.save(entity);
         return new ResponseEntity<>(estadoMapper.toDto(saved), HttpStatus.CREATED);
@@ -42,7 +43,7 @@ public class EstadoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EstadoOutputDto> update(@PathVariable Long id, @RequestBody EstadoInputDto dto) {
+    public ResponseEntity<EstadoOutputDto> update(@PathVariable Long id, @Valid @RequestBody EstadoInputDto dto) {
         Estado entity = estadoMapper.toEntity(dto);
         Estado updated = estadoService.update(id, entity);
         return ResponseEntity.ok(estadoMapper.toDto(updated));
