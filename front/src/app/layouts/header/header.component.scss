@@ -82,3 +82,32 @@
   transition-property: color, background-color, border-color;
   transition-duration: 200ms;
 }
+
+
+
+.btn-profile {
+  color: $color-primary;
+  background-color: transparent;
+  font-weight: bold;
+  border: 2px solid $color-primary;
+  padding: 8px 46px;
+
+
+  &:hover {
+    background-color: $color-primary; // Un toque sutil de tu verde
+    color: white;
+  }
+}
+
+.btn-logout {
+  color: $color-secondary;
+  border: 2px solid $color-secondary;
+  background-color: transparent;
+
+  &:hover {
+    background-color: $color-secondary;
+    color: white;
+    box-shadow: 0 2px 8px rgba($color-secondary, 0.3);
+  }
+}
+

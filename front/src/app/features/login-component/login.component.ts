@@ -5,7 +5,8 @@ import { IonContent, IonInput, IonItem, IonButton, IonSpinner } from '@ionic/ang
 import { AuthService } from '../../services/auth/auth-service';
 import { LoginRequestDto, CustomError } from '../../types';
 import { InfoModalComponent } from '../../shared/info-modal/info-modal.component';
-import { finalize } from 'rxjs/operators'; // Importar finalize
+import { finalize } from 'rxjs/operators';
+import { Validador } from '../../validadores/validador'; // Importar finalize
 
 @Component({
   selector: 'app-login-component',
@@ -22,7 +23,7 @@ export class LoginComponent {
 
   loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(8)]],
+    password: ['', [Validators.required, Validador.isStrongPassword]],
   });
 
   isLoading = false;
@@ -49,14 +50,12 @@ export class LoginComponent {
     this.authService.login(credentials).pipe(
       finalize(() => this.isLoading = false) // Asegura que isLoading siempre se ponga en false al finalizar
     ).subscribe({
-      next: (res) => {
-        console.log(res);
+      next: () => {
         // Navigation on success
         this.router.navigate(['/']);
         this.cdr.detectChanges();
       },
       error: (err) => {
-        console.log(err);
         // isLoading ya se maneja con finalize, así que lo quitamos de aquí
         // this.isLoading = false;
 

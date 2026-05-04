@@ -1,52 +1,88 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
   <div class="input-group">
+    <!-- NOMBRE (UserInputDto) -->
     <ion-item lines="full">
-      <ion-input formControlName="nombre" type="text" placeholder="Nombre del Restaurante / Empresa"></ion-input>
+      <ion-input formControlName="nombre" type="text" placeholder="Nombre de la Empresa"></ion-input>
     </ion-item>
-    @if (form.get('nombre')?.touched && form.get('nombre')?.hasError('required')) {
-      <div class="error-text">El nombre es obligatorio.</div>
+    @if (form.get('nombre')?.touched) {
+      @if (form.get('nombre')?.hasError('required')) { <div class="error-text">El nombre es obligatorio.</div> }
+      @if (form.get('nombre')?.hasError('nombreInvalido')) { <div class="error-text">No se permiten números en el nombre.</div> }
     }
+
+    <!-- EMAIL (UserInputDto) -->
     <ion-item lines="full">
-      <ion-input formControlName="email" type="email" placeholder="Correo electrónico de usuario"></ion-input>
+      <ion-input formControlName="email" type="email" placeholder="Correo electrónico de acceso"></ion-input>
     </ion-item>
-    @if (form.get('email')?.touched && form.get('email')?.hasError('required')) {
-      <div class="error-text">El correo es obligatorio.</div>
+    @if (form.get('email')?.touched) {
+      @if (form.get('email')?.hasError('required')) { <div class="error-text">El email es obligatorio.</div> }
+      @if (form.get('email')?.hasError('email')) { <div class="error-text">Formato de email inválido.</div> }
     }
-    @if (form.get('email')?.touched && form.get('email')?.hasError('email')) {
-      <div class="error-text">Debe ser un correo válido.</div>
-    }
+
+    <!-- PASSWORD (UserInputDto) -->
     <ion-item lines="full">
       <ion-input formControlName="password" type="password" placeholder="Contraseña"></ion-input>
     </ion-item>
-    @if (form.get('password')?.touched && form.get('password')?.hasError('required')) {
-      <div class="error-text">La contraseña es obligatoria.</div>
+    @if (form.get('password')?.touched) {
+      @if (form.get('password')?.hasError('required')) { <div class="error-text">La contraseña es obligatoria.</div> }
+      @if (form.get('password')?.hasError('strongPassword')) {
+        <div class="error-text">Debe tener 8+ caracteres, mayúscula, número y símbolo.</div>
+      }
     }
-    @if (form.get('password')?.touched && form.get('password')?.hasError('minlength')) {
-      <div class="error-text">Debe tener al menos 8 caracteres.</div>
+
+    <!-- TELÉFONO DE CUENTA (UserInputDto - OBLIGATORIO) -->
+    <ion-item lines="full">
+      <ion-input formControlName="telefono" type="tel" placeholder="Teléfono del administrador (9 dígitos)"></ion-input>
+    </ion-item>
+    @if (form.get('telefono')?.touched) {
+      @if (form.get('telefono')?.hasError('required')) { <div class="error-text">El teléfono es obligatorio.</div> }
+      @if (form.get('telefono')?.hasError('telefonoInvalido')) { <div class="error-text">Formato español inválido (6, 7, 8 o 9).</div> }
     }
+
+    <h2 class="section-title">Datos del Restaurante</h2>
+
+    <!-- DIRECCIÓN (UserInputDto) -->
     <ion-item lines="full">
-      <ion-input formControlName="direccion" type="text" placeholder="Dirección del local"></ion-input>
+      <ion-input formControlName="direccion" type="text" placeholder="Dirección física del local"></ion-input>
     </ion-item>
+    @if (form.get('direccion')?.touched && form.get('direccion')?.hasError('required')) {
+      <div class="error-text">La dirección es obligatoria.</div>
+    }
+
+    <!-- TELÉFONO DE CONTACTO (EmpresaInputDto) -->
     <ion-item lines="full">
-      <ion-input formControlName="telefonoContacto" type="tel" placeholder="Teléfono del local"></ion-input>
+      <ion-input formControlName="telefonoContacto" type="tel" placeholder="Teléfono público del local"></ion-input>
     </ion-item>
+    @if (form.get('telefonoContacto')?.touched && form.get('telefonoContacto')?.hasError('telefonoInvalido')) {
+      <div class="error-text">El teléfono de contacto no es válido.</div>
+    }
+
+    <!-- CORREO DE CONTACTO (EmpresaInputDto) -->
     <ion-item lines="full">
-      <ion-input formControlName="correoContacto" type="email" placeholder="Correo público de contacto"></ion-input>
+      <ion-input formControlName="correoContacto" type="email" placeholder="Email público de contacto"></ion-input>
     </ion-item>
+    @if (form.get('correoContacto')?.touched) {
+      @if (form.get('correoContacto')?.hasError('email')) { <div class="error-text">Formato de email inválido.</div> }
+    }
+
+    <!-- TIPO DE COCINA (EmpresaInputDto) -->
     <ion-item lines="full">
-      <ion-input formControlName="tipoCocina" type="text" placeholder="Tipo de Cocina (Ej: Italiana, Sushi...)"></ion-input>
+      <ion-input formControlName="tipoCocina" type="text" placeholder="Tipo de Cocina (Ej: Mediterránea)"></ion-input>
     </ion-item>
     @if (form.get('tipoCocina')?.touched && form.get('tipoCocina')?.hasError('required')) {
-      <div class="error-text">El tipo de cocina es obligatorio.</div>
+      <div class="error-text">Indica el tipo de cocina.</div>
     }
+
+    <!-- DESCRIPCIÓN (EmpresaInputDto) -->
     <ion-item lines="full" class="textarea-item">
-      <ion-textarea formControlName="descripcion" placeholder="Descripción breve del restaurante" [autoGrow]="true"></ion-textarea>
+      <ion-textarea formControlName="descripcion" placeholder="Cuéntanos algo sobre tu restaurante..." [autoGrow]="true"></ion-textarea>
     </ion-item>
     @if (form.get('descripcion')?.touched && form.get('descripcion')?.hasError('required')) {
       <div class="error-text">La descripción es obligatoria.</div>
     }
+
   </div>
+
   <ion-button type="submit" class="submit-btn" expand="block" [disabled]="form.invalid">
-    Completar Registro
+    Completar Registro de Empresa
   </ion-button>
 </form>

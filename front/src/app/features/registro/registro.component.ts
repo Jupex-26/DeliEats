@@ -55,6 +55,7 @@ export class RegistroComponent {
         this.isLoading = false;
         this.showSuccessModal('Usuario registrado correctamente. Ahora puedes iniciar sesión.');
         this.cdr.detectChanges();
+        this.currentStep = 'seleccion';
       },
       error: (err) => {
         this.isLoading = false;
@@ -71,6 +72,7 @@ export class RegistroComponent {
       next: () => {
         this.isLoading = false;
         this.showSuccessModal('Empresa registrada correctamente. Ahora puedes iniciar sesión.');
+        this.currentStep = 'seleccion';
         this.cdr.detectChanges();
       },
       error: (err) => {

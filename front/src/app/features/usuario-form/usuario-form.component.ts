@@ -2,6 +2,7 @@ import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonItem, IonInput, IonButton } from '@ionic/angular/standalone';
 import { ClienteInputDto } from '../../types';
+import { Validador } from '../../validadores/validador';
 @Component({
   selector: 'app-usuario-form',
   standalone: true,
@@ -12,16 +13,19 @@ import { ClienteInputDto } from '../../types';
 export class UsuarioFormComponent {
   private fb = inject(FormBuilder);
 
+  readonly fechaLimite16 = new Date(new Date().setFullYear(new Date().getFullYear() - 16));
+
   @Output() submitForm = new EventEmitter<ClienteInputDto>();
 
   form = this.fb.group({
-    nombre: ['', Validators.required],
+    // nombre: [valorInicial, [ValidadoresSíncronos], [ValidadoresAsíncronos]]
+    nombre: ['', [Validators.required, Validador.isNombre]], // Agrupados en el 2º parámetro
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(8)]],
-    telefono: [null as number | null],
-    direccion: [''],
-    fechaNacimiento: ['', Validators.required],
-    rolId: [2], // Asumiendo que 2 es el ROL_CLIENTE
+    password: ['', [Validators.required, Validador.isStrongPassword]],
+    telefono: ['', [Validador.isTelefono]], // Añade string vacío inicial
+    direccion: ['', [Validators.required]],
+    fechaNacimiento: ['', [Validators.required, Validador.before(this.fechaLimite16)]],
+    rolId: [2],
   });
 
   onSubmit() {
