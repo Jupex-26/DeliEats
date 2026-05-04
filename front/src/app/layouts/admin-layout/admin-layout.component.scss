@@ -1,0 +1,44 @@
+@import "../../../styles/styles";
+
+$header-height: 72px;
+// Eliminamos el ancho fijo de aquí para que lo maneje el componente interno
+// o lo tratamos como un elemento que no empuja el contenido en móvil.
+
+.admin-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.admin-main-container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative; // Vital para que el aside flote correctamente
+}
+
+.admin-content {
+  flex: 1;
+  overflow-y: auto;
+  background-color: $color-bg-base;
+  padding: 1.5rem;
+  /*
+     Aseguramos que el contenido siempre ocupe el ancho disponible
+     aunque el aside se mueva.
+  */
+  width: 100%;
+}
+
+app-aside {
+  // En escritorio, el aside ocupa su espacio normal
+  width: auto;
+  height: 100%;
+  z-index: 1000;
+
+  @media (max-width: 768px) {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+  }
+}

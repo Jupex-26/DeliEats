@@ -1,0 +1,50 @@
+@import "../../../styles/styles";
+$aside-width: 260px;
+
+
+.aside-container {
+  position: relative;
+  width: $aside-width;
+  height: 100%;
+  background: $color-success;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 100;
+
+  // Estado COLAPSADO (Se oculta a la izquierda)
+  &.is-collapsed {
+    transform: translateX(-100%);
+  }
+}
+
+.toggle-arrow-btn {
+  position: absolute;
+  right: -30px;
+  top: 20px;
+  width: 30px;
+  height: 60px;
+  background: $color-primary;
+  color: white;
+  border: none;
+  border-radius: 0 8px 8px 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+
+  &:hover {
+    background: lighten($color-primary, 10%);
+  }
+
+  .arrow-icon {
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: transform 0.3s;
+  }
+}
+
+@media (min-width: 769px) {
+  .toggle-arrow-btn {
+    display: none ;
+  }
+}
