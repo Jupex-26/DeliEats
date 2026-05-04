@@ -1,8 +1,11 @@
 package org.example.ordersservice.repositories;
 
 import org.example.ordersservice.models.Pedido;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
 @Repository
@@ -20,4 +23,8 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 
     // 4. Por estado (Está bien, usa estado_id de tu imagen)
     List<Pedido> findByEstado_Nombre(String nombreEstado);
+
+    Page<Pedido> findAllByClienteId(Long clienteId, Pageable pageable);
+
+    Page<Pedido> findAllByEstadoId(Long estadoId, Pageable pageable);
 }

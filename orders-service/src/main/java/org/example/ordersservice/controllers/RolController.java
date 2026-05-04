@@ -6,15 +6,15 @@ import org.example.ordersservice.dtos.rol.RolOutputDto;
 import org.example.ordersservice.models.Rol;
 import org.example.ordersservice.mappers.RolMapper;
 import org.example.ordersservice.services.RolService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @RestController
-@RequestMapping("/api/roles")
+@RequestMapping("/roles")
 @RequiredArgsConstructor
 public class RolController {
 
@@ -29,11 +29,9 @@ public class RolController {
     }
 
     @GetMapping
-    public ResponseEntity<List<RolOutputDto>> findAll() {
-        List<RolOutputDto> dtos = rolService.findAll()
-                .stream()
-                .map(rolMapper::toDto)
-                .collect(Collectors.toList());
+    public ResponseEntity<Page<RolOutputDto>> findAll(@PageableDefault Pageable pageable) {
+        Page<RolOutputDto> dtos = rolService.findAll(pageable)
+                .map(rolMapper::toDto);
         return ResponseEntity.ok(dtos);
     }
 

@@ -1,0 +1,41 @@
+@import '../../../styles/styles';
+
+.transparent-content {
+  --background: transparent;
+}
+
+.custom-bg {
+  background-color: $color-bg-base;
+  border-radius: 16px;
+  padding: 20px;
+}
+.custom-modal ion-content {
+
+  --height: auto;
+
+  overflow: visible;
+
+  &::part(scroll) {
+    overflow: visible;
+    position: relative;
+  }
+}
+
+
+.main-message {
+  color: $color-text-main;
+  font-size: 1.1rem;
+  margin-bottom: $spacing-s;
+  text-align: center;
+
+}
+
+.field-errors-container {
+  background-color: rgba(126, 30, 21, 0.05);
+  border-radius: 8px;
+  border-left: 4px solid $color-error;
+  padding: $spacing-s;
+  margin: $spacing-s 0;
+  width: 100%;
+  word-break: break-word;
+}

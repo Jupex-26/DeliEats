@@ -1,0 +1,85 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
+  <div class="input-group">
+
+    <!-- NOMBRE -->
+    <ion-item lines="full">
+      <ion-input formControlName="nombre" type="text" placeholder="Nombre completo"></ion-input>
+    </ion-item>
+    @if (form.get('nombre')?.touched) {
+      @if (form.get('nombre')?.hasError('required')) {
+        <div class="error-text">El nombre es obligatorio.</div>
+      }
+      <!-- CAMBIO: 'nombreInvalido' coincide con tu código Java/TS -->
+      @if (form.get('nombre')?.hasError('nombreInvalido')) {
+        <div class="error-text">El nombre solo debe contener letras.</div>
+      }
+    }
+
+    <!-- EMAIL -->
+    <ion-item lines="full">
+      <ion-input formControlName="email" type="email" placeholder="Correo electrónico"></ion-input>
+    </ion-item>
+    @if (form.get('email')?.touched) {
+      @if (form.get('email')?.hasError('required')) {
+        <div class="error-text">El correo es obligatorio.</div>
+      }
+      @if (form.get('email')?.hasError('email')) {
+        <div class="error-text">Debe ser un correo válido.</div>
+      }
+    }
+
+    <!-- PASSWORD -->
+    <ion-item lines="full">
+      <ion-input formControlName="password" type="password" placeholder="Contraseña"></ion-input>
+    </ion-item>
+    @if (form.get('password')?.touched) {
+      @if (form.get('password')?.hasError('required')) {
+        <div class="error-text">La contraseña es obligatoria.</div>
+      }
+      <!-- CAMBIO: 'strongPassword' coincide con tu Regex -->
+      @if (form.get('password')?.hasError('strongPassword')) {
+        <div class="error-text">Mínimo 8 caracteres, mayúscula, número y símbolo.</div>
+      }
+    }
+
+    <!-- TELÉFONO -->
+    <ion-item lines="full">
+      <ion-input formControlName="telefono" type="tel" placeholder="Teléfono (9 dígitos)"></ion-input>
+    </ion-item>
+    <!-- CAMBIO: 'telefonoInvalido' coincide con tu validador -->
+    @if (form.get('telefono')?.touched && form.get('telefono')?.hasError('telefonoInvalido')) {
+      <div class="error-text">Debe ser un número español (6, 7, 8 o 9).</div>
+    }
+
+    <!-- DIRECCIÓN -->
+    <ion-item lines="full">
+      <ion-input formControlName="direccion" type="text" placeholder="Dirección"></ion-input>
+    </ion-item>
+    @if (form.get('direccion')?.touched && form.get('direccion')?.hasError('required')) {
+      <div class="error-text">La dirección es obligatoria.</div>
+    }
+
+    <!-- FECHA NACIMIENTO -->
+    <ion-item lines="full">
+      <ion-input
+        formControlName="fechaNacimiento"
+        type="date"
+        placeholder="Fecha de Nacimiento"
+        [max]="fechaLimite16.toISOString().split('T')[0]">
+      </ion-input>
+    </ion-item>
+    @if (form.get('fechaNacimiento')?.touched) {
+      @if (form.get('fechaNacimiento')?.hasError('required')) {
+        <div class="error-text">La fecha de nacimiento es obligatoria.</div>
+      }
+      @if (form.get('fechaNacimiento')?.hasError('fechaPosterior')) {
+        <div class="error-text">Debes ser mayor de 16 años para registrarte.</div>
+      }
+    }
+
+  </div>
+
+  <ion-button expand="block" type="submit" class="submit-btn" [disabled]="form.invalid">
+    Completar Registro
+  </ion-button>
+</form>

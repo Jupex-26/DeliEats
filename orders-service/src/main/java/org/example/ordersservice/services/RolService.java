@@ -1,14 +1,15 @@
 package org.example.ordersservice.services;
 
 import org.example.ordersservice.models.Rol;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 
 public interface RolService {
 
     Rol save(Rol rol);
 
-    List<Rol> findAll();
+    Page<Rol> findAll(Pageable pageable);
 
     Rol findById(Long id);
 

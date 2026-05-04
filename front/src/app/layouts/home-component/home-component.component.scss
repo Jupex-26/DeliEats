@@ -1,0 +1,91 @@
+@import '../../../styles/variables';
+
+ion-content {
+  --background: #{$color-bg-base};
+}
+
+/* --- Utilidades de Color --- */
+.bg-base      { background-color: $color-bg-base; }
+.bg-alt       { background-color: $color-bg-alt; }
+.bg-primary   { background-color: $color-primary; }
+.bg-secondary { background-color: $color-secondary; }
+.bg-warning   { background-color: $color-warning; }
+
+.text-main      { color: $color-text-main; }
+.text-primary   { color: $color-primary; }
+.text-secondary { color: $color-secondary; }
+.text-warning   { color: $color-warning; }
+.text-alt       { color: $color-bg-alt; }
+
+/* --- Componentes: Hero --- */
+.hero-image-container {
+  aspect-ratio: 1 / 1;
+  background-color: $color-bg-alt;
+}
+
+.hero-placeholder-overlay {
+  background-color: $color-primary;
+  opacity: 0.1;
+  position: absolute;
+  inset: 0;
+}
+
+/* --- Componentes: Botones --- */
+.btn-primary, .btn-secondary, .btn-alt-text {
+  @apply px-8 py-3 rounded-full font-bold transition transform duration-200 border-none cursor-pointer;
+}
+
+.btn-primary {
+  @apply text-white shadow-lg hover:shadow-xl hover:opacity-90;
+  background-color: $color-primary;
+}
+
+.btn-secondary {
+  @apply text-white shadow-lg hover:shadow-xl hover:-translate-y-1;
+  background-color: $color-secondary;
+}
+
+.btn-alt-text {
+  @apply hover:opacity-80;
+  background-color: $color-bg-alt;
+  color: $color-primary;
+}
+
+/* --- Componentes: Features --- */
+.feature-card {
+  @apply p-8 rounded-3xl shadow-sm hover:shadow-md transition duration-300;
+  background-color: $color-bg-base;
+}
+
+.feature-icon {
+  @apply w-16 h-16 text-white rounded-full flex items-center justify-center mx-auto mb-6 text-3xl shadow-md;
+}
+
+/* --- Formulario y Otros --- */
+.newsletter-input {
+  @apply w-full px-6 py-3 rounded-full border-none outline-none;
+  background-color: $color-bg-alt;
+  color: $color-text-main;
+
+  &::placeholder {
+    color: rgba($color-text-main, 0.6);
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 2px $color-primary;
+  }
+}
+
+.footer-link {
+  @apply hover:text-white transition text-inherit no-underline;
+  opacity: 0.9;
+}
+
+.placeholder-main::placeholder {
+  color: rgba($color-text-main, 0.6);
+}
+
+.focus-ring-primary:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px $color-primary;
+}

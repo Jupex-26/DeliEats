@@ -6,15 +6,15 @@ import org.example.ordersservice.dtos.user.UserOutputDto;
 import org.example.ordersservice.models.User;
 import org.example.ordersservice.mappers.UserMapper;
 import org.example.ordersservice.services.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -29,11 +29,9 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserOutputDto>> findAll() {
-        List<UserOutputDto> dtos = userService.findAll()
-                .stream()
-                .map(userMapper::toDto)
-                .collect(Collectors.toList());
+    public ResponseEntity<Page<UserOutputDto>> findAll(@PageableDefault Pageable pageable) {
+        Page<UserOutputDto> dtos = userService.findAll(pageable)
+                .map(userMapper::toDto);
         return ResponseEntity.ok(dtos);
     }
 

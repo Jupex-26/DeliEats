@@ -6,15 +6,15 @@ import org.example.ordersservice.dtos.apertura.AperturaOutputDto;
 import org.example.ordersservice.mappers.AperturaMapper;
 import org.example.ordersservice.models.Apertura;
 import org.example.ordersservice.services.AperturaService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @RestController
-@RequestMapping("/api/aperturas")
+@RequestMapping("/aperturas")
 @RequiredArgsConstructor
 public class AperturaController {
 
@@ -29,11 +29,9 @@ public class AperturaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AperturaOutputDto>> findAll() {
-        List<AperturaOutputDto> dtos = aperturaService.findAll()
-                .stream()
-                .map(aperturaMapper::toDto)
-                .collect(Collectors.toList());
+    public ResponseEntity<Page<AperturaOutputDto>> findAll(@PageableDefault Pageable pageable) {
+        Page<AperturaOutputDto> dtos = aperturaService.findAll(pageable)
+                .map(aperturaMapper::toDto);
         return ResponseEntity.ok(dtos);
     }
 

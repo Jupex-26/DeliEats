@@ -1,11 +1,13 @@
 package org.example.ordersservice.services;
 
 import org.example.ordersservice.models.Carrito;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
+import java.math.BigDecimal;
 
 public interface CarritoService {
-    List<Carrito> findAll();
+    Page<Carrito> findAll(Pageable pageable);
 
     Carrito findById(Long id);
 
@@ -17,11 +19,9 @@ public interface CarritoService {
 
     Carrito addProducto(Long carritoId, Long productoId, Integer cantidad);
 
-    Carrito updateCantidad(Long carritoId, Long productoId, Integer nuevaCantidad);
-
     Carrito removeProducto(Long carritoId, Long productoId);
 
     void clearCarrito(Long carritoId);
 
-    Double calculateTotal(Long carritoId);
+    BigDecimal calculateTotal(Long carritoId);
 }

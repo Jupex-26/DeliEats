@@ -6,15 +6,15 @@ import org.example.ordersservice.dtos.estado.EstadoOutputDto;
 import org.example.ordersservice.models.Estado;
 import org.example.ordersservice.mappers.EstadoMapper;
 import org.example.ordersservice.services.EstadoService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @RestController
-@RequestMapping("/api/estados")
+@RequestMapping("/estados")
 @RequiredArgsConstructor
 public class EstadoController {
 
@@ -29,11 +29,9 @@ public class EstadoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<EstadoOutputDto>> findAll() {
-        List<EstadoOutputDto> dtos = estadoService.findAll()
-                .stream()
-                .map(estadoMapper::toDto)
-                .collect(Collectors.toList());
+    public ResponseEntity<Page<EstadoOutputDto>> findAll(@PageableDefault Pageable pageable) {
+        Page<EstadoOutputDto> dtos = estadoService.findAll(pageable)
+                .map(estadoMapper::toDto);
         return ResponseEntity.ok(dtos);
     }
 

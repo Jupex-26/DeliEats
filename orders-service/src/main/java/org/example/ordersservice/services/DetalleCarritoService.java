@@ -1,18 +1,18 @@
 package org.example.ordersservice.services;
 
 import org.example.ordersservice.models.DetalleCarrito;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface DetalleCarritoService {
 
     DetalleCarrito save(DetalleCarrito detalleCarrito);
 
-    List<DetalleCarrito> findAll();
+    Page<DetalleCarrito> findAll(Pageable pageable);
 
     DetalleCarrito findById(Long id);
 
-    List<DetalleCarrito> findByCarritoId(Long carritoId);
+    Page<DetalleCarrito> findByCarritoId(Long carritoId, Pageable pageable);
 
     DetalleCarrito update(Long id, DetalleCarrito detalleCarrito);
 
@@ -20,5 +20,4 @@ public interface DetalleCarritoService {
 
     void deleteByCarritoId(Long carritoId);
 
-    Double calculateSubtotal(Long id);
 }

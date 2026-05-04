@@ -1,20 +1,20 @@
 package org.example.ordersservice.services;
 
 import org.example.ordersservice.models.Producto;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ProductoService {
 
     Producto save(Producto producto);
 
-    List<Producto> findAll();
+    Page<Producto> findAll(Pageable pageable);
 
     Producto findById(Long id);
 
-    List<Producto> findByCategoriaId(Long categoriaId);
+    Page<Producto> findByCategoriaId(Long categoriaId, Pageable pageable);
 
-    List<Producto> findByNombreContaining(String nombre);
+    Page<Producto> findByNombreContaining(String nombre, Pageable pageable);
 
     Producto update(Long id, Producto producto);
 

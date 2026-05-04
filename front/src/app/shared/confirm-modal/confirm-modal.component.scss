@@ -1,0 +1,51 @@
+@import '../../../styles/styles';
+
+:host {
+  display: block;
+}
+
+.custom-modal {
+  --width: 90%;
+  --max-width: 400px;
+  --height: auto;
+  --border-radius: 16px;
+  --box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+ion-toolbar {
+  --background: var(--color-bg-base);
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+ion-content {
+  --background: var(--color-bg-base);
+}
+
+.text-main {
+  color: var(--color-text-main);
+}
+
+// Estilos de botones
+ion-button {
+  --border-radius: 8px;
+  margin: 0;
+}
+
+.btn-cancel {
+  --background: transparent;
+  --color: var(--color-text-main);
+  --border-color: var(--color-text-main);
+  --border-style: solid;
+  --border-width: 1px;
+  --background-hover: rgba(0,0,0,0.05);
+}
+
+.btn-primary {
+  --background: var(--color-primary);
+  --color: white;
+}
+
+.btn-danger {
+  --background: var(--color-error);
+  --color: white;
+}

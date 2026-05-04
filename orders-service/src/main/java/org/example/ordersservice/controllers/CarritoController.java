@@ -6,15 +6,17 @@ import org.example.ordersservice.dtos.carrito.CarritoOutputDto;
 import org.example.ordersservice.mappers.CarritoMapper;
 import org.example.ordersservice.models.Carrito;
 import org.example.ordersservice.services.CarritoService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.math.BigDecimal;
 
 @RestController
-@RequestMapping("/api/carritos")
+@RequestMapping("/carritos")
 @RequiredArgsConstructor
 public class CarritoController {
 
@@ -29,11 +31,9 @@ public class CarritoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CarritoOutputDto>> findAll() {
-        List<CarritoOutputDto> dtos = carritoService.findAll()
-                .stream()
-                .map(carritoMapper::toDto)
-                .collect(Collectors.toList());
+    public ResponseEntity<Page<CarritoOutputDto>> findAll(@PageableDefault Pageable pageable) {
+        Page<CarritoOutputDto> dtos = carritoService.findAll(pageable)
+                .map(carritoMapper::toDto);
         return ResponseEntity.ok(dtos);
     }
 
@@ -59,5 +59,29 @@ public class CarritoController {
     public ResponseEntity<Void> clearCarrito(@PathVariable Long id) {
         carritoService.clearCarrito(id);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{id}/productos/{productoId}")
+    public ResponseEntity<CarritoOutputDto> updateCantidad(
+            @PathVariable Long id,
+            @PathVariable Long productoId,
+            @RequestParam Integer cantidad) {
+
+        Carrito actualizado = carritoService.addProducto(id, productoId, cantidad);
+        return ResponseEntity.ok(carritoMapper.toDto(actualizado));
+    }
+
+    @GetMapping("/{id}/total")
+    public ResponseEntity<BigDecimal> calculateTotal(@PathVariable Long id) {
+        return ResponseEntity.ok(carritoService.calculateTotal(id));
+    }
+
+    @DeleteMapping("/{id}/productos/{productoId}")
+    public ResponseEntity<CarritoOutputDto> removeProducto(
+            @PathVariable Long id,
+            @PathVariable Long productoId) {
+
+        Carrito actualizado = carritoService.addProducto(id, productoId, 0);
+        return ResponseEntity.ok(carritoMapper.toDto(actualizado));
     }
 }

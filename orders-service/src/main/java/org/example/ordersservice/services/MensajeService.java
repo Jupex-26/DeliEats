@@ -1,22 +1,20 @@
 package org.example.ordersservice.services;
 
 import org.example.ordersservice.models.Mensaje;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface MensajeService {
 
     Mensaje save(Mensaje mensaje);
 
-    List<Mensaje> findAll();
+    Page<Mensaje> findAll(Pageable pageable);
 
     Mensaje findById(Long id);
 
-    List<Mensaje> findByEmisorId(Long emisorId);
+    Page<Mensaje> findByEmisorId(Long emisorId, Pageable pageable);
 
-    List<Mensaje> findByReceptorId(Long receptorId);
-
-    List<Mensaje> findByConversacionId(Long conversacionId);
+    Page<Mensaje> findByReceptorId(Long receptorId, Pageable pageable);
 
     void deleteById(Long id);
 

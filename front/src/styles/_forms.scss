@@ -1,0 +1,97 @@
+// ==========================================
+// DeliEats - Formularios e Inputs
+// ==========================================
+@import "variables";
+
+
+
+@layer components {
+
+  .submit-btn {
+    --background: #{$color-primary};
+    --background-hover: #{$color-text-main};
+    --color: white;
+    --border-radius: 9999px;
+    margin-top: 1.5rem;
+    font-weight: bold;
+    height: 3rem;
+    transition: transform 0.2s ease-out, background-color 0.2s ease-out;
+
+    &.button-focused, &:hover {
+      --background: #{$color-text-main};
+      transform: translateY(-2px);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: translateY(0);
+    }
+  }
+
+  .form-group {
+    @apply flex flex-col mb-6;
+
+    .form-label {
+      font-family: 'Lora', serif; //
+      font-weight: 600; //
+      font-size: 14px; //[cite: 1]
+      color: $color-text-main; //[cite: 1]
+      margin-bottom: 8px; //[cite: 1]
+      @apply transition-colors duration-300; //[cite: 1]
+    }
+
+    .form-input {
+      background-color: #FFFFFF; //[cite: 1]
+      color: $color-text-main; //[cite: 1]
+      border: 1.5px solid $color-bg-alt; //[cite: 1]
+      border-radius: 8px; //[cite: 1]
+      padding: 12px 16px; //[cite: 1]
+      font-family: 'Lora', serif; //[cite: 1]
+      font-size: 16px; //[cite: 1]
+      @apply w-full outline-none transition-all duration-300;
+
+      &::placeholder {
+        color: $color-text-main; //[cite: 1]
+        opacity: 0.55; //[cite: 1]
+      }
+
+      &:focus {
+        border-color: $color-primary; //[cite: 1]
+        border-width: 2px; //[cite: 1]
+        box-shadow: 0 0 0 3px rgba(32, 74, 51, 0.1); //[cite: 1]
+      }
+
+      &.is-valid {
+        border-color: $color-success; //[cite: 1]
+      }
+
+      &.is-invalid {
+        border-color: $color-error; //[cite: 1]
+      }
+    }
+
+    // Mensajes de Error Corregidos
+    .form-error-msg {
+      color: $color-error; //[cite: 1]
+      font-size: 12px; //[cite: 1]
+      margin-top: 4px; //[cite: 1]
+      font-weight: 500;
+      // Reemplazamos el @apply problemático por una animación nativa
+      animation: fadeInError 0.3s ease-out forwards; //[cite: 1]
+    }
+
+  }
+}
+
+// Definición de la animación para el error
+@keyframes fadeInError {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

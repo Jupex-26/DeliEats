@@ -1,50 +1,56 @@
 package org.example.ordersservice.services.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.example.ordersservice.exception.custom.NotFoundException;
 import org.example.ordersservice.models.Estado;
 import org.example.ordersservice.repositories.EstadoRepository;
 import org.example.ordersservice.services.EstadoService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class EstadoServiceImpl implements EstadoService {
+
     private final EstadoRepository estadoRepository;
 
     @Override
     public Estado save(Estado estado) {
-        return null;
+        return estadoRepository.save(estado);
     }
 
     @Override
-    public List<Estado> findAll() {
-        return List.of();
+    public Page<Estado> findAll(Pageable pageable) {
+        return estadoRepository.findAll(pageable);
     }
 
     @Override
     public Estado findById(Long id) {
-        return null;
+        return estadoRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Estado no encontrado con ID: " + id));
     }
 
     @Override
     public Estado findByNombre(String nombre) {
-        return null;
+        return estadoRepository.findByNombre(nombre)
+                .orElseThrow(() -> new NotFoundException("Estado no encontrado con nombre: " + nombre));
     }
 
     @Override
     public Estado update(Long id, Estado estado) {
-        return null;
+        Estado existingEstado = findById(id);
+        estado.setId(existingEstado.getId());
+        return estadoRepository.save(estado);
     }
 
     @Override
     public void deleteById(Long id) {
-
+        estadoRepository.deleteById(id);
     }
 
     @Override
     public boolean existsByNombre(String nombre) {
-        return false;
+        return estadoRepository.findByNombre(nombre).isPresent();
     }
 }

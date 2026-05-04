@@ -6,15 +6,15 @@ import org.example.ordersservice.dtos.pedido.PedidoOutputDto;
 import org.example.ordersservice.models.Pedido;
 import org.example.ordersservice.mappers.PedidoMapper;
 import org.example.ordersservice.services.PedidoService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @RestController
-@RequestMapping("/api/pedidos")
+@RequestMapping("/pedidos")
 @RequiredArgsConstructor
 public class PedidoController {
 
@@ -29,11 +29,9 @@ public class PedidoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PedidoOutputDto>> findAll() {
-        List<PedidoOutputDto> dtos = pedidoService.findAll()
-                .stream()
-                .map(pedidoMapper::toDto)
-                .collect(Collectors.toList());
+    public ResponseEntity<Page<PedidoOutputDto>> findAll(@PageableDefault Pageable pageable) {
+        Page<PedidoOutputDto> dtos = pedidoService.findAll(pageable)
+                .map(pedidoMapper::toDto);
         return ResponseEntity.ok(dtos);
     }
 
@@ -44,11 +42,9 @@ public class PedidoController {
     }
 
     @GetMapping("/cliente/{clienteId}")
-    public ResponseEntity<List<PedidoOutputDto>> findByClienteId(@PathVariable Long clienteId) {
-        List<PedidoOutputDto> dtos = pedidoService.findByClienteId(clienteId)
-                .stream()
-                .map(pedidoMapper::toDto)
-                .collect(Collectors.toList());
+    public ResponseEntity<Page<PedidoOutputDto>> findByClienteId(@PathVariable Long clienteId, @PageableDefault Pageable pageable) {
+        Page<PedidoOutputDto> dtos = pedidoService.findByClienteId(clienteId, pageable)
+                .map(pedidoMapper::toDto);
         return ResponseEntity.ok(dtos);
     }
 
