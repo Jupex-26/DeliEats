@@ -12,7 +12,7 @@ import { AuthService } from '../../services/auth/auth-service';
 export class HeaderComponent {
   public authService = inject(AuthService);
   isMenuOpen = false;
-  public user = this.authService.currentUser().userOutputDto;
+  public user = this.authService.currentUser()?.userOutputDto;
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
   }

@@ -1,4 +1,4 @@
-@import "../../../styles/styles";
+@use '../../../styles/variables' as *;
 
 $header-height: 72px;
 // Eliminamos el ancho fijo de aquí para que lo maneje el componente interno

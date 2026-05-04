@@ -1,48 +1,44 @@
 import { Routes } from '@angular/router';
 
+// Layouts
+import { PublicLayoutComponent } from './layouts/public-layout/public-layout.component';
+import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
+import { HomeComponentComponent } from './layouts/home-component/home-component.component';
+
+// Features
+import { RestaurantesComponent } from './features/restaurantes/restaurantes.component';
+import { LoginComponent } from './features/login-component/login.component';
+import { RegistroComponent } from './features/registro/registro.component';
+
 export const routes: Routes = [
   {
+    path: 'login',
+    component: LoginComponent,
+  },
+  {
+    path: 'registro',
+    component: RegistroComponent,
+  },
+  {
     path: '',
-    loadComponent: () =>
-      import('./layouts/public-layout/public-layout.component').then(
-        (m) => m.PublicLayoutComponent,
-      ),
+    component: PublicLayoutComponent,
     children: [
       {
         path: '',
-        loadComponent: () =>
-          import('./layouts/home-component/home-component.component').then(
-            (m) => m.HomeComponentComponent,
-          ),
+        component: HomeComponentComponent,
       },
       {
         path: 'restaurantes',
-        loadComponent: () =>
-          import('./features/restaurantes/restaurantes.component').then(
-            (m) => m.RestaurantesComponent,
-          ),
+        component: RestaurantesComponent,
       },
     ],
   },
   {
-    path: 'login',
-    loadComponent: () =>
-      import('./features/login-component/login.component').then((m) => m.LoginComponent),
-  },
-  {
-    path: 'registro',
-    loadComponent: () =>
-      import('./features/registro/registro.component').then((m) => m.RegistroComponent),
-  },
-  {
     path: 'admin',
-    loadComponent: () =>
-      import('./layouts/admin-layout/admin-layout.component').then(
-        (m) => m.AdminLayoutComponent,
-      ),
+    component: AdminLayoutComponent,
     children: [
       // Aquí irán las rutas hijas del admin
-    ]
+    ],
   },
   {
     path: '**',

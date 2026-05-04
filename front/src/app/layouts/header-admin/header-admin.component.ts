@@ -13,7 +13,7 @@ import { RouterLink} from '@angular/router';
 export class HeaderAdminComponent {
   public authService = inject(AuthService);
   isMenuOpen = false;
-  public user = this.authService.currentUser().userOutputDto;
+  public user = this.authService.currentUser()?.userOutputDto;
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
   }

@@ -1,5 +1,12 @@
-@import "../../../styles/styles";
+@use '../../../styles/styles' as *;
+@use '../../../styles/variables' as *;
 $aside-width: 260px;
+
+.active{
+  background-color: rgba($color-text-main, 0.5);
+  color: $color-bg-base;
+  font-weight: bold;
+}
 
 
 .aside-container {
@@ -46,5 +53,40 @@ $aside-width: 260px;
 @media (min-width: 769px) {
   .toggle-arrow-btn {
     display: none ;
+  }
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 0.85rem 1rem;
+  color: $color-bg-alt;
+  text-decoration: none;
+  border-radius: 12px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border-left: 4px solid transparent;
+
+
+  .nav-label {
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+
+  &:hover {
+    background-color: rgba($color-text-main, 0.5);
+    color: $color-bg-base;
+    transform: translateX(4px);
+    font-weight: bold;
+  }
+
+  &.active {
+    background-color: rgba($color-primary, 0.4);
+    color: white;
+    border-left-color: $color-secondary;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+    .nav-icon {
+      filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+    }
   }
 }

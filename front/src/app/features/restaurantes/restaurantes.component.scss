@@ -1,4 +1,4 @@
-@import '../../../styles/variables';
+@use '../../../styles/variables' as *;
 
 ion-header {
   // Eliminamos cualquier sombra o borde nativo

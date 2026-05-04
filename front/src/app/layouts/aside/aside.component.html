@@ -8,13 +8,34 @@
 
   <!-- CONTENIDO DEL MENÚ -->
   <div class="aside-content">
-    <div class="aside-header-title">
+    <div class="aside-header-title py-5 text-center">
       <span class="font-bold">Menú Gestión</span>
     </div>
-    <nav class="aside-nav">
-      <!-- Tus links aquí -->
-      <a routerLink="dashboard" class="nav-item">📊 Dashboard</a>
-      <a routerLink="restaurantes" class="nav-item">🍴 Restaurantes</a>
+    <nav class="aside-nav flex flex-col gap-2 p-4">
+      <!-- Agregamos routerLinkActive -->
+      <a routerLink="/admin/clientes"
+         routerLinkActive="active"
+         class="nav-item">
+        Clientes
+      </a>
+
+      <a routerLink="/admin/restaurantes"
+         routerLinkActive="active"
+         class="nav-item">
+        Restaurantes
+      </a>
+
+      <a routerLink="/admin/repartidores"
+         routerLinkActive="active"
+         class="nav-item">
+        Repartidores
+      </a>
+
+      <a routerLink="/admin/pedidos"
+         routerLinkActive="active"
+         class="nav-item">
+        Pedidos
+      </a>
     </nav>
   </div>
 </aside>

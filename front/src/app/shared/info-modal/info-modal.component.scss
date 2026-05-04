@@ -1,4 +1,4 @@
-@import '../../../styles/styles';
+@use '../../../styles/variables' as *;
 
 .transparent-content {
   --background: transparent;
