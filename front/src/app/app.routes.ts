@@ -10,7 +10,7 @@ import { RestaurantesComponent } from './features/restaurantes/restaurantes.comp
 import { LoginComponent } from './features/login-component/login.component';
 import { RegistroComponent } from './features/registro/registro.component';
 import { ClientesAdminComponent } from './features/clientes-admin/clientes-admin.component';
-
+import { RestaurantesAdminComponent } from './features/restaurantes-admin/restaurantes-admin.component';
 export const routes: Routes = [
   {
     path: 'login',
@@ -41,6 +41,10 @@ export const routes: Routes = [
       {
         path: 'clientes',
         component: ClientesAdminComponent
+      },
+      {
+        path: 'restaurantes',
+        component: RestaurantesAdminComponent
       }
     ],
   },
