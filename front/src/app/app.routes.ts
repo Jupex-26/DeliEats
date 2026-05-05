@@ -9,6 +9,7 @@ import { HomeComponentComponent } from './layouts/home-component/home-component.
 import { RestaurantesComponent } from './features/restaurantes/restaurantes.component';
 import { LoginComponent } from './features/login-component/login.component';
 import { RegistroComponent } from './features/registro/registro.component';
+import { ClientesAdminComponent } from './features/clientes-admin/clientes-admin.component';
 
 export const routes: Routes = [
   {
@@ -37,7 +38,10 @@ export const routes: Routes = [
     path: 'admin',
     component: AdminLayoutComponent,
     children: [
-      // Aquí irán las rutas hijas del admin
+      {
+        path: 'clientes',
+        component: ClientesAdminComponent
+      }
     ],
   },
   {

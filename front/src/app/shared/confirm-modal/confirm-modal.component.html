@@ -1,33 +1,36 @@
-<ion-modal [isOpen]="isOpen" (didDismiss)="onCancel()" class="custom-modal">
+<ion-modal [isOpen]="isOpen" (didDismiss)="onCancel()" class="custom-modal" [backdropDismiss]="false">
   <ng-template>
     <ion-header class="ion-no-border">
-      <ion-toolbar>
-        <ion-title class="text-main font-bold">
-          {{ title }}
-        </ion-title>
-        <ion-buttons slot="end">
-          <ion-button (click)="onCancel()" color="medium">
-            ✕
-          </ion-button>
-        </ion-buttons>
+      <ion-toolbar class="deli-toolbar">
+        <ion-title class="font-header">{{ title }}</ion-title>
       </ion-toolbar>
     </ion-header>
 
-    <ion-content class="ion-padding">
-      <div class="modal-body py-4">
-        <p class="text-main text-lg leading-relaxed m-0 text-center">
+    <ion-content class="ion-padding transparent-content">
+      <!-- Contenedor principal con tu estilo custom-bg -->
+      <div class="modal-body-wrapper custom-bg">
+
+        <div class="main-message font-body">
           {{ message }}
-        </p>
-      </div>
+        </div>
 
-      <div class="modal-footer mt-6 flex justify-between gap-4">
-        <ion-button expand="block" (click)="onCancel()" class="btn-cancel flex-1 font-bold">
-          {{ cancelText }}
-        </ion-button>
+        <div class="footer-buttons ion-margin-top">
+          <!-- Botón Cancelar (Estilo minimalista) -->
+          <ion-button expand="block" fill="clear" (click)="onCancel()" class="btn-cancel font-bold">
+            {{ cancelText }}
+          </ion-button>
 
-        <ion-button expand="block" (click)="onConfirm()" [ngClass]="{'btn-danger': dangerAction, 'btn-primary': !dangerAction}" class="flex-1 font-bold">
-          {{ confirmText }}
-        </ion-button>
+          <!-- Botón Confirmar (Estilo sólido: primario o error) -->
+          <ion-button
+            expand="block"
+            (click)="onConfirm()"
+            [class.btn-danger]="dangerAction"
+            [class.btn-confirm]="!dangerAction"
+            class="submit-btn font-bold">
+            {{ confirmText }}
+          </ion-button>
+        </div>
+
       </div>
     </ion-content>
   </ng-template>

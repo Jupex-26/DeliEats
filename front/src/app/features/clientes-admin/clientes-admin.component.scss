@@ -1,0 +1,193 @@
+@use '../../../styles/styles' as *;
+@use '../../../styles/variables' as *;
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+.admin-container {
+  background-color: $color-bg-base;
+}
+
+.admin-header {
+  background-color: $color-bg-alt;
+  color: $color-text-main;
+}
+
+.btn-new {
+  background-color: $color-bg-base;
+  color: $color-primary;
+  &:hover {
+    background-color: $color-bg-alt;
+  }
+}
+
+.table-card {
+  border-color: $color-bg-alt;
+}
+
+.table-toolbar {
+  border-bottom-color: rgba($color-bg-alt, 0.5);
+}
+
+.search-box {
+  background-color: $color-bg-base;
+  border-color: $color-bg-alt;
+  &:focus-within {
+    border-color: $color-primary;
+  }
+  ion-icon {
+    color: $color-primary;
+  }
+  input {
+    color: $color-text-main;
+    &::placeholder {
+      color: rgba($color-text-main, 0.5);
+    }
+  }
+}
+
+.pagination-size {
+  color: $color-text-main;
+  select {
+    border-color: $color-bg-alt;
+    background-color: $color-bg-base;
+    &:focus {
+      border-color: $color-primary;
+    }
+  }
+}
+
+.data-table {
+  thead tr {
+    background-color: $color-bg-base;
+  }
+  th {
+    color: $color-text-main;
+    border-color: $color-bg-alt;
+  }
+  tbody tr {
+    &:hover {
+      background-color: rgba($color-bg-base, 0.5);
+    }
+  }
+  td {
+    border-bottom-color: rgba($color-bg-alt, 0.3);
+  }
+  .td-name {
+    color: $color-text-main;
+  }
+  .td-email {
+    color: rgba($color-text-main, 0.7);
+  }
+}
+
+.btn-icon {
+  background-color: $color-bg-base;
+  border-color: $color-bg-alt;
+  &.view {
+    color: $color-primary;
+    &:hover { background-color: $color-primary; color: white; }
+  }
+  &.edit {
+    color: $color-primary;
+    &:hover { background-color: $color-primary; color: white; }
+  }
+  &.delete {
+    color: $color-secondary;
+    &:hover { background-color: $color-secondary; color: white; }
+  }
+}
+
+.table-footer {
+  border-top-color: rgba($color-bg-alt, 0.3);
+  .page-info {
+    color: rgba($color-text-main, 0.5);
+  }
+}
+
+.nav-buttons button {
+  border-color: $color-bg-alt;
+  color: $color-primary;
+  &:not(:disabled):hover {
+    background-color: $color-bg-base;
+  }
+}
+
+.btn-cancel {
+  border-color: $color-bg-alt;
+  color: $color-text-main;
+  &:hover {
+    background-color: rgba($color-bg-alt, 0.3);
+  }
+}
+
+.btn-submit {
+  background-color: $color-primary;
+  &:hover {
+    background-color: rgba($color-primary, 0.9);
+  }
+}
+
+.view-modal-content {
+  background-color: $color-bg-base;
+  --background: #{$color-bg-base};
+}
+
+.detail-card {
+  border-color: rgba($color-bg-alt, 0.5);
+  .detail-header {
+    background-color: rgba($color-bg-alt, 0.2);
+    border-bottom-color: rgba($color-bg-alt, 0.3);
+  }
+  .avatar {
+    background-color: $color-primary;
+  }
+  .name {
+    color: $color-text-main;
+  }
+  .role {
+    color: $color-primary;
+    background-color: rgba($color-primary, 0.1);
+  }
+  .section-title {
+    color: rgba($color-text-main, 0.5);
+    border-bottom-color: rgba($color-bg-alt, 0.3);
+  }
+  .icon-box {
+    background-color: $color-bg-base;
+    color: $color-primary;
+  }
+  .label {
+    color: rgba($color-text-main, 0.5);
+  }
+  .value {
+    color: $color-text-main;
+  }
+  .footer {
+    background-color: $color-bg-base;
+    border-top-color: rgba($color-bg-alt, 0.5);
+  }
+  .btn-close {
+    border-color: $color-bg-alt;
+    color: $color-text-main;
+    &:hover {
+      background-color: rgba($color-bg-alt, 0.2);
+    }
+  }
+}
+
+ion-toolbar {
+  --background: #{$color-primary} !important;
+  --color: white !important;
+}
+
+ion-item {
+  --background: white !important;
+  --highlight-color-focused: #{$color-primary} !important;
+}
+
+ion-input {
+  color: $color-text-main;
+}
