@@ -1,202 +1,193 @@
 @use '../../../styles/styles' as *;
 @use '../../../styles/variables' as *;
+
 :host {
   display: block;
   height: 100%;
 }
 
 .admin-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
   background-color: $color-bg-base;
 }
 
 .admin-header {
   background-color: $color-bg-alt;
-  color: $color-bg-base;
-  padding: 1.2rem 2rem;
-
-  .header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
-    width: 100%;
-  }
-
-  .title {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin: 0;
-    letter-spacing: 0.5px;
-  }
-
-  .btn-new {
-    background-color: $color-bg-base;
-    color: $color-primary;
-    border: none;
-    padding: 0.6rem 1.2rem;
-    border-radius: 4px;
-    font-weight: 700;
-    font-size: 0.75rem;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-    &:hover { background-color: $color-bg-alt; }
-  }
+  color: $color-text-main;
 }
 
-.main-content {
-  padding: 2rem;
-  flex: 1;
-  overflow-y: auto;
+.btn-new {
+  background-color: $color-bg-base;
+  color: $color-primary;
+  &:hover {
+    background-color: $color-bg-alt;
+  }
 }
 
 .table-card {
-  max-width: 1200px;
-  margin: 0 auto;
-  border: 1px solid $color-bg-alt;
-  border-radius: 8px;
-  background: white;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  border-color: $color-bg-alt;
 }
 
 .table-toolbar {
-  padding: 1.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #fff;
+  border-bottom-color: rgba($color-bg-alt, 0.5);
+}
 
-  .search-box {
-    display: flex;
-    align-items: center;
-    background: $color-bg-base;
-    border: 1px solid $color-bg-alt;
-    border-radius: 4px;
-    padding: 6px 12px;
-    width: 350px;
-
-    ion-icon { color: $color-primary; }
-    input {
-      background: transparent;
-      border: none;
-      color: $color-text-main;
-      margin-left: 10px;
-      width: 100%;
-      outline: none;
-      font-size: 0.9rem;
+.search-box {
+  background-color: $color-bg-base;
+  border-color: $color-bg-alt;
+  &:focus-within {
+    border-color: $color-primary;
+  }
+  ion-icon {
+    color: $color-primary;
+  }
+  input {
+    color: $color-text-main;
+    &::placeholder {
+      color: rgba($color-text-main, 0.5);
     }
   }
+}
 
-  .pagination-size {
-    font-size: 0.85rem;
-    color: $color-text-main;
-    select {
-      margin-left: 8px;
-      border: 1px solid $color-bg-alt;
-      background: $color-bg-base;
-      border-radius: 4px;
-      padding: 3px;
+.pagination-size {
+  color: $color-text-main;
+  select {
+    border-color: $color-bg-alt;
+    background-color: $color-bg-base;
+    &:focus {
+      border-color: $color-primary;
     }
   }
 }
 
 .data-table {
-  width: 100%;
-  border-collapse: collapse;
-
+  thead tr {
+    background-color: $color-bg-base;
+  }
   th {
-    text-align: left;
-    padding: 1rem 1.5rem;
-    font-size: 0.7rem;
     color: $color-text-main;
-    opacity: 0.6;
-    background: $color-bg-base;
-    border-top: 1px solid $color-bg-alt;
-    border-bottom: 1px solid $color-bg-alt;
-    letter-spacing: 1px;
+    border-color: $color-bg-alt;
   }
-
+  tbody tr {
+    &:hover {
+      background-color: rgba($color-bg-base, 0.5);
+    }
+  }
   td {
-    padding: 1.2rem 1.5rem;
-    border-bottom: 1px solid $color-bg-base;
-    color: $color-text-main;
-    &.font-bold { font-weight: 700; }
-    &.text-secondary { opacity: 0.7; font-size: 0.9rem; }
+    border-bottom-color: rgba($color-bg-alt, 0.3);
   }
-
-  .actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
+  .td-name {
+    color: $color-text-main;
+  }
+  .td-email {
+    color: rgba($color-text-main, 0.7);
   }
 }
 
 .btn-icon {
-  background: $color-bg-base;
-  border: 1px solid $color-bg-alt;
-  border-radius: 4px;
-  font-size: 1.1rem;
-  cursor: pointer;
-  padding: 6px;
-  display: flex;
-  transition: all 0.2s;
-  &.edit { color: $color-primary; &:hover { background: $color-primary; color: white; } }
-  &.delete { color: $color-secondary; &:hover { background: $color-secondary; color: white; } }
+  background-color: $color-bg-base;
+  border-color: $color-bg-alt;
+  &.view {
+    color: $color-primary;
+    &:hover { background-color: $color-primary; color: white; }
+  }
+  &.edit {
+    color: $color-primary;
+    &:hover { background-color: $color-primary; color: white; }
+  }
+  &.delete {
+    color: $color-secondary;
+    &:hover { background-color: $color-secondary; color: white; }
+  }
 }
 
 .table-footer {
-  padding: 1rem 1.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: white;
+  border-top-color: rgba($color-bg-alt, 0.3);
+  .page-info {
+    color: rgba($color-text-main, 0.5);
+  }
+}
 
-  .page-info { color: $color-text-main; opacity: 0.5; font-size: 0.8rem; }
+.nav-buttons button {
+  border-color: $color-bg-alt;
+  color: $color-primary;
+  &:not(:disabled):hover {
+    background-color: $color-bg-base;
+  }
+}
 
-  .nav-buttons {
-    display: flex;
-    gap: 8px;
-    button {
-      background: white;
-      border: 1px solid $color-bg-alt;
-      color: $color-primary;
-      padding: 6px 12px;
-      border-radius: 4px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      cursor: pointer;
-      &:disabled { opacity: 0.3; }
-      &:not(:disabled):hover { background: $color-bg-base; }
+.btn-cancel {
+  border-color: $color-bg-alt;
+  color: $color-text-main;
+  &:hover {
+    background-color: rgba($color-bg-alt, 0.3);
+  }
+}
+
+.btn-submit {
+  background-color: $color-primary;
+  &:hover {
+    background-color: rgba($color-primary, 0.9);
+  }
+}
+
+.view-modal-content {
+  background-color: $color-bg-base;
+  --background: #{$color-bg-base};
+}
+
+.detail-card {
+  border-color: rgba($color-bg-alt, 0.5);
+  .detail-header {
+    background-color: rgba($color-bg-alt, 0.2);
+    border-bottom-color: rgba($color-bg-alt, 0.3);
+  }
+  .avatar {
+    background-color: $color-primary;
+  }
+  .name {
+    color: $color-text-main;
+  }
+  .role {
+    color: $color-primary;
+    background-color: rgba($color-primary, 0.1);
+  }
+  .section-title {
+    color: rgba($color-text-main, 0.5);
+    border-bottom-color: rgba($color-bg-alt, 0.3);
+  }
+  .icon-box {
+    background-color: $color-bg-base;
+    color: $color-primary;
+  }
+  .label {
+    color: rgba($color-text-main, 0.5);
+  }
+  .value {
+    color: $color-text-main;
+  }
+  .footer {
+    background-color: $color-bg-base;
+    border-top-color: rgba($color-bg-alt, 0.5);
+  }
+  .btn-close {
+    border-color: $color-bg-alt;
+    color: $color-text-main;
+    &:hover {
+      background-color: rgba($color-bg-alt, 0.2);
     }
   }
 }
 
-.form-container {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  .custom-input {
-    --background: $color-bg-base;
-    --border-radius: 4px;
-    --highlight-color-focused: $color-primary;
-  }
-  .btn-submit {
-    background: $color-primary;
-    color: white;
-    border: none;
-    padding: 1rem;
-    border-radius: 4px;
-    font-weight: 700;
-    margin-top: 1rem;
-    cursor: pointer;
-    &:disabled { opacity: 0.5; }
-  }
+ion-toolbar {
+  --background: #{$color-primary} !important;
+  --color: white !important;
 }
 
-ion-toolbar { --background: $color-primary; --color: white; }
+ion-item {
+  --background: white !important;
+  --highlight-color-focused: #{$color-primary} !important;
+}
+
+ion-input {
+  color: $color-text-main;
+}

@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { AuthService } from '../../services/auth/auth-service';
-import { RouterLink} from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-header-admin',
@@ -12,6 +12,7 @@ import { RouterLink} from '@angular/router';
 })
 export class HeaderAdminComponent {
   public authService = inject(AuthService);
+  private router = inject(Router);
   isMenuOpen = false;
   public user = this.authService.currentUser()?.userOutputDto;
   toggleMenu() {
@@ -20,6 +21,7 @@ export class HeaderAdminComponent {
 
   logout() {
     this.authService.logout();
+    this.router.navigate(['/login']);
     // Opcional: redirigir al inicio tras cerrar sesión
   }
 

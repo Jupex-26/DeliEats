@@ -20,11 +20,18 @@ import {
   chevronBackOutline,
   chevronForwardOutline,
   searchOutline,
+  eyeOutline,
+  closeOutline,
+  mailOutline,
+  callOutline,
+  calendarOutline,
+  locationOutline
 } from 'ionicons/icons';
 import { ClienteService } from '../../services/cliente/cliente-service';
 import { ClienteOutputDto, ClienteInputDto } from '../../types';
 import { ConfirmModalComponent } from '../../shared/confirm-modal/confirm-modal.component';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-clientes-admin',
@@ -42,6 +49,7 @@ import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
     IonInput,
     ConfirmModalComponent,
     IonItem,
+    DatePipe,
   ],
   templateUrl: './clientes-admin.component.html',
   styleUrls: ['./clientes-admin.component.scss'],
@@ -58,7 +66,9 @@ export class ClientesAdminComponent implements OnInit {
 
   isModalOpen = signal(false);
   isConfirmModalOpen = signal(false);
+  isViewModalOpen = signal(false);
   editingCliente = signal<ClienteOutputDto | null>(null);
+  viewingCliente = signal<ClienteOutputDto | null>(null);
   clienteIdParaEliminar = signal<number | null>(null);
 
   private debouncer = new Subject<string>();
@@ -72,6 +82,12 @@ export class ClientesAdminComponent implements OnInit {
       chevronBackOutline,
       chevronForwardOutline,
       searchOutline,
+      eyeOutline,
+      closeOutline,
+      mailOutline,
+      callOutline,
+      calendarOutline,
+      locationOutline
     });
 
     this.debouncer.pipe(debounceTime(400), distinctUntilChanged()).subscribe((valor) => {
@@ -116,6 +132,11 @@ export class ClientesAdminComponent implements OnInit {
     this.editingCliente.set(cliente);
     this.clienteForm = { ...cliente, rolId: 2 };
     this.isModalOpen.set(true);
+  }
+
+  abrirModalVer(cliente: ClienteOutputDto) {
+    this.viewingCliente.set(cliente);
+    this.isViewModalOpen.set(true);
   }
 
   confirmarEliminar(id: number) {
