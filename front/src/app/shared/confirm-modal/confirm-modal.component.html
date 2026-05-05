@@ -1,37 +1,29 @@
 <ion-modal [isOpen]="isOpen" (didDismiss)="onCancel()" class="custom-modal" [backdropDismiss]="false">
   <ng-template>
-    <ion-header class="ion-no-border">
-      <ion-toolbar class="deli-toolbar">
-        <ion-title class="font-header">{{ title }}</ion-title>
-      </ion-toolbar>
-    </ion-header>
+    <div class="modal-wrapper flex flex-col w-full h-full">
+      <!-- Header -->
+      <div class="modal-header py-4 px-6 text-center font-bold tracking-wide text-lg">
+        {{ title }}
+      </div>
 
-    <ion-content class="ion-padding transparent-content">
-      <!-- Contenedor principal con tu estilo custom-bg -->
-      <div class="modal-body-wrapper custom-bg">
-
-        <div class="main-message font-body">
+      <!-- Body -->
+      <div class="modal-body p-8 flex flex-col items-center">
+        <div class="main-message text-center text-lg mb-8">
           {{ message }}
         </div>
 
-        <div class="footer-buttons ion-margin-top">
-          <!-- Botón Cancelar (Estilo minimalista) -->
-          <ion-button expand="block" fill="clear" (click)="onCancel()" class="btn-cancel font-bold">
+        <div class="flex justify-center w-full gap-4">
+          <button class="btn-cancel px-6 py-3 rounded-lg font-bold text-sm transition-colors border w-full" (click)="onCancel()">
             {{ cancelText }}
-          </ion-button>
+          </button>
 
-          <!-- Botón Confirmar (Estilo sólido: primario o error) -->
-          <ion-button
-            expand="block"
-            (click)="onConfirm()"
+          <button class="btn-submit px-6 py-3 rounded-lg font-bold text-sm text-white transition-colors shadow-md w-full" 
             [class.btn-danger]="dangerAction"
-            [class.btn-confirm]="!dangerAction"
-            class="submit-btn font-bold">
+            (click)="onConfirm()">
             {{ confirmText }}
-          </ion-button>
+          </button>
         </div>
-
       </div>
-    </ion-content>
+    </div>
   </ng-template>
 </ion-modal>

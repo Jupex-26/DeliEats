@@ -1,66 +1,59 @@
+@use '../../../styles/styles' as *;
 @use '../../../styles/variables' as *;
 
-// Reutilizamos la lógica del Info Modal para la altura automática
-.transparent-content {
+ion-modal.custom-modal {
+  --height: auto;
+  --width: 90%;
+  --max-width: 450px;
+  --border-radius: 16px;
   --background: transparent;
+  --backdrop-opacity: 0.7; /* Fondo oscuro opaco */
+  
+  &::part(content) {
+    border-radius: 16px;
+    background: transparent;
+    overflow: visible;
+  }
 }
 
-.custom-bg {
+.modal-wrapper {
   background-color: $color-bg-base;
   border-radius: 16px;
-  padding: 24px; // Un poco más de aire para confirmaciones
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  overflow: hidden;
 }
 
-.custom-modal ion-content {
-  --height: auto;
-  overflow: visible;
+.modal-header {
+  background-color: $color-primary;
+  color: white;
+}
 
-  &::part(scroll) {
-    overflow: visible;
-    position: relative;
-  }
+.modal-body {
+  background-color: $color-bg-base;
 }
 
 .main-message {
   color: $color-text-main;
-  font-size: 1.1rem;
-  text-align: center;
-  line-height: 1.5;
 }
 
-// Contenedor de botones en horizontal para Desktop, vertical para Mobile si prefieres
-.footer-buttons {
-  display: flex;
-  flex-direction: row;
-  gap: 12px;
-  width: 100%;
-}
-
-// Estilos de botones específicos
 .btn-cancel {
-  --color: #{$color-text-main};
-  --background-hover: rgba(0, 0, 0, 0.05);
-  flex: 1;
+  background-color: transparent;
+  border-color: $color-bg-alt;
+  color: $color-text-main;
+  &:hover {
+    background-color: rgba($color-bg-alt, 0.3);
+  }
 }
 
-.btn-confirm {
-  --background: #{$color-primary};
-  --color: white;
-  flex: 1.5; // El botón de acción principal es ligeramente más ancho
+.btn-submit {
+  background-color: $color-primary;
+  &:hover {
+    background-color: rgba($color-primary, 0.9);
+  }
 }
 
 .btn-danger {
-  --background: #{$color-error};
-  --color: white;
-  flex: 1.5;
-}
-
-// Ajuste para el Toolbar (Deli style)
-.deli-toolbar {
-  --background: #{$color-bg-base};
-  --color: #{$color-text-main};
-  text-align: center;
+  background-color: $color-error;
+  &:hover {
+    background-color: rgba($color-error, 0.9);
+  }
 }
