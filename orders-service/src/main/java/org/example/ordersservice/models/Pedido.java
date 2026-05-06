@@ -2,6 +2,7 @@ package org.example.ordersservice.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -75,7 +76,11 @@ public class Pedido {
 
         return this.detalles.stream()
                 .filter(Objects::nonNull)
-                .map(d -> d.getPrecio().multiply(BigDecimal.valueOf(d.getCantidad())))
+                .map(d -> d.getPrecioUnitario().multiply(BigDecimal.valueOf(d.getCantidad())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public boolean hasDetalles() {
+        return !CollectionUtils.isEmpty(this.detalles);
     }
 }

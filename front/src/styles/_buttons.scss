@@ -2,10 +2,11 @@
 // DeliEats - Componentes de Botones
 // ==========================================
 @use "variables" as *;
+
 @layer components {
+
   // Clase base para botones (Standard)
   .btn {
-    @apply inline-flex items-center justify-center font-semibold cursor-pointer;
     border-radius: 8px; //
     padding: 12px 24px;
     font-size: 14px; //
@@ -18,16 +19,17 @@
     }
 
     // Estilo para iconos dentro de botones
-    i, mat-icon, .icon {
-      @apply mr-2;
+    i,
+    mat-icon,
+    .icon {
       font-size: 20px;
       display: flex;
       align-items: center;
     }
 
     // Estado Deshabilitado
-    &:disabled, &.btn-disabled {
-      @apply cursor-not-allowed;
+    &:disabled,
+    &.btn-disabled {
       opacity: 0.5;
       background-color: $color-bg-alt;
       color: $color-text-main;

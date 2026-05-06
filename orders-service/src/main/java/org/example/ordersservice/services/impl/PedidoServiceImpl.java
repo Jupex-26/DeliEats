@@ -12,16 +12,24 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
 public class PedidoServiceImpl implements PedidoService {
-    
+
     private final PedidoRepository pedidoRepository;
     private final EstadoService estadoService;
 
     @Override
     public Pedido save(Pedido pedido) {
+        pedido.setFechaCompra(LocalDateTime.now());
+        pedido.setEstado(estadoService.findByNombre("PENDIENTE"));
+
+        if (pedido.hasDetalles()){
+            pedido.setPrecio(pedido.calcularTotal());
+        }
+
         return pedidoRepository.save(pedido);
     }
 

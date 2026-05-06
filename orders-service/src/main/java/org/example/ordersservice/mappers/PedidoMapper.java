@@ -20,9 +20,9 @@ public interface PedidoMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "fechaCompra", ignore = true) // Se asigna en el Service: LocalDateTime.now()
-    @Mapping(target = "cliente", ignore = true)     // Se busca en DB por clienteId
+    @Mapping(target = "cliente.id", source = "clienteId")
     @Mapping(target = "repartidor", ignore = true)  // Se asigna después cuando alguien lo acepta
     @Mapping(target = "estado", ignore = true)      // Se asigna el estado inicial "PENDIENTE"
-    @Mapping(target = "detalles", ignore = true)    // Se procesan los detalles uno a uno en el Service
+    @Mapping(target = "detalles", source = "detalles")    // Se procesan los detalles uno a uno en el Service
     Pedido toEntity(PedidoInputDto dto);
 }
