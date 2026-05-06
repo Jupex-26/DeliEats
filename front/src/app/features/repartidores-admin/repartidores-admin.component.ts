@@ -1,0 +1,193 @@
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import {
+  IonIcon,
+  IonModal,
+  IonInput,
+  IonItem,
+  IonToggle
+} from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import {
+  addCircleOutline,
+  createOutline,
+  trashOutline,
+  chevronBackOutline,
+  chevronForwardOutline,
+  searchOutline,
+  eyeOutline,
+  closeOutline,
+  mailOutline,
+  callOutline,
+  locationOutline
+} from 'ionicons/icons';
+import { RepartidorService } from '../../services/repartidor/repartidor-service';
+import { RepartidorOutputDto, RepartidorInputDto } from '../../types';
+import { ConfirmModalComponent } from '../../shared/confirm-modal/confirm-modal.component';
+import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+
+@Component({
+  selector: 'app-repartidores-admin',
+  standalone: true,
+  imports: [
+    FormsModule,
+    IonIcon,
+    IonModal,
+    IonInput,
+    ConfirmModalComponent,
+    IonItem,
+    IonToggle
+  ],
+  templateUrl: './repartidores-admin.component.html',
+  styleUrls: ['./repartidores-admin.component.scss'],
+})
+export class RepartidoresAdminComponent implements OnInit {
+  private repartidorService = inject(RepartidorService);
+
+  // --- Estado ---
+  repartidores = signal<RepartidorOutputDto[]>([]);
+  currentPage = signal(0);
+  pageSize = signal(10);
+  totalPages = signal(0);
+  totalElements = signal(0);
+  terminoBusqueda = signal('');
+
+  isModalOpen = signal(false);
+  isConfirmModalOpen = signal(false);
+  isViewModalOpen = signal(false);
+  
+  editingRepartidor = signal<RepartidorOutputDto | null>(null);
+  viewingRepartidor = signal<RepartidorOutputDto | null>(null);
+  repartidorIdParaEliminar = signal<number | null>(null);
+
+  repartidorForm: RepartidorInputDto = this.getEmptyRepartidorForm();
+
+  private debouncer = new Subject<string>();
+
+  constructor() {
+    addIcons({
+      addCircleOutline,
+      createOutline,
+      trashOutline,
+      chevronBackOutline,
+      chevronForwardOutline,
+      searchOutline,
+      eyeOutline,
+      closeOutline,
+      mailOutline,
+      callOutline,
+      locationOutline
+    });
+
+    this.debouncer.pipe(debounceTime(400), distinctUntilChanged()).subscribe((valor) => {
+      this.terminoBusqueda.set(valor);
+      this.currentPage.set(0);
+      this.cargarRepartidores();
+    });
+  }
+
+  ngOnInit() {
+    this.cargarRepartidores();
+  }
+
+  cargarRepartidores() {
+    this.repartidorService
+      .listar(this.currentPage(), this.pageSize())
+      .subscribe({
+        next: (response) => {
+          this.repartidores.set(response.content);
+          this.totalPages.set(response.totalPages);
+          this.totalElements.set(response.totalElements);
+        },
+      });
+  }
+
+  onSearch(event: any) {
+    this.debouncer.next(event.target.value);
+  }
+
+  cambiarPagina(delta: number) {
+    this.currentPage.update((p) => p + delta);
+    this.cargarRepartidores();
+  }
+
+  abrirModalNuevo() {
+    this.editingRepartidor.set(null);
+    this.repartidorForm = this.getEmptyRepartidorForm();
+    this.isModalOpen.set(true);
+  }
+
+  abrirModalEditar(repartidor: RepartidorOutputDto) {
+    this.editingRepartidor.set(repartidor);
+    this.repartidorForm = { ...repartidor, rolId: 4 }; // Rol Repartidor
+    this.isModalOpen.set(true);
+  }
+
+  abrirModalVer(repartidor: RepartidorOutputDto) {
+    this.viewingRepartidor.set(repartidor);
+    this.isViewModalOpen.set(true);
+  }
+
+  confirmarEliminar(id: number) {
+    this.repartidorIdParaEliminar.set(id);
+    this.isConfirmModalOpen.set(true);
+  }
+
+  ejecutarEliminacion() {
+    const id = this.repartidorIdParaEliminar();
+    if (id) {
+      this.repartidorService.eliminar(id).subscribe(() => {
+        this.isConfirmModalOpen.set(false);
+        this.cargarRepartidores();
+      });
+    }
+  }
+
+  guardarRepartidor() {
+    const editId = this.editingRepartidor()?.id;
+    const request = editId
+      ? this.repartidorService.actualizar(editId, this.repartidorForm)
+      : this.repartidorService.crear(this.repartidorForm);
+
+    request.subscribe(() => {
+      this.isModalOpen.set(false);
+      this.cargarRepartidores();
+    });
+  }
+
+  toggleDisponibilidad(repartidor: RepartidorOutputDto, event: any) {
+    // Evitamos propagar eventos (por si pulsamos fila)
+    event.stopPropagation();
+    
+    // Obtenemos el nuevo valor
+    const isDisponible = event.detail.checked;
+    
+    // Llamamos al servicio (método optimizado)
+    this.repartidorService.actualizarDisponibilidad(repartidor.id, isDisponible).subscribe({
+      next: () => {
+        // Actualizamos localmente
+        const actualizados = this.repartidores().map(r => 
+          r.id === repartidor.id ? { ...r, disponible: isDisponible } : r
+        );
+        this.repartidores.set(actualizados);
+      },
+      error: () => {
+        // Revertir si hay error
+        const prev = this.repartidores().map(r => r);
+        this.repartidores.set(prev);
+      }
+    });
+  }
+
+  private getEmptyRepartidorForm(): RepartidorInputDto {
+    return {
+      nombre: '',
+      email: '',
+      telefono: undefined,
+      direccion: '',
+      foto: '',
+      rolId: 4, // Rol Repartidor (asumimos 4)
+      disponible: false,
+    };
+  }
+}

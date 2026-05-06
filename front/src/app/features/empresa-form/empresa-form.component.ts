@@ -1,13 +1,13 @@
 import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { IonItem, IonInput, IonTextarea, IonButton } from '@ionic/angular/standalone';
+import { IonItem, IonInput, IonTextarea } from '@ionic/angular/standalone';
 import { EmpresaInputDto } from '../../types';
 import { Validador } from '../../validadores/validador';
 
 @Component({
   selector: 'app-empresa-form',
   standalone: true,
-  imports: [IonItem, IonInput, IonTextarea, IonButton, ReactiveFormsModule],
+  imports: [IonItem, IonInput, IonTextarea, ReactiveFormsModule],
   templateUrl: './empresa-form.component.html',
   styleUrls: ['./empresa-form.component.scss'],
 })

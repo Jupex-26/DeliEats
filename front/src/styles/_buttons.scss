@@ -1,7 +1,7 @@
 // ==========================================
 // DeliEats - Componentes de Botones
 // ==========================================
-@import "variables";
+@use "variables" as *;
 @layer components {
   // Clase base para botones (Standard)
   .btn {

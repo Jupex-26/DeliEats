@@ -1,7 +1,7 @@
 // ==========================================
 // DeliEats - Estilos Base & Reseteo Global
 // ==========================================
-@import "variables";
+@use "variables" as *;
 @layer base {
 
   // 1. Configuración del documento y scroll
