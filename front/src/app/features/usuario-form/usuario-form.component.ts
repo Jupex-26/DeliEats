@@ -1,12 +1,12 @@
 import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { IonItem, IonInput, IonButton } from '@ionic/angular/standalone';
+import { IonItem, IonInput } from '@ionic/angular/standalone';
 import { ClienteInputDto } from '../../types';
 import { Validador } from '../../validadores/validador';
 @Component({
   selector: 'app-usuario-form',
   standalone: true,
-  imports: [IonItem, IonInput, IonButton, ReactiveFormsModule],
+  imports: [IonItem, IonInput, ReactiveFormsModule],
   templateUrl: './usuario-form.component.html',
   styleUrls: ['./usuario-form.component.scss'],
 })

@@ -1,85 +1,97 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
-  <div class="input-group">
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="modern-form flex flex-col gap-5 w-full">
+  <div class="form-grid grid grid-cols-1 md:grid-cols-2 gap-5">
 
     <!-- NOMBRE -->
-    <ion-item lines="full">
-      <ion-input formControlName="nombre" type="text" placeholder="Nombre completo"></ion-input>
-    </ion-item>
-    @if (form.get('nombre')?.touched) {
-      @if (form.get('nombre')?.hasError('required')) {
-        <div class="error-text">El nombre es obligatorio.</div>
+    <div class="form-group md:col-span-2">
+      <ion-item lines="none" class="custom-input rounded-xl shadow-sm border">
+        <ion-input formControlName="nombre" type="text" label="Nombre Completo" labelPlacement="stacked" placeholder="Nombre completo" class="font-medium"></ion-input>
+      </ion-item>
+      @if (form.get('nombre')?.touched) {
+        @if (form.get('nombre')?.hasError('required')) {
+          <div class="error-text text-xs mt-1 ml-2 font-medium">El nombre es obligatorio.</div>
+        }
+        @if (form.get('nombre')?.hasError('nombreInvalido')) {
+          <div class="error-text text-xs mt-1 ml-2 font-medium">El nombre solo debe contener letras.</div>
+        }
       }
-      <!-- CAMBIO: 'nombreInvalido' coincide con tu código Java/TS -->
-      @if (form.get('nombre')?.hasError('nombreInvalido')) {
-        <div class="error-text">El nombre solo debe contener letras.</div>
-      }
-    }
+    </div>
 
     <!-- EMAIL -->
-    <ion-item lines="full">
-      <ion-input formControlName="email" type="email" placeholder="Correo electrónico"></ion-input>
-    </ion-item>
-    @if (form.get('email')?.touched) {
-      @if (form.get('email')?.hasError('required')) {
-        <div class="error-text">El correo es obligatorio.</div>
+    <div class="form-group">
+      <ion-item lines="none" class="custom-input rounded-xl shadow-sm border">
+        <ion-input formControlName="email" type="email" label="Correo Electrónico" labelPlacement="stacked" placeholder="Correo electrónico" class="font-medium"></ion-input>
+      </ion-item>
+      @if (form.get('email')?.touched) {
+        @if (form.get('email')?.hasError('required')) {
+          <div class="error-text text-xs mt-1 ml-2 font-medium">El correo es obligatorio.</div>
+        }
+        @if (form.get('email')?.hasError('email')) {
+          <div class="error-text text-xs mt-1 ml-2 font-medium">Debe ser un correo válido.</div>
+        }
       }
-      @if (form.get('email')?.hasError('email')) {
-        <div class="error-text">Debe ser un correo válido.</div>
-      }
-    }
+    </div>
 
     <!-- PASSWORD -->
-    <ion-item lines="full">
-      <ion-input formControlName="password" type="password" placeholder="Contraseña"></ion-input>
-    </ion-item>
-    @if (form.get('password')?.touched) {
-      @if (form.get('password')?.hasError('required')) {
-        <div class="error-text">La contraseña es obligatoria.</div>
+    <div class="form-group">
+      <ion-item lines="none" class="custom-input rounded-xl shadow-sm border">
+        <ion-input formControlName="password" type="password" label="Contraseña" labelPlacement="stacked" placeholder="••••••••" class="font-medium"></ion-input>
+      </ion-item>
+      @if (form.get('password')?.touched) {
+        @if (form.get('password')?.hasError('required')) {
+          <div class="error-text text-xs mt-1 ml-2 font-medium">La contraseña es obligatoria.</div>
+        }
+        @if (form.get('password')?.hasError('strongPassword')) {
+          <div class="error-text text-xs mt-1 ml-2 font-medium">Mínimo 8 caracteres, mayúscula, número y símbolo.</div>
+        }
       }
-      <!-- CAMBIO: 'strongPassword' coincide con tu Regex -->
-      @if (form.get('password')?.hasError('strongPassword')) {
-        <div class="error-text">Mínimo 8 caracteres, mayúscula, número y símbolo.</div>
-      }
-    }
+    </div>
 
     <!-- TELÉFONO -->
-    <ion-item lines="full">
-      <ion-input formControlName="telefono" type="tel" placeholder="Teléfono (9 dígitos)"></ion-input>
-    </ion-item>
-    <!-- CAMBIO: 'telefonoInvalido' coincide con tu validador -->
-    @if (form.get('telefono')?.touched && form.get('telefono')?.hasError('telefonoInvalido')) {
-      <div class="error-text">Debe ser un número español (6, 7, 8 o 9).</div>
-    }
-
-    <!-- DIRECCIÓN -->
-    <ion-item lines="full">
-      <ion-input formControlName="direccion" type="text" placeholder="Dirección"></ion-input>
-    </ion-item>
-    @if (form.get('direccion')?.touched && form.get('direccion')?.hasError('required')) {
-      <div class="error-text">La dirección es obligatoria.</div>
-    }
+    <div class="form-group">
+      <ion-item lines="none" class="custom-input rounded-xl shadow-sm border">
+        <ion-input formControlName="telefono" type="tel" label="Teléfono" labelPlacement="stacked" placeholder="9 dígitos" class="font-medium"></ion-input>
+      </ion-item>
+      @if (form.get('telefono')?.touched && form.get('telefono')?.hasError('telefonoInvalido')) {
+        <div class="error-text text-xs mt-1 ml-2 font-medium">Debe ser un número español (6, 7, 8 o 9).</div>
+      }
+    </div>
 
     <!-- FECHA NACIMIENTO -->
-    <ion-item lines="full">
-      <ion-input
-        formControlName="fechaNacimiento"
-        type="date"
-        placeholder="Fecha de Nacimiento"
-        [max]="fechaLimite16.toISOString().split('T')[0]">
-      </ion-input>
-    </ion-item>
-    @if (form.get('fechaNacimiento')?.touched) {
-      @if (form.get('fechaNacimiento')?.hasError('required')) {
-        <div class="error-text">La fecha de nacimiento es obligatoria.</div>
+    <div class="form-group">
+      <ion-item lines="none" class="custom-input rounded-xl shadow-sm border">
+        <ion-input
+          formControlName="fechaNacimiento"
+          type="date"
+          label="Fecha de Nacimiento"
+          labelPlacement="stacked"
+          placeholder="Fecha de Nacimiento"
+          [max]="fechaLimite16.toISOString().split('T')[0]"
+          class="font-medium">
+        </ion-input>
+      </ion-item>
+      @if (form.get('fechaNacimiento')?.touched) {
+        @if (form.get('fechaNacimiento')?.hasError('required')) {
+          <div class="error-text text-xs mt-1 ml-2 font-medium">La fecha de nacimiento es obligatoria.</div>
+        }
+        @if (form.get('fechaNacimiento')?.hasError('fechaPosterior')) {
+          <div class="error-text text-xs mt-1 ml-2 font-medium">Debes ser mayor de 16 años para registrarte.</div>
+        }
       }
-      @if (form.get('fechaNacimiento')?.hasError('fechaPosterior')) {
-        <div class="error-text">Debes ser mayor de 16 años para registrarte.</div>
+    </div>
+
+    <!-- DIRECCIÓN -->
+    <div class="form-group md:col-span-2">
+      <ion-item lines="none" class="custom-input rounded-xl shadow-sm border">
+        <ion-input formControlName="direccion" type="text" label="Dirección" labelPlacement="stacked" placeholder="Tu dirección completa" class="font-medium"></ion-input>
+      </ion-item>
+      @if (form.get('direccion')?.touched && form.get('direccion')?.hasError('required')) {
+        <div class="error-text text-xs mt-1 ml-2 font-medium">La dirección es obligatoria.</div>
       }
-    }
+    </div>
 
   </div>
 
-  <ion-button expand="block" type="submit" class="submit-btn" [disabled]="form.invalid">
-    Completar Registro
-  </ion-button>
+  <button type="submit" class="btn-submit w-full mt-4 font-bold py-3.5 px-4 rounded-xl shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed" [disabled]="form.invalid">
+    COMPLETAR REGISTRO
+  </button>
 </form>

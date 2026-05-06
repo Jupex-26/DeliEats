@@ -1,58 +1,69 @@
 <ion-content>
-  <div class="login-container">
-    <div class="login-card">
-      <div class="logo-title">DeliEats</div>
-      <p class="subtitle">Bienvenido de nuevo. ¡Qué hambre!</p>
+  <div class="login-wrapper min-h-screen flex items-center justify-center p-6">
+    <div class="login-card w-full max-w-md rounded-2xl shadow-xl p-10 border">
+      
+      <div class="text-center mb-8">
+        <h1 class="logo-title text-4xl font-extrabold mb-2 tracking-tight">DeliEats</h1>
+        <p class="subtitle font-medium">Bienvenido de nuevo. ¡Qué hambre!</p>
+      </div>
 
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-5">
 
-        <div class="input-group">
-          <ion-item lines="full">
+        <div class="form-group">
+          <ion-item lines="none" class="custom-input rounded-xl shadow-sm border">
             <ion-input
               formControlName="email"
               type="email"
+              label="Correo Electrónico"
+              labelPlacement="stacked"
               placeholder="Tu correo electrónico"
+              class="font-medium"
              >
             </ion-input>
           </ion-item>
           @if (loginForm.get('email')?.touched && loginForm.get('email')?.hasError('required')) {
-            <div class="error-text">El correo es obligatorio.</div>
+            <div class="error-text text-xs mt-1 ml-2 font-medium">El correo es obligatorio.</div>
           }
           @if (loginForm.get('email')?.touched && loginForm.get('email')?.hasError('email')) {
-            <div class="error-text">Debe ser un correo válido.</div>
+            <div class="error-text text-xs mt-1 ml-2 font-medium">Debe ser un correo válido.</div>
           }
+        </div>
 
-          <ion-item lines="full">
+        <div class="form-group">
+          <ion-item lines="none" class="custom-input rounded-xl shadow-sm border">
             <ion-input
               formControlName="password"
               type="password"
-              placeholder="Tu contraseña"
+              label="Contraseña"
+              labelPlacement="stacked"
+              placeholder="••••••••"
+              class="font-medium"
               >
             </ion-input>
           </ion-item>
           @if (loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required')) {
-            <div class="error-text">La contraseña es obligatoria.</div>
+            <div class="error-text text-xs mt-1 ml-2 font-medium">La contraseña es obligatoria.</div>
           }
           @if (loginForm.get('password')?.touched && loginForm.get('password')?.hasError('minlength')) {
-            <div class="error-text">Debe tener al menos 8 caracteres.</div>
+            <div class="error-text text-xs mt-1 ml-2 font-medium">Debe tener al menos 8 caracteres.</div>
           }
         </div>
 
-        <ion-button expand="block" type="submit" class="submit-btn" [disabled]="loginForm.invalid || isLoading">
+        <button type="submit" class="btn-submit w-full mt-2 font-bold py-3.5 px-4 rounded-xl shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center h-[54px]" [disabled]="loginForm.invalid || isLoading">
           @if (isLoading) {
-            <ion-spinner name="crescent"></ion-spinner>
+            <ion-spinner name="crescent" color="light"></ion-spinner>
           } @else {
-            Iniciar Sesión
+            INICIAR SESIÓN
           }
-        </ion-button>
+        </button>
 
       </form>
 
-      <div class="register-link">
-        ¿No tienes cuenta? <a routerLink="/registro">Regístrate aquí</a>
+      <div class="text-center mt-6 text-sm">
+        <span class="text-main">¿No tienes cuenta?</span> <a routerLink="/registro" class="link-secondary font-bold transition-all">Regístrate aquí</a>
       </div>
-      <div class="home-link">
-         <a routerLink="/home">Volver al inicio</a>
+      <div class="text-center mt-4">
+         <a routerLink="/home" class="link-home text-sm transition-all">Volver al inicio</a>
       </div>
     </div>
   </div>

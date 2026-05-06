@@ -35,7 +35,7 @@ $aside-width: 260px;
   box-shadow: 2px 0 5px rgba(0,0,0,0.2);
 
   &:hover {
-    background: lighten($color-primary, 10%);
+    background: $color-text-main;
   }
 
   .arrow-icon {
