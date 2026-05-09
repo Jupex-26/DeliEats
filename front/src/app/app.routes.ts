@@ -33,6 +33,10 @@ export const routes: Routes = [
         path: 'restaurantes',
         component: RestaurantesComponent,
       },
+      {
+        path: 'restaurantes/:id',
+        loadComponent: () => import('./features/restaurante-cliente/restaurante-cliente.component').then(m => m.RestauranteClienteComponent)
+      },
     ],
   },
   {

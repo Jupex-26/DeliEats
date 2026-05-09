@@ -7,14 +7,14 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface ClienteMapper {
+public abstract class ClienteMapper {
 
     // Entidad -> DTO (Para enviar al Frontend)
     @Mapping(target = "nombreRol", source = "rol.nombre")
-    ClienteOutputDto toDto(Cliente cliente);
+    public abstract ClienteOutputDto toDto(Cliente cliente);
 
     // DTO -> Entidad (Para crear el Cliente en el registro)
     @Mapping(target = "pedidos", ignore = true)
     @Mapping(target = "carritos", ignore = true)
-    Cliente toEntity(ClienteInputDto dto);
+    public abstract Cliente toEntity(ClienteInputDto dto);
 }

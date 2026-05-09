@@ -7,12 +7,12 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface RepartidorMapper {
+public abstract class RepartidorMapper {
 
     @Mapping(target = "nombreRol", source = "rol.nombre")
-    RepartidorOutputDto toDto(Repartidor repartidor);
+    public abstract RepartidorOutputDto toDto(Repartidor repartidor);
 
 
     @Mapping(target = "pedidos", ignore = true)
-    Repartidor toEntity(RepartidorInputDto dto);
+    public abstract Repartidor toEntity(RepartidorInputDto dto);
 }

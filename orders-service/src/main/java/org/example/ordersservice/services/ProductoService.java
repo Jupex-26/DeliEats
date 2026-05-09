@@ -14,13 +14,10 @@ public interface ProductoService {
 
     Page<Producto> findByCategoriaId(Long categoriaId, Pageable pageable);
 
-    Page<Producto> findByNombreContaining(String nombre, Pageable pageable);
-
     Producto update(Long id, Producto producto);
 
     void deleteById(Long id);
 
     void updateStock(Long id, Integer cantidad);
 
-    boolean existsById(Long id);
 }

@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = {DetallePedidoMapper.class})
-public interface PedidoMapper {
+public abstract class PedidoMapper {
 
     @Mapping(target = "precioTotal", source = "precio")
     @Mapping(target = "clienteId", source = "cliente.id")
@@ -17,7 +17,7 @@ public interface PedidoMapper {
     @Mapping(target = "repartidorId", source = "repartidor.id")
     @Mapping(target = "nombreRepartidor", source = "repartidor.nombre")
     // El campo 'precioTotal' se setea en el Service tras calcular la suma de los detalles
-    PedidoOutputDto toDto(Pedido pedido);
+    public abstract PedidoOutputDto toDto(Pedido pedido);
 
     @Mapping(target = "precio", ignore = true)
     @Mapping(target = "id", ignore = true)
@@ -26,5 +26,5 @@ public interface PedidoMapper {
     @Mapping(target = "repartidor.id", source = "idRepartidor")
     @Mapping(target = "estado.id", source = "idEstado")      // Se asigna el estado inicial "PENDIENTE"
     @Mapping(target = "detalles", source = "detalles")    // Se procesan los detalles uno a uno en el Service
-    Pedido toEntity(PedidoInputDto dto);
+    public abstract Pedido toEntity(PedidoInputDto dto);
 }

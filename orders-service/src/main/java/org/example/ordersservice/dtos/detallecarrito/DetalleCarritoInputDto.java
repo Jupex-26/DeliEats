@@ -6,10 +6,6 @@ import lombok.Data;
 
 @Data
 public class DetalleCarritoInputDto {
-
-    @NotNull(message = "El ID del detalle es necesario para la operación")
-    private Long id;
-
     @NotNull(message = "El ID del carrito es obligatorio")
     private Long carritoId;
 

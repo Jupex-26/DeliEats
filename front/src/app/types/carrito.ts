@@ -9,15 +9,13 @@ export interface Carrito {
 
 export interface CarritoInputDto {
     clienteId: number;
-    productoId: number;
-    cantidad: number;
+    detalles: any[];
 }
 
 export interface CarritoOutputDto {
     id: number;
     clienteId: number;
     nombreCliente: string;
-    estado: string;
-    detalles: DetalleCarritoOutputDto[];
+    detalles: any[];
     precioTotal: number;
 }

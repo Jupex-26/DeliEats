@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
@@ -22,6 +23,7 @@ public class DataInitializer implements CommandLineRunner {
     private final RepartidorRepository repartidorRepository;
     private final ProductoRepository productoRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AperturaRepository aperturaRepository;
 
     @Override
     public void run(String... args) {
@@ -78,7 +80,7 @@ public class DataInitializer implements CommandLineRunner {
                 .build());
 
         // 5. Crear Empresas
-        Empresa empresa1 = empresaRepository.save(Empresa.builder()
+        Empresa pizzaNostra = Empresa.builder()
                 .nombre("Pizza Nostra")
                 .email("contacto@pizzanostra.com")
                 .password(defaultPassword)
@@ -89,9 +91,11 @@ public class DataInitializer implements CommandLineRunner {
                 .correoContacto("info@pizzanostra.com")
                 .telefonoContacto("111222333")
                 .tipoCocina("Italiana")
-                .build());
+                .build();
+        // Guardamos primero para tener el ID
+        pizzaNostra = empresaRepository.save(pizzaNostra);
 
-        Empresa empresa2 = empresaRepository.save(Empresa.builder()
+        Empresa sushiMaster = Empresa.builder()
                 .nombre("Sushi Master")
                 .email("contacto@sushimaster.com")
                 .password(defaultPassword)
@@ -102,7 +106,35 @@ public class DataInitializer implements CommandLineRunner {
                 .correoContacto("info@sushimaster.com")
                 .telefonoContacto("444555666")
                 .tipoCocina("Japonesa")
-                .build());
+                .build();
+        sushiMaster = empresaRepository.save(sushiMaster);
+
+        // 5.1 Crear Aperturas (Horarios)
+        List<Apertura> aperturasPizza = List.of(
+                Apertura.builder()
+                        .dia("Lunes a Viernes")
+                        .horaApertura(LocalDateTime.of(2024, 1, 1, 12, 0))
+                        .horaCierre(LocalDateTime.of(2024, 1, 1, 23, 0))
+                        .empresa(pizzaNostra)
+                        .build(),
+                Apertura.builder()
+                        .dia("Sábados y Domingos")
+                        .horaApertura(LocalDateTime.of(2024, 1, 1, 13, 0))
+                        .horaCierre(LocalDateTime.of(2024, 1, 1, 23, 30))
+                        .empresa(pizzaNostra)
+                        .build()
+        );
+        aperturaRepository.saveAll(aperturasPizza);
+
+        List<Apertura> aperturasSushi = List.of(
+                Apertura.builder()
+                        .dia("Martes a Domingo")
+                        .horaApertura(LocalDateTime.of(2024, 1, 1, 19, 0))
+                        .horaCierre(LocalDateTime.of(2024, 1, 1, 23, 0))
+                        .empresa(sushiMaster)
+                        .build()
+        );
+        aperturaRepository.saveAll(aperturasSushi);
 
         // 6. Crear Repartidores
         repartidorRepository.save(Repartidor.builder()
@@ -131,7 +163,7 @@ public class DataInitializer implements CommandLineRunner {
                 .descripcion("Salsa de tomate, mozzarella y albahaca fresca")
                 .precio(new BigDecimal("10.50"))
                 .cantidad(50)
-                .empresa(empresa1)
+                .empresa(pizzaNostra)
                 .build());
 
         productoRepository.save(Producto.builder()
@@ -139,7 +171,7 @@ public class DataInitializer implements CommandLineRunner {
                 .descripcion("Salsa de tomate, mozzarella y pepperoni picante")
                 .precio(new BigDecimal("12.00"))
                 .cantidad(30)
-                .empresa(empresa1)
+                .empresa(pizzaNostra)
                 .build());
 
         productoRepository.save(Producto.builder()
@@ -147,7 +179,7 @@ public class DataInitializer implements CommandLineRunner {
                 .descripcion("Rollo de arroz relleno de salmón fresco (6 uds)")
                 .precio(new BigDecimal("8.50"))
                 .cantidad(100)
-                .empresa(empresa2)
+                .empresa(sushiMaster)
                 .build());
 
         productoRepository.save(Producto.builder()
@@ -155,7 +187,7 @@ public class DataInitializer implements CommandLineRunner {
                 .descripcion("Corte de atún sobre base de arroz (2 uds)")
                 .precio(new BigDecimal("4.50"))
                 .cantidad(40)
-                .empresa(empresa2)
+                .empresa(sushiMaster)
                 .build());
 
         System.out.println("✅ Datos iniciales cargados con éxito.");

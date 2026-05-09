@@ -39,11 +39,6 @@ public class ProductoServiceImpl implements ProductoService {
     }
 
     @Override
-    public Page<Producto> findByNombreContaining(String nombre, Pageable pageable) {
-        return productoRepository.findByNombreContainingIgnoreCase(nombre, pageable);
-    }
-
-    @Override
     public Producto update(Long id, Producto producto) {
         Producto existingProducto = findById(id);
         producto.setId(existingProducto.getId());
@@ -62,8 +57,4 @@ public class ProductoServiceImpl implements ProductoService {
         productoRepository.save(producto);
     }
 
-    @Override
-    public boolean existsById(Long id) {
-        return productoRepository.existsById(id);
-    }
 }
