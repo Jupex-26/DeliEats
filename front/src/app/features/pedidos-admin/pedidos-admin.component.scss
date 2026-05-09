@@ -74,11 +74,14 @@
   td {
     border-bottom-color: rgba($color-bg-alt, 0.3);
   }
-  .td-name {
+  .td-id {
+    color: $color-primary;
+  }
+  .td-fecha, .td-precio {
     color: $color-text-main;
   }
-  .td-email {
-    color: rgba($color-text-main, 0.7);
+  .td-cliente {
+    color: $color-text-main;
   }
 }
 
@@ -129,9 +132,49 @@
   }
 }
 
-.view-modal-content {
+ion-modal.custom-modal-form {
+  --height: 90%;
+  --width: 90%;
+  --max-width: 800px;
+  --border-radius: 16px;
+  --background: transparent;
+  --backdrop-opacity: 0.7;
+  
+  &::part(content) {
+    border-radius: 16px;
+    background: transparent;
+    overflow: hidden;
+  }
+}
+
+.modal-wrapper {
   background-color: $color-bg-base;
-  --background: #{$color-bg-base};
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.modal-header {
+  background-color: $color-primary;
+  color: white;
+}
+
+.modal-body {
+  background-color: $color-bg-base;
+}
+
+.btn-icon-close {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.custom-input {
+  background-color: white !important;
+  border-color: rgba($color-bg-alt, 0.5);
+}
+
+.error-text {
+  color: $color-error;
 }
 
 .detail-card {
@@ -145,10 +188,6 @@
   }
   .name {
     color: $color-text-main;
-  }
-  .role {
-    color: $color-primary;
-    background-color: rgba($color-primary, 0.1);
   }
   .section-title {
     color: rgba($color-text-main, 0.5);
@@ -177,9 +216,28 @@
   }
 }
 
-ion-toolbar {
-  --background: #{$color-primary} !important;
-  --color: white !important;
+.empty-products-box {
+  background-color: rgba($color-bg-alt, 0.2);
+  border: 2px dashed rgba($color-text-main, 0.2);
+  color: rgba($color-text-main, 0.6);
+}
+
+.product-item {
+  background-color: $color-bg-base;
+  color: $color-text-main;
+  border: 1px solid rgba($color-text-main, 0.1);
+
+  .qty-badge {
+    background-color: rgba($color-primary, 0.15);
+    color: $color-primary;
+  }
+
+  .btn-remove-item {
+    color: $color-secondary;
+    &:hover {
+      background-color: rgba($color-secondary, 0.1);
+    }
+  }
 }
 
 ion-item {

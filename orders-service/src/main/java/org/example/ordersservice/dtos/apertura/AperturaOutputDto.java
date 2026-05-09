@@ -10,6 +10,4 @@ public class AperturaOutputDto {
     private String dia;
     private LocalDateTime horaApertura;
     private LocalDateTime horaCierre;
-    private Long empresaId;
-    private String nombreEmpresa;
 }

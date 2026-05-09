@@ -7,22 +7,27 @@ import org.example.ordersservice.models.Pedido;
 import org.example.ordersservice.repositories.PedidoRepository;
 import org.example.ordersservice.services.EstadoService;
 import org.example.ordersservice.services.PedidoService;
+import org.example.ordersservice.services.RepartidorService;
+import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
 public class PedidoServiceImpl implements PedidoService {
-    
+
     private final PedidoRepository pedidoRepository;
     private final EstadoService estadoService;
+    private final RepartidorService repartidorService;
 
     @Override
     public Pedido save(Pedido pedido) {
-        return pedidoRepository.save(pedido);
+        pedido.setFechaCompra(LocalDateTime.now());
+        return validateFieldsAndSave(pedido);
     }
 
     @Override
@@ -62,14 +67,40 @@ public class PedidoServiceImpl implements PedidoService {
         Pedido pedidoUpdated = findById(id);
         
         pedido.setId(pedidoUpdated.getId());
-        return pedidoRepository.save(pedido);
+        pedido.setFechaCompra(pedidoUpdated.getFechaCompra());
+
+        return validateFieldsAndSave(pedido);
     }
+
+
 
     @Override
     public Pedido updateEstado(Long id, Long estadoId) {
         Pedido pedido = findById(id);
         Estado nuevoEstado = estadoService.findById(estadoId);
         pedido.setEstado(nuevoEstado);
+        return pedidoRepository.save(pedido);
+    }
+
+    @NonNull
+    private Pedido validateFieldsAndSave(Pedido pedido) {
+        if (pedido.hasDetalles()){
+            pedido.addPedidoToDetalles();
+            pedido.setPrecio(pedido.calcularTotal());
+        }
+
+        if (pedido.hasRepartidor()) {
+            pedido.setRepartidor(repartidorService.findById(pedido.getRepartidor().getId()));
+        } else {
+            pedido.setRepartidor(null);
+        }
+
+        if (pedido.hasEstado()){
+            pedido.setEstado(estadoService.findById(pedido.getEstado().getId()));
+        }else {
+            pedido.setEstado(estadoService.findByNombre("PENDIENTE"));
+        }
+
         return pedidoRepository.save(pedido);
     }
 }

@@ -50,6 +50,10 @@ export const routes: Routes = [
       {
         path: 'repartidores',
         component: RepartidoresAdminComponent
+      },
+      {
+        path: 'pedidos',
+        loadComponent: () => import('./features/pedidos-admin/pedidos-admin.component').then(m => m.PedidosAdminComponent)
       }
     ],
   },

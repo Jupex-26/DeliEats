@@ -17,5 +17,7 @@ public class PedidoInputDto {
     @NotEmpty(message = "El pedido debe tener al menos un producto")
     private List<DetallePedidoInputDto> detalles;
 
-    // El estado inicial (ej: PENDIENTE) lo asignaremos en el Service
+    private Long idRepartidor;
+    private Long idEstado;
+
 }

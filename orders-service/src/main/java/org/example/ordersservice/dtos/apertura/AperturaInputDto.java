@@ -16,7 +16,4 @@ public class AperturaInputDto {
 
     @NotNull(message = "La hora de cierre es obligatoria")
     private LocalDateTime horaCierre;
-
-    @NotNull(message = "El ID de la empresa es obligatorio")
-    private Long empresaId;
 }

@@ -11,11 +11,10 @@ public interface DetallePedidoMapper {
 
     @Mapping(target = "productoId", source = "producto.id")
     @Mapping(target = "nombreProducto", source = "producto.nombre")
-    // El subtotal se calculará en el Service para mantener la pureza
     DetallePedidoOutputDto toDto(DetallePedido detalle);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "pedido", ignore = true)   // Se asigna en el Service
-    @Mapping(target = "producto", ignore = true) // Se asigna en el Service
+    @Mapping(target = "pedido", ignore = true)
+    @Mapping(target = "producto.id", source = "productoId")
     DetallePedido toEntity(DetallePedidoInputDto dto);
 }

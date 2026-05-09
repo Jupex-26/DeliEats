@@ -2,6 +2,7 @@ package org.example.ordersservice.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -55,27 +56,29 @@ public class Pedido {
         return getClass().hashCode();
     }
 
-    public void cambiarEstado(Estado estado) {
-        if (Objects.isNull(estado)) throw new IllegalStateException();
-
-        if (this.estado.equals(estado)) throw new IllegalStateException();
-
-        String nombreActual = this.estado.getNombre();
-        if ("ENTREGADO".equals(nombreActual) || "CANCELADO".equals(nombreActual)) {
-            throw new IllegalStateException("No se puede cambiar el estado de un pedido ya finalizado.");
-        }
-
-
-        this.estado = estado;
-    }
-
 
     public BigDecimal calcularTotal() {
         if (Objects.isNull(this.detalles)) return BigDecimal.ZERO;
 
         return this.detalles.stream()
                 .filter(Objects::nonNull)
-                .map(d -> d.getPrecio().multiply(BigDecimal.valueOf(d.getCantidad())))
+                .map(d -> d.getPrecioUnitario().multiply(BigDecimal.valueOf(d.getCantidad())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public boolean hasDetalles() {
+        return !CollectionUtils.isEmpty(this.detalles);
+    }
+
+    public void addPedidoToDetalles() {
+        this.detalles.forEach(d -> d.setPedido(this));
+    }
+
+    public boolean hasRepartidor() {
+        return Objects.nonNull(this.repartidor) && Objects.nonNull(this.repartidor.getId());
+    }
+
+    public boolean hasEstado() {
+        return Objects.nonNull(this.estado) && Objects.nonNull(this.estado.getId());
     }
 }

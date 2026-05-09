@@ -1,0 +1,109 @@
+@use "variables" as *;
+
+:host {
+  /* Declaración de variables CSS a partir de las de SCSS */
+  --color-primary: #{$color-primary};
+  --color-secondary: #{$color-secondary};
+  --color-text-main: #{$color-text-main};
+  --color-bg-base: #{$color-bg-base};
+  --color-bg-alt: #{$color-bg-alt};
+
+  display: block;
+  width: 100%;
+  position: relative;
+  z-index: 50;
+}
+
+/* Clases de utilidad vinculadas a variables */
+.bg-base {
+  background-color: var(--color-bg-base);
+}
+
+.text-main {
+  color: var(--color-text-main);
+}
+
+.text-primary {
+  color: var(--color-primary);
+}
+
+.bg-secondary {
+  background-color: var(--color-secondary);
+}
+
+/* Lógica del Botón Hamburguesa */
+.hamburger-line {
+  background-color: var(--color-text-main);
+
+  // Estas clases se activan mediante [class.rotate-45], etc. en tu HTML
+  &.rotate-45 {
+    transform: rotate(45deg) translateY(0px);
+  }
+
+  &.-rotate-45 {
+    transform: rotate(-45deg) translateY(0px);
+  }
+
+  &.opacity-0 {
+    opacity: 0;
+  }
+}
+
+/* Panel del Menú Móvil */
+.mobile-menu-panel {
+  top: 100%;
+  max-height: 0;
+  opacity: 0;
+  visibility: hidden; // Evita que se pueda interactuar si está cerrado
+  transition: all 0.3s ease-in-out;
+  pointer-events: none;
+
+  // Clase que se activa con [class.menu-open]="isMenuOpen"
+  &.menu-open {
+    max-height: 500px;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+}
+
+/* Contenedor interno del menú móvil */
+.mobile-menu-container {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+
+  // Ajuste para cuando el fondo es oscuro (opcional)
+  @media (prefers-color-scheme: dark) {
+    border-top-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Transiciones globales para hover */
+.transition-colors {
+  transition-property: color, background-color, border-color;
+  transition-duration: 200ms;
+}
+
+.btn-profile {
+  color: $color-primary;
+  background-color: transparent;
+  font-weight: bold;
+  border: 2px solid $color-primary;
+  padding: 8px 46px;
+
+  &:hover {
+    background-color: $color-primary; // Un toque sutil de tu verde
+    color: white;
+  }
+}
+
+.btn-logout {
+  color: $color-secondary;
+  border: 2px solid $color-secondary;
+  background-color: transparent;
+
+  &:hover {
+    background-color: $color-secondary;
+    color: white;
+    box-shadow: 0 2px 8px rgba($color-secondary, 0.3);
+  }
+}

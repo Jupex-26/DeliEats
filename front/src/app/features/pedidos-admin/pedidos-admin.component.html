@@ -1,0 +1,357 @@
+<div class="admin-container h-full flex flex-col">
+  <header class="admin-header px-8 py-5 shadow-sm">
+    <div class="header-content flex justify-between items-center max-w-[1200px] mx-auto w-full">
+      <h1 class="title text-xl font-bold tracking-wide">Pedidos ({{ totalElements() }})</h1>
+      <button
+        class="btn-new border-none px-5 py-2.5 rounded-md font-bold text-sm flex items-center gap-2 cursor-pointer transition-all hover:shadow-md"
+        (click)="abrirModalNuevo()">
+        <ion-icon name="add-circle-outline" class="text-lg"></ion-icon>
+        NUEVO PEDIDO
+      </button>
+    </div>
+  </header>
+
+  <div class="main-content p-8 flex-1 overflow-y-auto">
+    <div class="table-card max-w-[1200px] mx-auto bg-white rounded-xl shadow-lg border overflow-hidden">
+
+      <div class="table-toolbar p-6 flex justify-between items-center bg-white border-b">
+        <div class="search-box flex items-center border rounded-lg px-4 py-2 w-[350px] transition-all focus-within:shadow-sm">
+          <ion-icon name="search-outline"></ion-icon>
+          <input type="text" placeholder="Buscar por ID de cliente..."
+            class="bg-transparent border-none ml-3 w-full outline-none text-sm" (input)="onSearch($event)">
+        </div>
+
+        <div class="pagination-size text-sm font-medium flex items-center">
+          <span>Mostrar:</span>
+          <select [ngModel]="pageSize()"
+            (ngModelChange)="pageSize.set($event); currentPage.set(0); cargarPedidos()"
+            class="ml-2 border rounded-md px-2 py-1 outline-none">
+            <option [value]="5">5</option>
+            <option [value]="10">10</option>
+            <option [value]="20">20</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="data-table w-full border-collapse">
+          <thead>
+            <tr>
+              <th class="text-left px-6 py-4 text-xs font-semibold opacity-70 tracking-wider uppercase border-y">ID</th>
+              <th class="text-left px-6 py-4 text-xs font-semibold opacity-70 tracking-wider uppercase border-y">FECHA</th>
+              <th class="text-left px-6 py-4 text-xs font-semibold opacity-70 tracking-wider uppercase border-y">CLIENTE</th>
+              <th class="text-left px-6 py-4 text-xs font-semibold opacity-70 tracking-wider uppercase border-y">ESTADO</th>
+              <th class="text-right px-6 py-4 text-xs font-semibold opacity-70 tracking-wider uppercase border-y">TOTAL</th>
+              <th class="text-right px-6 py-4 text-xs font-semibold opacity-70 tracking-wider uppercase border-y">ACCIONES</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (pedido of pedidos(); track pedido.id) {
+            <tr class="transition-colors group">
+              <td class="td-id px-6 py-4 border-b font-bold">#{{ pedido.id }}</td>
+              <td class="td-fecha px-6 py-4 border-b text-sm">{{ pedido.fechaCompra | date:'short' }}</td>
+              <td class="td-cliente px-6 py-4 border-b text-sm font-medium">{{ pedido.nombreCliente }}</td>
+              <td class="px-6 py-4 border-b">
+                <span class="px-3 py-1 rounded-full text-xs font-bold border" [class]="getEstadoColor(pedido.estadoNombre)">
+                  {{ pedido.estadoNombre }}
+                </span>
+              </td>
+              <td class="td-precio px-6 py-4 border-b text-right font-bold">{{ pedido.precioTotal | currency:'EUR' }}</td>
+              <td class="px-6 py-4 border-b">
+                <div class="actions flex justify-end gap-2">
+                  <button class="btn-icon view border rounded-md p-1.5 text-xl cursor-pointer transition-all"
+                    (click)="abrirModalVer(pedido)" title="Ver detalle">
+                    <ion-icon name="eye-outline"></ion-icon>
+                  </button>
+                  <button class="btn-icon edit border rounded-md p-1.5 text-xl cursor-pointer transition-all"
+                    (click)="abrirModalEditar(pedido)" title="Editar">
+                    <ion-icon name="create-outline"></ion-icon>
+                  </button>
+                  <button class="btn-icon delete border rounded-md p-1.5 text-xl cursor-pointer transition-all"
+                    (click)="confirmarEliminar(pedido.id)" title="Eliminar">
+                    <ion-icon name="trash-outline"></ion-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <footer class="table-footer px-6 py-4 flex justify-between items-center bg-white border-t">
+        <span class="page-info text-xs font-medium">Página {{ currentPage() + 1 }} de {{ totalPages() || 1 }}</span>
+        <div class="nav-buttons flex gap-2">
+          <button [disabled]="currentPage() === 0" (click)="cambiarPagina(-1)"
+            class="bg-white border px-3 py-1.5 rounded-md text-xs font-bold cursor-pointer transition-colors disabled:opacity-30 flex items-center gap-1">
+            <ion-icon name="chevron-back-outline"></ion-icon> ANTERIOR
+          </button>
+          <button [disabled]="currentPage() >= totalPages() - 1 || totalPages() === 0" (click)="cambiarPagina(1)"
+            class="bg-white border px-3 py-1.5 rounded-md text-xs font-bold cursor-pointer transition-colors disabled:opacity-30 flex items-center gap-1">
+            SIGUIENTE <ion-icon name="chevron-forward-outline"></ion-icon>
+          </button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Modal Formulario de Pedido (CRUD básico temporal) -->
+  <ion-modal [isOpen]="isModalOpen()" (didDismiss)="isModalOpen.set(false)" class="custom-modal-form">
+    <ng-template>
+      <div class="modal-wrapper flex flex-col w-full h-full">
+        <div class="modal-header py-4 px-6 font-bold tracking-wide text-lg flex justify-between items-center">
+          <span>{{ editingPedido() ? 'Editar' : 'Nuevo' }} Pedido</span>
+          <button (click)="isModalOpen.set(false)" class="btn-icon-close text-white hover:opacity-75 transition-opacity">
+            <ion-icon name="close-outline" class="text-2xl"></ion-icon>
+          </button>
+        </div>
+
+        <div class="modal-body flex-1 overflow-y-auto p-6">
+          <form (ngSubmit)="guardarPedido()" class="modern-form flex flex-col gap-5">
+            <div class="form-grid grid grid-cols-1 gap-5">
+              <!-- Campo para Crear (Cliente ID) -->
+              @if (!editingPedido()) {
+              <div class="form-group">
+                <label class="form-label text-sm font-bold uppercase mb-2 block text-gray-700">Cliente</label>
+                <div class="border rounded-lg shadow-sm bg-white overflow-hidden p-1">
+                  <select [(ngModel)]="pedidoForm.clienteId" name="clienteId" (mousedown)="refrescarClientes()"
+                    class="w-full bg-transparent border-none outline-none p-3 font-medium text-gray-900 cursor-pointer">
+                    <option [value]="0" disabled class="text-gray-500 bg-white">-- Selecciona un cliente --</option>
+                    @for (cliente of clientesList(); track cliente.id) {
+                      <option [value]="cliente.id" class="text-gray-900 bg-white">{{ cliente.nombre }} (ID: {{ cliente.id }})</option>
+                    }
+                  </select>
+                </div>
+              </div>
+
+              <!-- Sección para añadir productos al pedido -->
+              <div class="form-group border-t pt-5 mt-2">
+                <label class="form-label text-sm font-bold uppercase mb-3 block text-gray-700">Productos del Pedido</label>
+                
+                <div class="flex flex-col gap-3 mb-4">
+                  <!-- Selector de Empresa -->
+                  <div class="border rounded-lg shadow-sm bg-white overflow-hidden p-1">
+                    <select [(ngModel)]="tempEmpresaId" name="tempEmpresaId" (change)="onEmpresaChange()" (mousedown)="refrescarEmpresas()"
+                      class="w-full bg-transparent border-none outline-none p-3 font-medium text-gray-900 cursor-pointer">
+                      <option [value]="null" disabled class="text-gray-500 bg-white">-- 1º Selecciona una empresa --</option>
+                      @for (empresa of empresasList(); track empresa.id) {
+                        <option [value]="empresa.id" class="text-gray-900 bg-white">{{ empresa.nombre }}</option>
+                      }
+                    </select>
+                  </div>
+
+                  <div class="flex gap-3 items-end">
+                    <div class="flex-1">
+                      <div class="border rounded-lg shadow-sm bg-white overflow-hidden p-1" [class.opacity-50]="!tempEmpresaId">
+                        <select [(ngModel)]="tempProductoId" name="tempProductoId" [disabled]="!tempEmpresaId" (mousedown)="refrescarProductos()"
+                          class="w-full bg-transparent border-none outline-none p-3 font-medium text-gray-900 cursor-pointer">
+                          <option [value]="null" disabled class="text-gray-500 bg-white">-- 2º Selecciona un producto --</option>
+                          @for (producto of getProductosFiltrados(); track producto.id) {
+                            <option [value]="producto.id" class="text-gray-900 bg-white">{{ producto.nombre }} - {{ producto.precio | currency:'EUR' }}</option>
+                          }
+                        </select>
+                      </div>
+                    </div>
+                    
+                    <div class="w-24">
+                      <ion-item lines="none" class="custom-input rounded-lg shadow-sm border bg-white">
+                        <ion-input label="Cant." labelPlacement="stacked" type="number" [(ngModel)]="tempCantidad"
+                          name="tempCantidad" min="1" class="text-gray-900 font-medium"></ion-input>
+                      </ion-item>
+                    </div>
+                    
+                    <button type="button" class="btn-submit px-4 py-3 rounded-lg font-bold text-sm text-white shadow-md disabled:opacity-50"
+                            [disabled]="!tempProductoId" (click)="agregarDetalle()">
+                      AÑADIR
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Lista de productos añadidos -->
+                @if (pedidoForm.detalles.length > 0) {
+                  <ul class="flex flex-col gap-2 mt-2">
+                    @for (detalle of pedidoForm.detalles; track $index) {
+                      <li class="product-item flex justify-between items-center p-3 rounded-lg shadow-sm text-sm transition-all">
+                        <div class="flex items-center gap-3">
+                          <span class="qty-badge font-bold px-2 py-1 rounded-md">{{ detalle.cantidad }}x</span>
+                          <span class="font-medium">{{ getNombreProducto(detalle.productoId) }}</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                          <span class="font-bold tracking-wide">{{ (detalle.precioUnitario * detalle.cantidad) | currency:'EUR' }}</span>
+                          <button type="button" class="btn-remove-item flex items-center justify-center p-1 rounded-md transition-colors cursor-pointer" (click)="eliminarDetalle($index)">
+                            <ion-icon name="trash-outline" class="text-lg"></ion-icon>
+                          </button>
+                        </div>
+                      </li>
+                    }
+                  </ul>
+                } @else {
+                  <div class="empty-products-box p-4 text-center rounded-lg text-sm font-medium">
+                    Añade al menos un producto al pedido.
+                  </div>
+                }
+              </div>
+              }
+
+              <!-- Campos para Editar (Estado y Repartidor) -->
+              @if (editingPedido()) {
+              <div class="form-group flex flex-col gap-5">
+                <div>
+                  <label class="form-label text-sm font-bold uppercase mb-2 block text-gray-700">Estado del Pedido</label>
+                  <div class="border rounded-lg shadow-sm bg-white overflow-hidden p-1">
+                    <select [(ngModel)]="nuevoEstadoId" name="nuevoEstadoId" (mousedown)="refrescarEstados()"
+                      class="w-full bg-transparent border-none outline-none p-3 font-medium text-gray-900 cursor-pointer">
+                      <option [value]="null" disabled class="text-gray-500 bg-white">-- Selecciona el nuevo estado --</option>
+                      @for (estado of estadosList(); track estado.id) {
+                        <option [value]="estado.id" class="text-gray-900 bg-white">{{ estado.nombre }}</option>
+                      }
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="form-label text-sm font-bold uppercase mb-2 block text-gray-700">Asignar Repartidor</label>
+                  <div class="border rounded-lg shadow-sm bg-white overflow-hidden p-1">
+                    <select [(ngModel)]="pedidoForm.idRepartidor" name="idRepartidor" (mousedown)="refrescarRepartidores()"
+                      class="w-full bg-transparent border-none outline-none p-3 font-medium text-gray-900 cursor-pointer">
+                      <option [value]="undefined" class="text-gray-500 bg-white">-- Sin repartidor --</option>
+                      @for (repartidor of repartidoresList(); track repartidor.id) {
+                        <option [value]="repartidor.id" class="text-gray-900 bg-white">{{ repartidor.nombre }}</option>
+                      }
+                    </select>
+                  </div>
+                </div>
+              </div>
+              }
+            </div>
+
+            <div class="form-actions flex justify-end gap-3 mt-4 pt-4 border-t">
+              <button type="button"
+                class="btn-cancel px-6 py-3 rounded-lg font-bold text-sm bg-transparent border transition-colors"
+                (click)="isModalOpen.set(false)">CANCELAR</button>
+              <button type="submit"
+                class="btn-submit px-6 py-3 rounded-lg font-bold text-sm text-white transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                [disabled]="!editingPedido() ? (!pedidoForm.clienteId || pedidoForm.detalles.length === 0) : false">
+                {{ editingPedido() ? 'ACTUALIZAR PEDIDO' : 'CREAR PEDIDO' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </ng-template>
+  </ion-modal>
+
+  <!-- Modal de Detalles del Pedido -->
+  <ion-modal [isOpen]="isViewModalOpen()" (didDismiss)="isViewModalOpen.set(false)" class="custom-modal-form">
+    <ng-template>
+      <div class="modal-wrapper flex flex-col w-full h-full">
+        <div class="modal-header py-4 px-6 font-bold tracking-wide text-lg flex justify-between items-center">
+          <span>Detalles del Pedido #{{ viewingPedido()?.id }}</span>
+          <button (click)="isViewModalOpen.set(false)" class="btn-icon-close text-white hover:opacity-75 transition-opacity">
+            <ion-icon name="close-outline" class="text-2xl"></ion-icon>
+          </button>
+        </div>
+
+        <div class="modal-body flex-1 overflow-y-auto">
+          @if (viewingPedido()) {
+          <div class="p-8 max-w-3xl mx-auto">
+            <div class="detail-card bg-white rounded-2xl shadow-xl overflow-hidden border">
+              
+              <!-- Cabecera del Detalle -->
+              <div class="detail-header p-8 flex flex-col items-center border-b">
+                <div class="avatar w-20 h-20 rounded-full flex items-center justify-center text-white text-3xl font-bold mb-4 shadow-md border-4 border-white">
+                  <ion-icon name="cart-outline"></ion-icon>
+                </div>
+                <h2 class="name text-2xl font-bold mb-2">{{ viewingPedido()!.precioTotal | currency:'EUR' }}</h2>
+                <span class="role px-4 py-1 rounded-full text-sm font-bold border" [class]="getEstadoColor(viewingPedido()!.estadoNombre)">
+                  {{ viewingPedido()!.estadoNombre }}
+                </span>
+                <p class="mt-2 text-sm opacity-70 font-medium">{{ viewingPedido()!.fechaCompra | date:'medium' }}</p>
+              </div>
+
+              <!-- Info de Contacto y Envío -->
+              <div class="p-8 border-b">
+                <h3 class="section-title text-sm font-bold uppercase tracking-wider mb-6 pb-2 border-b">Información General</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  
+                  <div class="detail-item flex gap-4 items-start">
+                    <div class="icon-box w-10 h-10 rounded-full flex items-center justify-center shrink-0">
+                      <ion-icon name="person-outline" class="text-xl"></ion-icon>
+                    </div>
+                    <div>
+                      <p class="label text-xs font-bold uppercase">Cliente</p>
+                      <p class="value font-medium mt-1">{{ viewingPedido()!.nombreCliente }} (ID: {{ viewingPedido()!.clienteId }})</p>
+                    </div>
+                  </div>
+
+                  <div class="detail-item flex gap-4 items-start">
+                    <div class="icon-box w-10 h-10 rounded-full flex items-center justify-center shrink-0">
+                      <ion-icon name="location-outline" class="text-xl"></ion-icon>
+                    </div>
+                    <div>
+                      <p class="label text-xs font-bold uppercase">Dirección de Entrega</p>
+                      <p class="value font-medium mt-1">{{ viewingPedido()!.direccionEntrega || 'No especificada' }}</p>
+                    </div>
+                  </div>
+
+                  <div class="detail-item flex gap-4 items-start">
+                    <div class="icon-box w-10 h-10 rounded-full flex items-center justify-center shrink-0">
+                      <ion-icon name="bicycle-outline" class="text-xl"></ion-icon>
+                    </div>
+                    <div>
+                      <p class="label text-xs font-bold uppercase">Repartidor Asignado</p>
+                      <p class="value font-medium mt-1">{{ viewingPedido()!.nombreRepartidor || 'Sin asignar' }}</p>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- Lista de Productos / Detalles -->
+              <div class="p-8">
+                <h3 class="section-title text-sm font-bold uppercase tracking-wider mb-4 pb-2 border-b">Productos del Pedido</h3>
+                
+                @if (viewingPedido()!.detalles && viewingPedido()!.detalles.length > 0) {
+                  <ul class="flex flex-col gap-3">
+                    @for (detalle of viewingPedido()!.detalles; track detalle.id) {
+                      <li class="product-item flex justify-between items-center p-3 rounded-lg shadow-sm text-sm transition-all">
+                        <div class="flex items-center gap-3">
+                          <span class="qty-badge font-bold px-2 py-1 rounded-md">{{ detalle.cantidad }}x</span>
+                          <span class="font-medium text-sm">{{ detalle.nombreProducto }}</span>
+                        </div>
+                        <div class="text-right">
+                          <span class="block text-sm font-bold tracking-wide">{{ detalle.subtotal | currency:'EUR' }}</span>
+                          <span class="block text-xs opacity-70">{{ detalle.precioUnitario | currency:'EUR' }} c/u</span>
+                        </div>
+                      </li>
+                    }
+                  </ul>
+                } @else {
+                  <div class="empty-products-box p-4 text-center rounded-lg text-sm font-medium">
+                    Este pedido no tiene productos registrados.
+                  </div>
+                }
+              </div>
+
+              <!-- Footer -->
+              <div class="footer px-8 py-4 flex justify-end border-t">
+                <button
+                  class="btn-close bg-white border px-6 py-2.5 rounded-lg font-bold text-sm transition-colors shadow-sm"
+                  (click)="isViewModalOpen.set(false)">
+                  CERRAR
+                </button>
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+    </ng-template>
+  </ion-modal>
+
+  <app-confirm-modal [isOpen]="isConfirmModalOpen()" title="Eliminar Pedido"
+    message="¿Estás seguro de que deseas eliminar este pedido? Esta acción no se puede deshacer." confirmText="ELIMINAR"
+    [dangerAction]="true" (confirm)="ejecutarEliminacion()" (cancel)="isConfirmModalOpen.set(false)">
+  </app-confirm-modal>
+
+</div>

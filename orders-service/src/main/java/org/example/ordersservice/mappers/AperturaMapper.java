@@ -8,9 +8,6 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface AperturaMapper {
-
-    @Mapping(target = "empresaId", source = "empresa.id")
-    @Mapping(target = "nombreEmpresa", source = "empresa.nombre")
     AperturaOutputDto toDto(Apertura apertura);
 
     @Mapping(target = "empresa", ignore = true) // Se busca y asigna en el Service mediante empresaId

@@ -2,12 +2,8 @@
 @use 'base';
 @use 'buttons';
 @use 'forms';
-// 1. Importar Tailwind (Fundamental para el stack solicitado)
 
+// Importar Tailwind (Fundamental para layouts y el grid system de la app)
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-// 2. Importar tus variables personalizadas de DeliEats
-
-
