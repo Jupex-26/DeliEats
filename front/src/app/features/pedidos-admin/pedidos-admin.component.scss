@@ -216,6 +216,30 @@ ion-modal.custom-modal-form {
   }
 }
 
+.empty-products-box {
+  background-color: rgba($color-bg-alt, 0.2);
+  border: 2px dashed rgba($color-text-main, 0.2);
+  color: rgba($color-text-main, 0.6);
+}
+
+.product-item {
+  background-color: $color-bg-base;
+  color: $color-text-main;
+  border: 1px solid rgba($color-text-main, 0.1);
+
+  .qty-badge {
+    background-color: rgba($color-primary, 0.15);
+    color: $color-primary;
+  }
+
+  .btn-remove-item {
+    color: $color-secondary;
+    &:hover {
+      background-color: rgba($color-secondary, 0.1);
+    }
+  }
+}
+
 ion-item {
   --background: white !important;
   --highlight-color-focused: #{$color-primary} !important;

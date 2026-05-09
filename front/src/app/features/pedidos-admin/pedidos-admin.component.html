@@ -114,7 +114,7 @@
               <div class="form-group">
                 <label class="form-label text-sm font-bold uppercase mb-2 block text-gray-700">Cliente</label>
                 <div class="border rounded-lg shadow-sm bg-white overflow-hidden p-1">
-                  <select [(ngModel)]="pedidoForm.clienteId" name="clienteId"
+                  <select [(ngModel)]="pedidoForm.clienteId" name="clienteId" (mousedown)="refrescarClientes()"
                     class="w-full bg-transparent border-none outline-none p-3 font-medium text-gray-900 cursor-pointer">
                     <option [value]="0" disabled class="text-gray-500 bg-white">-- Selecciona un cliente --</option>
                     @for (cliente of clientesList(); track cliente.id) {
@@ -131,7 +131,7 @@
                 <div class="flex flex-col gap-3 mb-4">
                   <!-- Selector de Empresa -->
                   <div class="border rounded-lg shadow-sm bg-white overflow-hidden p-1">
-                    <select [(ngModel)]="tempEmpresaId" name="tempEmpresaId" (change)="onEmpresaChange()"
+                    <select [(ngModel)]="tempEmpresaId" name="tempEmpresaId" (change)="onEmpresaChange()" (mousedown)="refrescarEmpresas()"
                       class="w-full bg-transparent border-none outline-none p-3 font-medium text-gray-900 cursor-pointer">
                       <option [value]="null" disabled class="text-gray-500 bg-white">-- 1º Selecciona una empresa --</option>
                       @for (empresa of empresasList(); track empresa.id) {
@@ -143,7 +143,7 @@
                   <div class="flex gap-3 items-end">
                     <div class="flex-1">
                       <div class="border rounded-lg shadow-sm bg-white overflow-hidden p-1" [class.opacity-50]="!tempEmpresaId">
-                        <select [(ngModel)]="tempProductoId" name="tempProductoId" [disabled]="!tempEmpresaId"
+                        <select [(ngModel)]="tempProductoId" name="tempProductoId" [disabled]="!tempEmpresaId" (mousedown)="refrescarProductos()"
                           class="w-full bg-transparent border-none outline-none p-3 font-medium text-gray-900 cursor-pointer">
                           <option [value]="null" disabled class="text-gray-500 bg-white">-- 2º Selecciona un producto --</option>
                           @for (producto of getProductosFiltrados(); track producto.id) {
@@ -171,14 +171,14 @@
                 @if (pedidoForm.detalles.length > 0) {
                   <ul class="flex flex-col gap-2 mt-2">
                     @for (detalle of pedidoForm.detalles; track $index) {
-                      <li class="flex justify-between items-center p-3 bg-white rounded-lg border border-gray-200 shadow-sm text-sm text-gray-900">
+                      <li class="product-item flex justify-between items-center p-3 rounded-lg shadow-sm text-sm transition-all">
                         <div class="flex items-center gap-3">
-                          <span class="font-bold bg-gray-100 text-gray-800 px-2 py-1 rounded-md">{{ detalle.cantidad }}x</span>
+                          <span class="qty-badge font-bold px-2 py-1 rounded-md">{{ detalle.cantidad }}x</span>
                           <span class="font-medium">{{ getNombreProducto(detalle.productoId) }}</span>
                         </div>
                         <div class="flex items-center gap-4">
-                          <span class="font-bold text-gray-900">{{ (detalle.precioUnitario * detalle.cantidad) | currency:'EUR' }}</span>
-                          <button type="button" class="text-red-500 hover:text-red-700 cursor-pointer flex items-center justify-center p-1 rounded-md hover:bg-red-50 transition-colors" (click)="eliminarDetalle($index)">
+                          <span class="font-bold tracking-wide">{{ (detalle.precioUnitario * detalle.cantidad) | currency:'EUR' }}</span>
+                          <button type="button" class="btn-remove-item flex items-center justify-center p-1 rounded-md transition-colors cursor-pointer" (click)="eliminarDetalle($index)">
                             <ion-icon name="trash-outline" class="text-lg"></ion-icon>
                           </button>
                         </div>
@@ -186,22 +186,40 @@
                     }
                   </ul>
                 } @else {
-                  <div class="p-4 text-center border-2 border-dashed border-gray-200 bg-gray-50 rounded-lg text-gray-500 text-sm font-medium">
+                  <div class="empty-products-box p-4 text-center rounded-lg text-sm font-medium">
                     Añade al menos un producto al pedido.
                   </div>
                 }
               </div>
               }
 
-              <!-- Campo para Editar (Estado) -->
+              <!-- Campos para Editar (Estado y Repartidor) -->
               @if (editingPedido()) {
-              <div class="form-group">
-                <ion-item lines="none" class="custom-input rounded-lg shadow-sm border">
-                  <ion-input label="Nuevo ID de Estado" labelPlacement="stacked" type="number" [(ngModel)]="nuevoEstadoId"
-                    name="nuevoEstadoId" placeholder="1=Pend, 2=Prep, 3=Cam, 4=Ent, 5=Canc" class="font-medium"></ion-input>
-                </ion-item>
-                <div class="error-text text-xs mt-1 ml-2 font-medium opacity-70">
-                  Introduce el ID numérico del nuevo estado.
+              <div class="form-group flex flex-col gap-5">
+                <div>
+                  <label class="form-label text-sm font-bold uppercase mb-2 block text-gray-700">Estado del Pedido</label>
+                  <div class="border rounded-lg shadow-sm bg-white overflow-hidden p-1">
+                    <select [(ngModel)]="nuevoEstadoId" name="nuevoEstadoId" (mousedown)="refrescarEstados()"
+                      class="w-full bg-transparent border-none outline-none p-3 font-medium text-gray-900 cursor-pointer">
+                      <option [value]="null" disabled class="text-gray-500 bg-white">-- Selecciona el nuevo estado --</option>
+                      @for (estado of estadosList(); track estado.id) {
+                        <option [value]="estado.id" class="text-gray-900 bg-white">{{ estado.nombre }}</option>
+                      }
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="form-label text-sm font-bold uppercase mb-2 block text-gray-700">Asignar Repartidor</label>
+                  <div class="border rounded-lg shadow-sm bg-white overflow-hidden p-1">
+                    <select [(ngModel)]="pedidoForm.idRepartidor" name="idRepartidor" (mousedown)="refrescarRepartidores()"
+                      class="w-full bg-transparent border-none outline-none p-3 font-medium text-gray-900 cursor-pointer">
+                      <option [value]="undefined" class="text-gray-500 bg-white">-- Sin repartidor --</option>
+                      @for (repartidor of repartidoresList(); track repartidor.id) {
+                        <option [value]="repartidor.id" class="text-gray-900 bg-white">{{ repartidor.nombre }}</option>
+                      }
+                    </select>
+                  </div>
                 </div>
               </div>
               }
@@ -213,7 +231,7 @@
                 (click)="isModalOpen.set(false)">CANCELAR</button>
               <button type="submit"
                 class="btn-submit px-6 py-3 rounded-lg font-bold text-sm text-white transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
-                [disabled]="!editingPedido() ? (!pedidoForm.clienteId || pedidoForm.detalles.length === 0) : !nuevoEstadoId">
+                [disabled]="!editingPedido() ? (!pedidoForm.clienteId || pedidoForm.detalles.length === 0) : false">
                 {{ editingPedido() ? 'ACTUALIZAR PEDIDO' : 'CREAR PEDIDO' }}
               </button>
             </div>
@@ -296,21 +314,21 @@
                 @if (viewingPedido()!.detalles && viewingPedido()!.detalles.length > 0) {
                   <ul class="flex flex-col gap-3">
                     @for (detalle of viewingPedido()!.detalles; track detalle.id) {
-                      <li class="flex justify-between items-center p-3 bg-gray-50 rounded-lg border">
+                      <li class="product-item flex justify-between items-center p-3 rounded-lg shadow-sm text-sm transition-all">
                         <div class="flex items-center gap-3">
-                          <span class="font-bold text-sm bg-gray-200 px-2 py-1 rounded-md">{{ detalle.cantidad }}x</span>
+                          <span class="qty-badge font-bold px-2 py-1 rounded-md">{{ detalle.cantidad }}x</span>
                           <span class="font-medium text-sm">{{ detalle.nombreProducto }}</span>
                         </div>
                         <div class="text-right">
-                          <span class="block text-sm font-bold">{{ detalle.subtotal | currency:'EUR' }}</span>
+                          <span class="block text-sm font-bold tracking-wide">{{ detalle.subtotal | currency:'EUR' }}</span>
                           <span class="block text-xs opacity-70">{{ detalle.precioUnitario | currency:'EUR' }} c/u</span>
                         </div>
                       </li>
                     }
                   </ul>
                 } @else {
-                  <div class="p-4 text-center border border-dashed rounded-lg opacity-60">
-                    <p class="text-sm font-medium">Este pedido no tiene productos registrados.</p>
+                  <div class="empty-products-box p-4 text-center rounded-lg text-sm font-medium">
+                    Este pedido no tiene productos registrados.
                   </div>
                 }
               </div>

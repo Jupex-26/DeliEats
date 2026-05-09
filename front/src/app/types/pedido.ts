@@ -11,6 +11,7 @@ export interface Pedido {
 
 export interface PedidoInputDto {
     clienteId: number;
+    idRepartidor?: number;
     detalles: DetallePedidoInputDto[];
 }
 

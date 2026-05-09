@@ -20,10 +20,8 @@ public class PedidoOutputDto {
 
     private String estadoNombre;
 
-    // Información del Repartidor (puede ser null si no ha sido asignado)
     private Long repartidorId;
     private String nombreRepartidor;
 
-    // Lista de productos comprados
     private List<DetallePedidoOutputDto> detalles;
 }

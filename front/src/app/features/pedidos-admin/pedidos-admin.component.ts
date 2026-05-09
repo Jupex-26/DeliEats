@@ -27,11 +27,13 @@ import { PedidoService } from '../../services/pedido/pedido-service';
 import { ClienteService } from '../../services/cliente/cliente-service';
 import { ProductoService } from '../../services/producto/producto-service';
 import { EmpresaService } from '../../services/empresa/empresa-service';
+import { EstadoService } from '../../services/estado/estado-service';
+import { RepartidorService } from '../../services/repartidor/repartidor-service';
 import { PedidoOutputDto, PedidoInputDto } from '../../types/pedido';
 import { DetallePedidoInputDto } from '../../types/detalle-pedido';
-import { ClienteOutputDto, ProductoOutputDto, EmpresaOutputDto } from '../../types';
+import { ClienteOutputDto, ProductoOutputDto, EmpresaOutputDto, EstadoOutputDto, RepartidorOutputDto } from '../../types';
 import { ConfirmModalComponent } from '../../shared/confirm-modal/confirm-modal.component';
-import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+import { Subject, debounceTime, distinctUntilChanged, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-pedidos-admin',
@@ -54,6 +56,8 @@ export class PedidosAdminComponent implements OnInit {
   private clienteService = inject(ClienteService);
   private productoService = inject(ProductoService);
   private empresaService = inject(EmpresaService);
+  private estadoService = inject(EstadoService);
+  private repartidorService = inject(RepartidorService);
 
   // --- Estado ---
   pedidos = signal<PedidoOutputDto[]>([]);
@@ -66,7 +70,7 @@ export class PedidosAdminComponent implements OnInit {
   isModalOpen = signal(false);
   isConfirmModalOpen = signal(false);
   isViewModalOpen = signal(false);
-  
+
   editingPedido = signal<PedidoOutputDto | null>(null);
   viewingPedido = signal<PedidoOutputDto | null>(null);
   pedidoIdParaEliminar = signal<number | null>(null);
@@ -74,6 +78,8 @@ export class PedidosAdminComponent implements OnInit {
   clientesList = signal<ClienteOutputDto[]>([]);
   productosList = signal<ProductoOutputDto[]>([]);
   empresasList = signal<EmpresaOutputDto[]>([]);
+  estadosList = signal<EstadoOutputDto[]>([]);
+  repartidoresList = signal<RepartidorOutputDto[]>([]);
 
   // Campos temporales para añadir producto
   tempEmpresaId: number | null = null;
@@ -115,14 +121,40 @@ export class PedidosAdminComponent implements OnInit {
   }
 
   cargarListadosDesplegables() {
+    this.refrescarClientes();
+    this.refrescarProductos();
+    this.refrescarEmpresas();
+    this.refrescarEstados();
+    this.refrescarRepartidores();
+  }
+
+  refrescarClientes() {
     this.clienteService.listar(0, 1000).subscribe({
       next: (res) => this.clientesList.set(res.content)
     });
+  }
+
+  refrescarProductos() {
     this.productoService.listar(0, 1000).subscribe({
       next: (res) => this.productosList.set(res.content)
     });
+  }
+
+  refrescarEmpresas() {
     this.empresaService.listar(0, 1000).subscribe({
       next: (res) => this.empresasList.set(res.content)
+    });
+  }
+
+  refrescarEstados() {
+    this.estadoService.listar(0, 1000).subscribe({
+      next: (res) => this.estadosList.set(res.content)
+    });
+  }
+
+  refrescarRepartidores() {
+    this.repartidorService.obtenerDisponibles(0, 1000).subscribe({
+      next: (res) => this.repartidoresList.set(res.content)
     });
   }
 
@@ -219,16 +251,38 @@ export class PedidosAdminComponent implements OnInit {
   }
 
   abrirModalEditar(pedido: PedidoOutputDto) {
-    this.editingPedido.set(pedido);
-    // Para simplificar, en la edición solo actualizamos el estado, no los detalles completos
-    // ya que no tenemos todos los IDs listos.
-    this.nuevoEstadoId = null; 
-    this.isModalOpen.set(true);
+    this.pedidoService.obtenerPorId(pedido.id).subscribe({
+      next: (pedidoCompleto) => {
+        this.editingPedido.set(pedidoCompleto);
+        
+        // Preparar el formulario para el PUT (necesitamos clienteId y detalles)
+        this.pedidoForm = {
+          clienteId: pedidoCompleto.clienteId,
+          idRepartidor: pedidoCompleto.repartidorId,
+          detalles: pedidoCompleto.detalles.map(d => ({
+            pedidoId: pedidoCompleto.id,
+            productoId: d.productoId,
+            cantidad: d.cantidad,
+            precioUnitario: d.precioUnitario
+          }))
+        };
+
+        // Pre-poblar el estado actual buscando por nombre en la lista de estados
+        const estadoActual = this.estadosList().find(e => e.nombre === pedidoCompleto.estadoNombre);
+        this.nuevoEstadoId = estadoActual ? estadoActual.id : null;
+
+        this.isModalOpen.set(true);
+      }
+    });
   }
 
   abrirModalVer(pedido: PedidoOutputDto) {
-    this.viewingPedido.set(pedido);
-    this.isViewModalOpen.set(true);
+    this.pedidoService.obtenerPorId(pedido.id).subscribe({
+      next: (pedidoCompleto) => {
+        this.viewingPedido.set(pedidoCompleto);
+        this.isViewModalOpen.set(true);
+      }
+    });
   }
 
   confirmarEliminar(id: number) {
@@ -249,19 +303,20 @@ export class PedidosAdminComponent implements OnInit {
   guardarPedido() {
     const editId = this.editingPedido()?.id;
     if (editId) {
-      // Si estamos editando y tenemos un nuevo estadoId, usamos el endpoint de PATCH
+      const peticiones = [];
+      
+      // El PUT actualizará el cliente, detalles y el ID del repartidor
+      peticiones.push(this.pedidoService.actualizar(editId, this.pedidoForm));
+      
+      // Si seleccionaron un nuevo estado, añadimos la petición PATCH
       if (this.nuevoEstadoId) {
-        this.pedidoService.actualizarEstado(editId, this.nuevoEstadoId).subscribe(() => {
-          this.isModalOpen.set(false);
-          this.cargarPedidos();
-        });
-      } else {
-        // Fallback a actualizar completo si es necesario (no ideal sin detalles)
-        this.pedidoService.actualizar(editId, this.pedidoForm).subscribe(() => {
-          this.isModalOpen.set(false);
-          this.cargarPedidos();
-        });
+        peticiones.push(this.pedidoService.actualizarEstado(editId, this.nuevoEstadoId));
       }
+
+      forkJoin(peticiones).subscribe(() => {
+        this.isModalOpen.set(false);
+        this.cargarPedidos();
+      });
     } else {
       // Creación
       this.pedidoService.crear(this.pedidoForm).subscribe(() => {
