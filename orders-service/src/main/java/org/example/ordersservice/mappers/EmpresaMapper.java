@@ -7,14 +7,14 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = {AperturaMapper.class, ProductoMapper.class})
-public interface EmpresaMapper {
+public abstract class EmpresaMapper {
 
     @Mapping(target = "nombreRol", source = "rol.nombre")
-    EmpresaOutputDto toDto(Empresa empresa);
+    public abstract EmpresaOutputDto toDto(Empresa empresa);
 
 
     @Mapping(target = "rol", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "productos", ignore = true)
-    Empresa toEntity(EmpresaInputDto dto);
+    public abstract Empresa toEntity(EmpresaInputDto dto);
 }

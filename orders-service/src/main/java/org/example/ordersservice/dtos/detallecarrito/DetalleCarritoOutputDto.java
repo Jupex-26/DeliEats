@@ -14,6 +14,4 @@ public class DetalleCarritoOutputDto {
     private BigDecimal precioUnitario;
 
     private Integer cantidad;
-
-    private BigDecimal subtotal;
 }

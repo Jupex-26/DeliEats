@@ -7,15 +7,15 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = {DetalleCarritoMapper.class})
-public interface CarritoMapper {
+
+public abstract class CarritoMapper {
 
     @Mapping(target = "clienteId", source = "cliente.id")
     @Mapping(target = "nombreCliente", source = "cliente.nombre")
-    // El campo precioTotal del DTO se quedará en null o se seteará en el Service
-    CarritoOutputDto toDto(Carrito carrito);
+    @Mapping(target = "precioTotal", expression = "java(carrito.getPrecioTotal())")
+    public abstract CarritoOutputDto toDto(Carrito carrito);
 
-    @Mapping(target = "cliente", ignore = true)
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "detalles", ignore = true)
-    Carrito toEntity(CarritoInputDto dto);
+    @Mapping(target = "cliente.id", source = "clienteId")
+    public abstract Carrito toEntity(CarritoInputDto dto);
 }

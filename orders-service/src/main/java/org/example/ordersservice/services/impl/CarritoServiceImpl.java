@@ -1,11 +1,14 @@
 package org.example.ordersservice.services.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.exception.custom.NotFoundException;
 import org.example.ordersservice.models.Carrito;
+import org.example.ordersservice.models.Cliente;
 import org.example.ordersservice.models.Producto;
 import org.example.ordersservice.repositories.CarritoRepository;
 import org.example.ordersservice.services.CarritoService;
+import org.example.ordersservice.services.ClienteService;
 import org.example.ordersservice.services.DetalleCarritoService;
 import org.example.ordersservice.services.ProductoService;
 import org.springframework.data.domain.Page;
@@ -20,6 +23,7 @@ public class CarritoServiceImpl implements CarritoService {
     private final CarritoRepository carritoRepository;
     private final ProductoService productoService;
     private final DetalleCarritoService detalleCarritoService;
+    private final ClienteService clienteService;
 
     @Override
     public Page<Carrito> findAll(Pageable pageable) {
@@ -40,6 +44,12 @@ public class CarritoServiceImpl implements CarritoService {
 
     @Override
     public Carrito create(Carrito carrito) {
+        Cliente cliente = clienteService.findById(carrito.getCliente().getId());
+
+        carrito.setCliente(cliente);
+
+        carrito.getDetalles().forEach(d -> d.setCarrito(carrito));
+
         return carritoRepository.save(carrito);
     }
 
@@ -68,6 +78,7 @@ public class CarritoServiceImpl implements CarritoService {
     }
 
     @Override
+    @Transactional
     public void clearCarrito(Long carritoId) {
         Carrito carrito = findById(carritoId);
 

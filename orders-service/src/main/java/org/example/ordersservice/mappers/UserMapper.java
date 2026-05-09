@@ -7,12 +7,12 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface UserMapper {
+public abstract class UserMapper {
 
     @Mapping(target = "nombreRol", source = "rol.nombre")
-    UserOutputDto toDto(User user);
+    public abstract UserOutputDto toDto(User user);
 
     @Mapping(target = "rol", ignore = true) // El rol se asigna en el Service buscando por ID
     @Mapping(target = "id", ignore = true)
-    User toEntity(UserInputDto dto);
+    public abstract User toEntity(UserInputDto dto);
 }

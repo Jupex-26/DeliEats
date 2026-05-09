@@ -30,7 +30,7 @@
     <!-- Grid de Restaurantes -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
       @for (res of filteredRestaurants(); track res.id) {
-        <div class="feature-card group bg-white shadow-xl">
+        <div class="feature-card group bg-white shadow-xl cursor-pointer" [routerLink]="['/restaurantes', res.id]">
           <div class="image-wrapper">
             <img
               [src]="res.foto || 'assets/placeholder.png'"

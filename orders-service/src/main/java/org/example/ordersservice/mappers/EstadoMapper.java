@@ -7,10 +7,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface EstadoMapper {
+public abstract class EstadoMapper {
 
-    EstadoOutputDto toDto(Estado estado);
+    public abstract EstadoOutputDto toDto(Estado estado);
 
     @Mapping(target = "id", ignore = true)
-    Estado toEntity(EstadoInputDto dto);
+    public abstract Estado toEntity(EstadoInputDto dto);
 }

@@ -12,7 +12,6 @@ public class CarritoOutputDto {
     private Long id;
     private Long clienteId;
     private String nombreCliente;
-    private String estado;
 
     private List<DetalleCarritoOutputDto> detalles;
 
