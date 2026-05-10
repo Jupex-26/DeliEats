@@ -4,7 +4,7 @@
 
   <!-- Carrito panel -->
   @if (cartOpen()) {
-  <app-carrito [carritoId]="carritoId()" [productos]="productos()" (cerrar)="closeCart()" (carritoActualizado)="carrito.set($event)"
+  <app-carrito [carritoId]="carritoId()" [productos]="productos()" (cerrar)="closeCart()"
     (pedidoRealizado)="closeCart()">
   </app-carrito>
   }

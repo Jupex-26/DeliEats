@@ -37,6 +37,10 @@ export const routes: Routes = [
         path: 'restaurantes/:id',
         loadComponent: () => import('./features/restaurante-cliente/restaurante-cliente.component').then(m => m.RestauranteClienteComponent)
       },
+      {
+        path: 'checkout',
+        loadComponent: () => import('./features/checkout/checkout.component').then(m => m.CheckoutComponent)
+      },
     ],
   },
   {

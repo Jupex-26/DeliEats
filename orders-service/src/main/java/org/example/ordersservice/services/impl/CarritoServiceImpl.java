@@ -1,8 +1,8 @@
 package org.example.ordersservice.services.impl;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.exception.custom.NotFoundException;
+import org.example.ordersservice.exception.custom.QuantityExceedsException;
 import org.example.ordersservice.models.Carrito;
 import org.example.ordersservice.models.Cliente;
 import org.example.ordersservice.models.Producto;
@@ -63,6 +63,9 @@ public class CarritoServiceImpl implements CarritoService {
         Carrito carrito = findById(carritoId);
         Producto producto = productoService.findById(productoId);
 
+        if (cantidad<=0 || producto.getCantidad() < cantidad){
+            throw new QuantityExceedsException("La cantidad debe ser mayor a 0 y no debe exceder el stock disponible (" + producto.getCantidad() + ")");
+        }
         carrito.agregarProducto(producto,cantidad);
 
         return carritoRepository.save(carrito);
@@ -78,11 +81,10 @@ public class CarritoServiceImpl implements CarritoService {
     }
 
     @Override
-    @Transactional
     public void clearCarrito(Long carritoId) {
         Carrito carrito = findById(carritoId);
-
         detalleCarritoService.deleteByCarritoId(carrito.getId());
+        carrito.cleanDetalles();
     }
 
     @Override

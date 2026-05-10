@@ -36,12 +36,10 @@ public class Producto {
     @JoinColumn(name = "empresa_id", nullable = false)
     private Empresa empresa;
 
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof User)) return false;
-        User user = (User) o;
-        return id != null && id.equals(user.getId());
+        if (!(o instanceof Producto producto)) return false;
+        return id != null && id.equals(producto.getId());
     }
 
     @Override

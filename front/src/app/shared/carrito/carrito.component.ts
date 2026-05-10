@@ -1,5 +1,6 @@
-import { Component, Input, Output, EventEmitter, inject, signal, effect, OnInit } from '@angular/core';
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { Component, Input, Output, EventEmitter, inject, signal, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -23,6 +24,7 @@ import { CarritoOutputDto, DetalleCarritoOutputDto, ProductoOutputDto } from '..
 })
 export class CarritoComponent implements OnInit {
   private carritoService = inject(CarritoService);
+  private router = inject(Router);
 
   @Input() carritoId: number | null = null;
   @Input() productos: ProductoOutputDto[] = [];
@@ -30,7 +32,7 @@ export class CarritoComponent implements OnInit {
   @Output() pedidoRealizado = new EventEmitter<void>();
   @Output() carritoActualizado = new EventEmitter<CarritoOutputDto>();
 
-  carrito = signal<CarritoOutputDto | null>(null);
+  carrito = this.carritoService.carrito;
   loading = signal(false);
   eliminando = signal<number | null>(null);
 
@@ -56,7 +58,6 @@ export class CarritoComponent implements OnInit {
     this.loading.set(true);
     this.carritoService.obtenerPorId(this.carritoId).subscribe({
       next: (c) => {
-        this.carrito.set(c);
         this.carritoActualizado.emit(c);
         this.loading.set(false);
       },
@@ -92,7 +93,6 @@ export class CarritoComponent implements OnInit {
 
     this.carritoService.actualizarCantidadProducto(this.carritoId, productoId, cantidad).subscribe({
       next: (c) => {
-        this.carrito.set(c);
         this.carritoActualizado.emit(c);
       }
     });
@@ -102,9 +102,7 @@ export class CarritoComponent implements OnInit {
     if (!this.carritoId) return;
     this.carritoService.limpiar(this.carritoId).subscribe({
       next: () => {
-        const resetCart: CarritoOutputDto = { ...this.carrito()!, detalles: [], precioTotal: 0 };
-        this.carrito.set(resetCart);
-        this.carritoActualizado.emit(resetCart);
+        // El servicio ya se encarga de limpiar el estado local mediante tap()
       }
     });
   }
@@ -127,7 +125,7 @@ export class CarritoComponent implements OnInit {
   }
 
   realizarPedido() {
-    // Aquí iría la lógica para proceder al pago o checkout
-    this.pedidoRealizado.emit();
+    this.cerrar.emit();
+    this.router.navigate(['/checkout']);
   }
 }
