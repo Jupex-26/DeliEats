@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HeaderComponent } from '../header/header.component';
-import { IonContent, IonRouterOutlet} from '@ionic/angular/standalone';
+import { IonContent, IonRouterOutlet } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-public-layout',
@@ -12,7 +12,7 @@ import { IonContent, IonRouterOutlet} from '@ionic/angular/standalone';
   },
 })
 export class PublicLayoutComponent implements OnInit {
-  constructor() {}
+  constructor() { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 }

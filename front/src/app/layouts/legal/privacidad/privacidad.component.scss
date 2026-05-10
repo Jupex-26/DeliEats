@@ -1,0 +1,49 @@
+@use '../../../../styles/variables' as *;
+
+.legal-page {
+  background-color: $color-bg-base;
+}
+
+.text-main {
+  color: $color-text-main;
+}
+
+.text-primary {
+  color: $color-primary;
+}
+
+.bg-primary { background-color: $color-primary; }
+.text-alt    { color: $color-bg-alt; }
+
+/* Footer Styles */
+.footer-main {
+  background-color: $color-primary;
+  color: $color-bg-alt;
+  padding: 2.5rem 1.5rem;
+  margin: 4rem 0 0 0;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.footer-link {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+  opacity: 0.9;
+  cursor: pointer;
+
+  &:hover {
+    color: white;
+    opacity: 1;
+  }
+}
+
+.placeholder-main::placeholder {
+  color: rgba($color-text-main, 0.6);
+}
+
+.focus-ring-primary:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px $color-primary;
+}

@@ -1,6 +1,7 @@
 <ion-content>
   <!-- Hero Section -->
-  <section class="hero-section flex flex-col-reverse md:flex-row items-center justify-between px-6 py-12 md:py-24 max-w-7xl mx-auto gap-8 w-full box-border">
+  <section
+    class="hero-section flex flex-col-reverse md:flex-row items-center justify-between px-6 py-12 md:py-24 max-w-7xl mx-auto gap-8 w-full box-border">
     <!-- Text Content -->
     <div class="md:w-1/2 flex flex-col justify-center items-start mt-8 md:mt-0 space-y-6 w-full">
       <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-main leading-tight m-0">
@@ -22,7 +23,8 @@
     </div>
     <!-- Hero Image Placeholder -->
     <div class="md:w-1/2 flex justify-center w-full">
-      <div class="hero-image-container w-full max-w-md rounded-full bg-alt flex items-center justify-center p-8 shadow-2xl relative overflow-hidden">
+      <div
+        class="hero-image-container w-full max-w-md rounded-full bg-alt flex items-center justify-center p-8 shadow-2xl relative overflow-hidden">
         <div class="absolute inset-0 hero-placeholder-overlay"></div>
         <div class="z-10 text-center flex flex-col items-center">
           <span class="text-6xl mb-4">🥗</span>
@@ -44,7 +46,8 @@
           <div class="feature-icon bg-primary">🍃</div>
           <h3 class="text-xl font-bold text-primary mb-3 m-0 pb-2">Ingredientes Naturales</h3>
           <p class="text-main opacity-90 leading-relaxed m-0">
-            Nuestra prioridad es tu bienestar. Seleccionamos los alimentos más frescos para reducir tu estrés y darte calidad.
+            Nuestra prioridad es tu bienestar. Seleccionamos los alimentos más frescos para reducir tu estrés y darte
+            calidad.
           </p>
         </div>
 
@@ -52,7 +55,8 @@
           <div class="feature-icon bg-secondary">🛵</div>
           <h3 class="text-xl font-bold text-secondary mb-3 m-0 pb-2">Servicio Dinámico</h3>
           <p class="text-main opacity-90 leading-relaxed m-0">
-            Te llevamos la comida con energía y movimiento. Un proceso rápido y apetecible desde que pides hasta que llega.
+            Te llevamos la comida con energía y movimiento. Un proceso rápido y apetecible desde que pides hasta que
+            llega.
           </p>
         </div>
 
@@ -80,15 +84,15 @@
   </section>
 
   <!-- Footer -->
-  <footer class="footer-main bg-primary text-alt py-10 px-6 w-full box-border">
+  <footer class="footer-main bg-primary text-alt py-10 px-6 box-border">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
       <div class="text-2xl font-bold tracking-wider">DeliEats</div>
       <div class="flex space-x-6 text-sm opacity-90 gap-6">
-        <a href="#" class="footer-link">Privacidad</a>
-        <a href="#" class="footer-link">Términos</a>
-        <a href="#" class="footer-link">Contacto</a>
+        <a routerLink="/privacidad" class="footer-link">Privacidad</a>
+        <a routerLink="/terminos" class="footer-link">Términos</a>
+        <a routerLink="/contacto" class="footer-link">Contacto</a>
       </div>
-      <div class="text-sm opacity-80">&copy; 2024 DeliEats. Todos los derechos reservados.</div>
+      <div class="text-sm opacity-80">&copy; 2026 DeliEats. Todos los derechos reservados.</div>
     </div>
   </footer>
 </ion-content>
