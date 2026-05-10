@@ -13,6 +13,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/users")
@@ -65,5 +66,14 @@ public class UserController {
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         userService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/foto")
+    public ResponseEntity<UserOutputDto> subirFoto(
+            @PathVariable Long id,
+            @RequestParam("foto") MultipartFile archivo) {
+
+        User updatedUser = userService.uploadFoto(id, archivo);
+        return ResponseEntity.ok(userMapper.toDto(updatedUser));
     }
 }

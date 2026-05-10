@@ -7,6 +7,8 @@ import {
 import { EmpresaService } from '../../services/empresa/empresa-service';
 import { Empresa } from '../../types';
 
+import { environment } from '../../../environments/environment';
+
 @Component({
   selector: 'app-restaurantes',
   templateUrl: './restaurantes.component.html',
@@ -15,6 +17,7 @@ import { Empresa } from '../../types';
   imports: [CommonModule, IonContent, RouterLink],
 })
 export class RestaurantesComponent implements OnInit {
+  protected environment = environment;
   private readonly empresaService = inject(EmpresaService);
 
   // --- State Signals ---

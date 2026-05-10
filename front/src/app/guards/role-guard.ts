@@ -16,5 +16,9 @@ export const roleGuard: CanActivateFn = (route, state) => {
     return false; // Si no hay rol (usuario no logueado), denegamos el acceso
   }
 
-  return requiredRoles.includes(userRole);
+  const isAllowed = requiredRoles.includes(userRole);
+  if (!isAllowed) {
+    console.warn(`Acceso denegado. Rol: ${userRole}, Requerido: ${requiredRoles}`);
+  }
+  return isAllowed;
 };

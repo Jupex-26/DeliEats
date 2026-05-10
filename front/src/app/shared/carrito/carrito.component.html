@@ -36,7 +36,7 @@
         @for (detalle of detalles; track detalle.id) {
           <li class="cart-item flex items-center gap-4 p-3 rounded-2xl">
             @if (detalle.fotoProducto) {
-              <img [src]="detalle.fotoProducto" [alt]="detalle.nombreProducto"
+              <img [src]="detalle.fotoProducto ? (environment.storageUrl + '/' + detalle.fotoProducto) : 'assets/placeholder.png'" [alt]="detalle.nombreProducto"
                 class="w-16 h-16 rounded-xl object-cover flex-shrink-0">
             } @else {
               <div class="w-16 h-16 rounded-xl flex items-center justify-center flex-shrink-0 no-img-placeholder text-2xl">

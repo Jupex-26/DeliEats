@@ -15,6 +15,8 @@ import { CarritoService } from '../../services/carrito/carrito-service';
 import { EuroPipe } from '../../pipe/euro.pipe';
 import { CarritoOutputDto, DetalleCarritoOutputDto, ProductoOutputDto } from '../../types';
 
+import { environment } from '../../../environments/environment';
+
 @Component({
   selector: 'app-carrito',
   standalone: true,
@@ -23,6 +25,7 @@ import { CarritoOutputDto, DetalleCarritoOutputDto, ProductoOutputDto } from '..
   styleUrls: ['./carrito.component.scss']
 })
 export class CarritoComponent implements OnInit {
+  protected environment = environment;
   private carritoService = inject(CarritoService);
   private router = inject(Router);
 

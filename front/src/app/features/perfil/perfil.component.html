@@ -1,0 +1,76 @@
+<ion-content>
+  <div class="perfil-page">
+
+    <!-- Header -->
+    <header class="perfil-header">
+      <button class="btn-back" (click)="volver()" aria-label="Volver">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+
+      @if (!loading()) {
+      <div class="user-hero">
+        <div class="avatar-wrapper">
+          @if (cliente()?.foto || usuario?.foto) {
+            <img [src]="environment.storageUrl + '/' + (cliente()?.foto || usuario?.foto)" 
+                 [alt]="usuario?.nombre" class="avatar-img">
+          } @else {
+            <div class="avatar-placeholder">
+              {{ usuario?.nombre?.charAt(0)?.toUpperCase() }}
+            </div>
+          }
+        </div>
+        <div class="user-info">
+          <h1>{{ usuario?.nombre }}</h1>
+        </div>
+      </div>
+      }
+    </header>
+
+    <!-- Loading -->
+    @if (loading()) {
+    <div class="loading-state">
+      <div class="spinner-perfil"></div>
+    </div>
+    }
+
+    <!-- Contenido CLIENTE -->
+    @if (!loading() && rol === 'ROLE_CLIENTE') {
+
+    <!-- Tabs -->
+    <nav class="tabs-nav">
+      <button class="tab-btn" [class.active]="activeTab() === 'perfil'" (click)="setTab('perfil')">
+        <ion-icon name="person-outline"></ion-icon>
+        Mi Perfil
+      </button>
+      <button class="tab-btn" [class.active]="activeTab() === 'pedidos'" (click)="setTab('pedidos')">
+        <ion-icon name="receipt-outline"></ion-icon>
+        Mis Pedidos
+      </button>
+    </nav>
+
+    <!-- Tab: Edición Perfil -->
+    @if (activeTab() === 'perfil' && cliente()) {
+    <section class="tab-content">
+      <app-perfil-edicion [cliente]="cliente()!" (perfilActualizado)="onPerfilActualizado($event)"></app-perfil-edicion>
+    </section>
+    }
+
+    <!-- Tab: Mis Pedidos -->
+    @if (activeTab() === 'pedidos') {
+    <section class="tab-content">
+      <app-mis-pedidos></app-mis-pedidos>
+    </section>
+    }
+    }
+
+    <!-- Contenido EMPRESA (por definir) -->
+    @if (!loading() && rol === 'ROLE_EMPRESA') {
+    <div class="coming-soon">
+      <ion-icon name="business-outline"></ion-icon>
+      <h2>Panel de Empresa</h2>
+      <p>Esta sección está en desarrollo.</p>
+    </div>
+    }
+
+  </div>
+</ion-content>

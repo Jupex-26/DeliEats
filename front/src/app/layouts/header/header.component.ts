@@ -10,19 +10,22 @@ import { AuthService } from '../../services/auth/auth-service';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent {
-  public authService = inject(AuthService);
+  private authService = inject(AuthService);
   isMenuOpen = false;
-  public user = this.authService.currentUser()?.userOutputDto;
+
+  // Usamos el signal del servicio directamente para reactividad total
+  public currentUser = this.authService.currentUser;
+
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
   }
 
   logout() {
     this.authService.logout();
-    // Opcional: redirigir al inicio tras cerrar sesión
+    this.isMenuOpen = false;
   }
 
-  protected isLogin() {
+  isLogin() {
     return this.authService.isLogin();
   }
 }

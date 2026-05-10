@@ -33,7 +33,7 @@
         <div class="feature-card group bg-white shadow-xl cursor-pointer" [routerLink]="['/restaurantes', res.id]">
           <div class="image-wrapper">
             <img
-              [src]="res.foto || 'assets/placeholder.png'"
+              [src]="res.foto ? (environment.storageUrl + '/' + res.foto) : 'assets/placeholder.png'"
               [alt]="res.nombre"
               class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             >

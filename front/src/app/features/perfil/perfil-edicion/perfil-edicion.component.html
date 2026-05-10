@@ -1,0 +1,127 @@
+<div class="perfil-edicion">
+
+  <!-- ─── Foto de Perfil ─── -->
+  <section class="edicion-section">
+    <h2 class="section-title">
+      <ion-icon name="camera-outline"></ion-icon>
+      Foto de Perfil
+    </h2>
+
+    <div class="foto-container">
+      <div class="foto-preview-wrapper">
+        @if (fotoPreview()) {
+          <img [src]="fotoPreview()!" alt="Foto de perfil" class="foto-preview">
+        } @else {
+          <div class="foto-placeholder">
+            <ion-icon name="camera-outline"></ion-icon>
+          </div>
+        }
+      </div>
+
+      <div class="foto-actions">
+        <label class="btn-upload" for="foto-input">
+          <ion-icon name="camera-outline"></ion-icon>
+          Seleccionar foto
+        </label>
+        <input id="foto-input" type="file" accept="image/*" (change)="onFotoSeleccionada($event)" hidden>
+
+        @if (fotoFile()) {
+          <button class="btn-save-foto" (click)="guardarFoto()" [disabled]="guardandoFoto()">
+            @if (guardandoFoto()) {
+              <div class="spinner-sm"></div> Subiendo...
+            } @else {
+              <ion-icon name="save-outline"></ion-icon> Guardar foto
+            }
+          </button>
+        }
+      </div>
+
+      @if (exitoFoto()) {
+        <div class="success-msg"><ion-icon name="checkmark-circle-outline"></ion-icon> Foto actualizada</div>
+      }
+    </div>
+  </section>
+
+  <!-- ─── Datos Personales ─── -->
+  <section class="edicion-section">
+    <h2 class="section-title">
+      <ion-icon name="save-outline"></ion-icon>
+      Datos Personales
+    </h2>
+
+    <app-usuario-form
+      mode="edit"
+      [userData]="cliente"
+      (submitForm)="guardarPerfil($event)">
+    </app-usuario-form>
+
+    @if (exitoPerfil()) {
+      <div class="success-banner mt-4">
+        <ion-icon name="checkmark-circle-outline"></ion-icon> Perfil actualizado correctamente.
+      </div>
+    }
+  </section>
+
+  <!-- ─── Cambiar Contraseña ─── -->
+  <section class="edicion-section">
+    <h2 class="section-title">
+      <ion-icon name="lock-closed-outline"></ion-icon>
+      Seguridad
+    </h2>
+
+    <form [formGroup]="passwordForm" (ngSubmit)="guardarPassword()" class="edicion-form">
+      <div class="form-grid">
+        <div class="form-group password-field">
+          <ion-item lines="none" class="custom-input">
+            <ion-input formControlName="nuevaPassword" [type]="mostrarPassword() ? 'text' : 'password'"
+              label="Nueva Contraseña" labelPlacement="stacked" placeholder="••••••••"></ion-input>
+          </ion-item>
+          <button type="button" class="btn-eye" (click)="togglePassword()" aria-label="Ver contraseña">
+            <ion-icon [name]="mostrarPassword() ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+          </button>
+          @if (passwordForm.get('nuevaPassword')?.touched && passwordForm.get('nuevaPassword')?.hasError('strongPassword')) {
+            <span class="error-text">Debe ser una contraseña fuerte.</span>
+          }
+        </div>
+
+        <div class="form-group password-field">
+          <ion-item lines="none" class="custom-input">
+            <ion-input formControlName="confirmarPassword" [type]="mostrarConfirm() ? 'text' : 'password'"
+              label="Confirmar Contraseña" labelPlacement="stacked" placeholder="••••••••"></ion-input>
+          </ion-item>
+          <button type="button" class="btn-eye" (click)="toggleConfirm()" aria-label="Ver contraseña">
+            <ion-icon [name]="mostrarConfirm() ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+          </button>
+          @if (passwordForm.hasError('noCoinciden') && passwordForm.get('confirmarPassword')?.touched) {
+            <span class="error-text">Las contraseñas no coinciden.</span>
+          }
+        </div>
+      </div>
+
+      @if (exitoPassword()) {
+        <div class="success-banner">
+          <ion-icon name="checkmark-circle-outline"></ion-icon> Contraseña cambiada correctamente.
+        </div>
+      }
+
+      <button type="submit" class="btn-guardar" [disabled]="passwordForm.invalid || guardandoPassword()">
+        @if (guardandoPassword()) {
+          <div class="spinner-sm"></div> Cambiando...
+        } @else {
+          <ion-icon name="save-outline"></ion-icon> Actualizar contraseña
+        }
+      </button>
+    </form>
+  </section>
+
+  <!-- Modal de Información -->
+  <app-info-modal
+    [isOpen]="isModalOpen"
+    [title]="modalTitle"
+    [message]="modalMessage"
+    [type]="modalType"
+    [errorData]="errorData"
+    (modalClosed)="onModalClosed()">
+  </app-info-modal>
+
+</div>

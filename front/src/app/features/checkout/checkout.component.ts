@@ -18,6 +18,8 @@ import { AuthService } from '../../services/auth/auth-service';
 import { EuroPipe } from '../../pipe/euro.pipe';
 import { CarritoOutputDto } from '../../types';
 
+import { environment } from '../../../environments/environment';
+
 @Component({
   selector: 'app-checkout',
   standalone: true,
@@ -26,6 +28,7 @@ import { CarritoOutputDto } from '../../types';
   styleUrls: ['./checkout.component.scss']
 })
 export class CheckoutComponent implements OnInit {
+  protected environment = environment;
   private router = inject(Router);
   private carritoService = inject(CarritoService);
   private checkoutService = inject(CheckoutService);

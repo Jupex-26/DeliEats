@@ -31,20 +31,22 @@
       }
     </div>
 
-    <!-- PASSWORD -->
-    <div class="form-group">
-      <ion-item lines="none" class="custom-input rounded-xl shadow-sm border">
-        <ion-input formControlName="password" type="password" label="Contraseña" labelPlacement="stacked" placeholder="••••••••" class="font-medium"></ion-input>
-      </ion-item>
-      @if (form.get('password')?.touched) {
-        @if (form.get('password')?.hasError('required')) {
-          <div class="error-text text-xs mt-1 ml-2 font-medium">La contraseña es obligatoria.</div>
+    <!-- PASSWORD (Solo en registro) -->
+    @if (mode === 'register') {
+      <div class="form-group">
+        <ion-item lines="none" class="custom-input rounded-xl shadow-sm border">
+          <ion-input formControlName="password" type="password" label="Contraseña" labelPlacement="stacked" placeholder="••••••••" class="font-medium"></ion-input>
+        </ion-item>
+        @if (form.get('password')?.touched) {
+          @if (form.get('password')?.hasError('required')) {
+            <div class="error-text text-xs mt-1 ml-2 font-medium">La contraseña es obligatoria.</div>
+          }
+          @if (form.get('password')?.hasError('strongPassword')) {
+            <div class="error-text text-xs mt-1 ml-2 font-medium">Mínimo 8 caracteres, mayúscula, número y símbolo.</div>
+          }
         }
-        @if (form.get('password')?.hasError('strongPassword')) {
-          <div class="error-text text-xs mt-1 ml-2 font-medium">Mínimo 8 caracteres, mayúscula, número y símbolo.</div>
-        }
-      }
-    </div>
+      </div>
+    }
 
     <!-- TELÉFONO -->
     <div class="form-group">
@@ -74,7 +76,7 @@
           <div class="error-text text-xs mt-1 ml-2 font-medium">La fecha de nacimiento es obligatoria.</div>
         }
         @if (form.get('fechaNacimiento')?.hasError('fechaPosterior')) {
-          <div class="error-text text-xs mt-1 ml-2 font-medium">Debes ser mayor de 16 años para registrarte.</div>
+          <div class="error-text text-xs mt-1 ml-2 font-medium">Debes ser mayor de 16 años.</div>
         }
       }
     </div>
@@ -91,7 +93,8 @@
 
   </div>
 
-  <button type="submit" class="btn-submit w-full mt-4 font-bold py-3.5 px-4 rounded-xl shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed" [disabled]="form.invalid">
-    COMPLETAR REGISTRO
+  <button type="submit" class="btn-submit w-full mt-4 font-bold py-3.5 px-4 rounded-xl shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed" 
+    [disabled]="form.invalid || (mode === 'edit' && form.pristine)">
+    {{ mode === 'register' ? 'COMPLETAR REGISTRO' : 'GUARDAR CAMBIOS' }}
   </button>
 </form>

@@ -188,4 +188,15 @@ public class GlobalExceptionHandler {
                 .build();
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<CustomError> handleIllegalArgumentException(IllegalArgumentException ex) {
+        CustomError error = CustomError.builder()
+                .message(ex.getMessage())
+                .timestamp(LocalDateTime.now())
+                .httpCode(HttpStatus.BAD_REQUEST.value())
+                .build();
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
 }
