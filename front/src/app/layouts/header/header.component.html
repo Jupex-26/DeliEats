@@ -15,9 +15,9 @@
     @if (isLogin()) {
       <div class="flex items-center gap-3">
         <a
-          routerLink="/perfil"
+          [routerLink]="getPerfilRoute()"
           class="btn-profile px-4 py-2 rounded-full font-medium transition border-none cursor-pointer no-underline flex items-center">
-          Mi Perfil
+          {{ getRol() === 'ROLE_EMPRESA' ? 'Mi Restaurante' : 'Mi Perfil' }}
         </a>
 
         <!-- Botón Cerrar Sesión Escritorio -->
@@ -63,9 +63,9 @@
       @if (isLogin()) {
         <a
           (click)="toggleMenu()"
-          routerLink="/perfil"
+          [routerLink]="getPerfilRoute()"
           class="btn-profile px-4 py-3 mb-3 rounded-full font-medium transition cursor-pointer text-center w-full block no-underline">
-          Mi Perfil
+          {{ getRol() === 'ROLE_EMPRESA' ? 'Mi Restaurante' : 'Mi Perfil' }}
         </a>
 
         <!-- Botón Cerrar Sesión -->

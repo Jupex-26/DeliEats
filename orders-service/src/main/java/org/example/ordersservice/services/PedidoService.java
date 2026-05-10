@@ -18,6 +18,8 @@ public interface PedidoService {
 
     Page<Pedido> findByEstadoId(Long estadoId, Pageable pageable);
 
+    Page<Pedido> findByEmpresaId(Long empresaId, Pageable pageable);
+
     Pedido update(Long id, Pedido pedido);
 
     Pedido updateEstado(Long id, Long estadoId);

@@ -96,11 +96,30 @@
   --border-radius: 14px;
   --padding-start: 16px;
   --padding-end: 16px;
+  --label-color: #{rgba($color-text-main, 0.5)};
+  --label-color-focused: #{$color-primary};
+  
   border: 1px solid rgba($color-bg-alt, 0.8);
   border-radius: 14px;
   overflow: hidden;
-  transition: border-color 0.2s ease;
+  transition: all 0.2s ease;
+
   &:focus-within { border-color: $color-primary; }
+
+  // Validación en labels
+  &.ion-touched.ion-valid {
+    --label-color: #{$color-success} !important;
+    --label-color-focused: #{$color-success} !important;
+    --highlight-color-focused: #{$color-success} !important;
+    border-color: rgba($color-success, 0.3);
+  }
+
+  &.ion-touched.ion-invalid {
+    --label-color: #{$color-error} !important;
+    --label-color-focused: #{$color-error} !important;
+    --highlight-color-focused: #{$color-error} !important;
+    border-color: rgba($color-error, 0.3);
+  }
 
   &--textarea {
     align-items: flex-start;
@@ -108,14 +127,44 @@
   }
 }
 
-// ─── Select ───────────────────────────────────────────────────────────────────
-.select-wrapper {
+.custom-input-like {
   border: 1px solid rgba($color-bg-alt, 0.8);
   border-radius: 14px;
-  overflow: hidden;
+  padding: 8px 16px 4px;
   background: rgba($color-bg-base, 0.6);
-  transition: border-color 0.2s ease;
-  &:focus-within { border-color: $color-primary; }
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
+
+  .floating-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba($color-text-main, 0.5);
+    margin-bottom: 0;
+    transition: color 0.2s ease;
+  }
+
+  &:focus-within {
+    border-color: $color-primary;
+    .floating-label { color: $color-primary; }
+  }
+
+  &.is-valid {
+    .floating-label { color: $color-success; }
+    border-color: rgba($color-success, 0.3);
+  }
+
+  &.is-invalid {
+    .floating-label { color: $color-error; }
+    border-color: rgba($color-error, 0.3);
+  }
+}
+
+// ─── Select ───────────────────────────────────────────────────────────────────
+.select-wrapper {
+  overflow: hidden;
+  background: transparent;
+  width: 100%;
 }
 
 .select-native {
@@ -230,5 +279,80 @@
     border-top-color: white;
   }
 }
+
+// ─── Aperturas ────────────────────────────────────────────────────────────────
+.aperturas-section {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid rgba($color-bg-alt, 0.6);
+
+  .section-title { margin-bottom: 0; }
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.btn-add {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 12px;
+  border: 1.5px solid $color-primary;
+  background: transparent;
+  color: $color-primary;
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  &:hover { background: rgba($color-primary, 0.08); }
+  ion-icon { font-size: 18px; }
+}
+
+.aperturas-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.apertura-item {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  background: rgba($color-bg-alt, 0.15);
+  padding: 16px;
+  border-radius: 16px;
+  animation: fadeIn 0.3s ease;
+}
+
+.apertura-fields {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: 12px;
+  @media (max-width: 500px) { grid-template-columns: 1fr; }
+}
+
+.btn-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: none;
+  background: rgba($color-error, 0.08);
+  color: $color-error;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  &:hover { background: $color-error; color: white; }
+  ion-icon { font-size: 20px; }
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
 @keyframes spin { to { transform: rotate(360deg); } }

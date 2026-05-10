@@ -14,7 +14,7 @@ public abstract class ProductoMapper {
     public abstract ProductoOutputDto toDto(Producto producto);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "empresa", ignore = true) // Se busca en el Service por empresaId
+    @Mapping(target = "empresa.id", source = "empresaId")
     @Mapping(target = "cantidad", source = "cantidad")
     public abstract Producto toEntity(ProductoInputDto dto);
 }

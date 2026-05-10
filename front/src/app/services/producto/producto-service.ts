@@ -21,6 +21,12 @@ export class ProductoService {
     return this.http.get<any>(this.urlApi, { params });
   }
 
+  /** GET /api/productos/empresa/:id?page=&size= */
+  listarPorEmpresa(empresaId: number, page: number = 0, size: number = 10): Observable<any> {
+    let params = new HttpParams().set('page', page).set('size', size);
+    return this.http.get<any>(`${this.urlApi}/empresa/${empresaId}`, { params });
+  }
+
   obtenerPorId(id: number): Observable<ProductoOutputDto> {
     return this.http.get<ProductoOutputDto>(`${this.urlApi}/${id}`);
   }

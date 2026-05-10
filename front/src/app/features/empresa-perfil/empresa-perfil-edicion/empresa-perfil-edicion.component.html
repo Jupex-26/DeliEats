@@ -35,9 +35,8 @@
 
     <!-- Nombre -->
     <div class="form-group">
-      <label class="form-label">Nombre del restaurante</label>
       <ion-item lines="none" class="custom-input">
-        <ion-input formControlName="nombre" placeholder="Nombre" type="text"></ion-input>
+        <ion-input formControlName="nombre" label="Nombre del restaurante" labelPlacement="stacked" placeholder="Ej: Pizzería Roma" type="text"></ion-input>
       </ion-item>
       @if (perfilForm.get('nombre')?.touched && perfilForm.get('nombre')?.invalid) {
         <span class="field-error">El nombre es obligatorio</span>
@@ -46,9 +45,8 @@
 
     <!-- Email -->
     <div class="form-group">
-      <label class="form-label">Email</label>
       <ion-item lines="none" class="custom-input">
-        <ion-input formControlName="email" placeholder="email@restaurante.com" type="email"></ion-input>
+        <ion-input formControlName="email" label="Email de la cuenta" labelPlacement="stacked" placeholder="email@restaurante.com" type="email"></ion-input>
       </ion-item>
       @if (perfilForm.get('email')?.touched && perfilForm.get('email')?.invalid) {
         <span class="field-error">Email inválido</span>
@@ -57,49 +55,108 @@
 
     <!-- Dirección -->
     <div class="form-group">
-      <label class="form-label">Dirección</label>
       <ion-item lines="none" class="custom-input">
-        <ion-input formControlName="direccion" placeholder="Calle, número..." type="text"></ion-input>
+        <ion-input formControlName="direccion" label="Dirección" labelPlacement="stacked" placeholder="Calle, número..." type="text"></ion-input>
+      </ion-item>
+    </div>
+
+    <!-- Teléfono (Principal) -->
+    <div class="form-group">
+      <ion-item lines="none" class="custom-input">
+        <ion-input formControlName="telefono" label="Teléfono principal" labelPlacement="stacked" placeholder="6XX XXX XXX" type="tel"></ion-input>
       </ion-item>
     </div>
 
     <!-- Correo contacto -->
     <div class="form-group">
-      <label class="form-label">Correo de contacto público</label>
       <ion-item lines="none" class="custom-input">
-        <ion-input formControlName="correoContacto" placeholder="contacto@restaurante.com" type="email"></ion-input>
+        <ion-input formControlName="correoContacto" label="Correo de contacto público" labelPlacement="stacked" placeholder="contacto@restaurante.com" type="email"></ion-input>
       </ion-item>
     </div>
 
     <!-- Teléfono contacto -->
     <div class="form-group">
-      <label class="form-label">Teléfono de contacto</label>
       <ion-item lines="none" class="custom-input">
-        <ion-input formControlName="telefonoContacto" placeholder="6XX XXX XXX" type="tel"></ion-input>
+        <ion-input formControlName="telefonoContacto" label="Teléfono de contacto" labelPlacement="stacked" placeholder="6XX XXX XXX" type="tel"></ion-input>
       </ion-item>
     </div>
 
     <!-- Tipo de Cocina -->
     <div class="form-group">
-      <label class="form-label">Tipo de cocina</label>
-      <div class="select-wrapper">
-        <select formControlName="tipoCocina" class="select-native">
-          <option value="" disabled>-- Selecciona una categoría --</option>
-          @for (tc of tiposCocina(); track tc.id) {
-            <option [value]="tc.id">{{ tc.nombre }}</option>
-          }
-        </select>
+      <div class="custom-input-like"
+        [class.is-valid]="perfilForm.get('tipoCocina')?.valid && perfilForm.get('tipoCocina')?.touched"
+        [class.is-invalid]="perfilForm.get('tipoCocina')?.invalid && perfilForm.get('tipoCocina')?.touched">
+        <label class="floating-label">Tipo de cocina</label>
+        <div class="select-wrapper">
+          <select formControlName="tipoCocina" class="select-native">
+            <option value="" disabled>-- Selecciona una categoría --</option>
+            @for (tc of tiposCocina(); track tc.id) {
+              <option [value]="tc.id">{{ tc.nombre }}</option>
+            }
+          </select>
+        </div>
       </div>
     </div>
 
     <!-- Descripción (full width) -->
     <div class="form-group form-group--full">
-      <label class="form-label">Descripción</label>
       <ion-item lines="none" class="custom-input custom-input--textarea">
-        <ion-textarea formControlName="descripcion" placeholder="Describe tu restaurante..." [rows]="4" autoGrow="false"></ion-textarea>
+        <ion-textarea formControlName="descripcion" label="Descripción" labelPlacement="stacked" placeholder="Describe tu restaurante..." [rows]="4" autoGrow="false"></ion-textarea>
       </ion-item>
     </div>
 
+  </div>
+
+  <!-- Horarios de Apertura -->
+  <div class="aperturas-section">
+    <div class="section-header">
+      <h3 class="section-title">
+        <ion-icon name="time-outline"></ion-icon>
+        Horarios de Apertura
+      </h3>
+      <button type="button" class="btn-add" (click)="agregarApertura()">
+        <ion-icon name="add-outline"></ion-icon>
+        Añadir horario
+      </button>
+    </div>
+
+    <div formArrayName="aperturas" class="aperturas-list">
+      @for (apertua of aperturas.controls; track $index) {
+        <div [formGroupName]="$index" class="apertura-item">
+          <div class="apertura-fields">
+            <div class="form-group">
+              <label class="form-label">Día</label>
+              <div class="select-wrapper">
+                <select formControlName="dia" class="select-native">
+                  <option value="LUNES">Lunes</option>
+                  <option value="MARTES">Martes</option>
+                  <option value="MIERCOLES">Miércoles</option>
+                  <option value="JUEVES">Jueves</option>
+                  <option value="VIERNES">Viernes</option>
+                  <option value="SABADO">Sábado</option>
+                  <option value="DOMINGO">Domingo</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Apertura</label>
+              <ion-item lines="none" class="custom-input">
+                <ion-input formControlName="horaApertura" type="time" step="1"></ion-input>
+              </ion-item>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Cierre</label>
+              <ion-item lines="none" class="custom-input">
+                <ion-input formControlName="horaCierre" type="time" step="1"></ion-input>
+              </ion-item>
+            </div>
+          </div>
+          <button type="button" class="btn-remove" (click)="eliminarApertura($index)" title="Eliminar horario">
+            <ion-icon name="trash-outline"></ion-icon>
+          </button>
+        </div>
+      }
+    </div>
   </div>
 
   <div class="form-actions">
@@ -124,11 +181,10 @@
   <form [formGroup]="passwordForm" (ngSubmit)="guardarPassword()" class="edicion-form">
     <div class="form-grid">
       <div class="form-group">
-        <label class="form-label">Nueva contraseña</label>
         <div class="input-password-wrapper">
           <ion-item lines="none" class="custom-input">
             <ion-input formControlName="nuevaPassword" [type]="mostrarPassword() ? 'text' : 'password'"
-                       placeholder="Nueva contraseña"></ion-input>
+                       label="Nueva contraseña" labelPlacement="stacked" placeholder="••••••••"></ion-input>
           </ion-item>
           <button type="button" class="btn-eye" (click)="togglePassword()">
             <ion-icon [name]="mostrarPassword() ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
@@ -136,11 +192,11 @@
         </div>
       </div>
       <div class="form-group">
-        <label class="form-label">Confirmar contraseña</label>
         <div class="input-password-wrapper">
-          <ion-item lines="none" class="custom-input">
+          <ion-item lines="none" class="custom-input"
+            [class.ion-invalid]="passwordForm.hasError('noCoinciden') && passwordForm.get('confirmarPassword')?.touched">
             <ion-input formControlName="confirmarPassword" [type]="mostrarConfirm() ? 'text' : 'password'"
-                       placeholder="Repite la contraseña"></ion-input>
+                       label="Confirmar contraseña" labelPlacement="stacked" placeholder="••••••••"></ion-input>
           </ion-item>
           <button type="button" class="btn-eye" (click)="toggleConfirm()">
             <ion-icon [name]="mostrarConfirm() ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
@@ -163,5 +219,5 @@
 </div>
 
 <app-info-modal [isOpen]="isModalOpen" [title]="modalTitle" [message]="modalMessage"
-  [type]="modalType" (closed)="onModalClosed()">
+  [type]="modalType" (modalClosed)="onModalClosed()">
 </app-info-modal>

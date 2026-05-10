@@ -30,4 +30,12 @@ export class HeaderComponent {
   isLogin() {
     return this.authService.isLogin();
   }
+
+  getRol(): string | null {
+    return this.authService.getRol();
+  }
+
+  getPerfilRoute(): string {
+    return this.getRol() === 'ROLE_EMPRESA' ? '/empresa-perfil' : '/perfil';
+  }
 }

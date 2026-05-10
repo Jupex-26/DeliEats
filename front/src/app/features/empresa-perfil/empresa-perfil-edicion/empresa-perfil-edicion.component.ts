@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { IonIcon, IonItem, IonInput, IonTextarea } from '@ionic/angular/standalone';
+import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { IonIcon, IonItem, IonInput, IonTextarea, IonButton } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   saveOutline,
@@ -9,7 +9,10 @@ import {
   lockClosedOutline,
   eyeOutline,
   eyeOffOutline,
-  cameraOutline
+  cameraOutline,
+  timeOutline,
+  addOutline,
+  trashOutline
 } from 'ionicons/icons';
 import { EmpresaService } from '../../../services/empresa/empresa-service';
 import { UserService } from '../../../services/user/user-service';
@@ -58,12 +61,18 @@ export class EmpresaPerfilEdicionComponent implements OnInit {
   perfilForm = this.fb.group({
     nombre: ['', [Validators.required, Validador.isNombre]],
     email: ['', [Validators.required, Validators.email]],
+    telefono: ['', [Validador.isTelefono]],
     direccion: ['', [Validators.required]],
     descripcion: ['', [Validators.required]],
     correoContacto: ['', [Validators.required, Validators.email]],
     telefonoContacto: ['', [Validador.isTelefono]],
-    tipoCocina: ['', [Validators.required]]
+    tipoCocina: ['', [Validators.required]],
+    aperturas: this.fb.array([])
   });
+
+  get aperturas() {
+    return this.perfilForm.get('aperturas') as FormArray;
+  }
 
   passwordForm = this.fb.group({
     nuevaPassword: ['', [Validators.required, Validador.isStrongPassword]],
@@ -71,7 +80,17 @@ export class EmpresaPerfilEdicionComponent implements OnInit {
   }, { validators: this.passwordsMatch });
 
   constructor() {
-    addIcons({ saveOutline, checkmarkCircleOutline, lockClosedOutline, eyeOutline, eyeOffOutline, cameraOutline });
+    addIcons({
+      saveOutline,
+      checkmarkCircleOutline,
+      lockClosedOutline,
+      eyeOutline,
+      eyeOffOutline,
+      cameraOutline,
+      timeOutline,
+      addOutline,
+      trashOutline
+    });
   }
 
   ngOnInit() {
@@ -82,12 +101,25 @@ export class EmpresaPerfilEdicionComponent implements OnInit {
     this.perfilForm.patchValue({
       nombre: this.empresa.nombre,
       email: this.empresa.email,
+      telefono: this.empresa.telefono ? String(this.empresa.telefono) : '',
       direccion: this.empresa.direccion ?? '',
       descripcion: this.empresa.descripcion,
       correoContacto: this.empresa.correoContacto,
       telefonoContacto: this.empresa.telefonoContacto ?? '',
       tipoCocina: String(this.empresa.tipoCocina?.id ?? '')
     });
+
+    // Cargar aperturas
+    this.aperturas.clear();
+    if (this.empresa.aperturas && this.empresa.aperturas.length > 0) {
+      this.empresa.aperturas.forEach(a => {
+        this.aperturas.push(this.fb.group({
+          dia: [a.dia, Validators.required],
+          horaApertura: [a.horaApertura, Validators.required],
+          horaCierre: [a.horaCierre, Validators.required]
+        }));
+      });
+    }
 
     if (this.empresa.foto) {
       this.fotoPreview.set(environment.storageUrl + '/' + this.empresa.foto);
@@ -109,7 +141,19 @@ export class EmpresaPerfilEdicionComponent implements OnInit {
 
   onModalClosed() { this.isModalOpen = false; }
   togglePassword() { this.mostrarPassword.update(v => !v); }
-  toggleConfirm()  { this.mostrarConfirm.update(v => !v); }
+  toggleConfirm() { this.mostrarConfirm.update(v => !v); }
+
+  agregarApertura() {
+    this.aperturas.push(this.fb.group({
+      dia: ['LUNES', Validators.required],
+      horaApertura: ['09:00:00', Validators.required],
+      horaCierre: ['22:00:00', Validators.required]
+    }));
+  }
+
+  eliminarApertura(index: number) {
+    this.aperturas.removeAt(index);
+  }
 
   onFotoSeleccionada(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -146,17 +190,18 @@ export class EmpresaPerfilEdicionComponent implements OnInit {
     if (this.perfilForm.invalid || this.guardando()) return;
     this.guardando.set(true);
 
-    const v = this.perfilForm.value;
+    const v = this.perfilForm.getRawValue();
     const payload: EmpresaInputDto = {
       nombre: v.nombre!,
       email: v.email!,
-      password: '',          // El backend debe ignorar si está vacío en PUT
-      telefono: undefined,
+      password: '',
+      telefono: v.telefono ? Number(v.telefono) : undefined,
       direccion: v.direccion!,
       descripcion: v.descripcion!,
       correoContacto: v.correoContacto!,
       telefonoContacto: v.telefonoContacto ?? '',
       tipoCocina: v.tipoCocina!,
+      aperturas: v.aperturas as any[],
       rolId: 3
     };
 

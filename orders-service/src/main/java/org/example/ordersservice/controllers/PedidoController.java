@@ -49,6 +49,13 @@ public class PedidoController {
         return ResponseEntity.ok(dtos);
     }
 
+    @GetMapping("/empresa/{empresaId}")
+    public ResponseEntity<Page<PedidoOutputDto>> findByEmpresaId(@PathVariable Long empresaId, @PageableDefault Pageable pageable) {
+        Page<PedidoOutputDto> dtos = pedidoService.findByEmpresaId(empresaId, pageable)
+                .map(pedidoMapper::toDto);
+        return ResponseEntity.ok(dtos);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<PedidoOutputDto> update(@PathVariable Long id, @Valid @RequestBody PedidoInputDto dto) {
         Pedido entity = pedidoMapper.toEntity(dto);

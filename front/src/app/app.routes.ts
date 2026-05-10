@@ -57,7 +57,13 @@ export const routes: Routes = [
         path: 'perfil',
         loadComponent: () => import('./features/perfil/perfil.component').then(m => m.PerfilComponent),
         canActivate: [roleGuard],
-        data: { role: ['ROLE_CLIENTE', 'ROLE_EMPRESA'] }
+        data: { role: ['ROLE_CLIENTE'] }
+      },
+      {
+        path: 'empresa-perfil',
+        loadComponent: () => import('./features/empresa-perfil/empresa-perfil.component').then(m => m.EmpresaPerfilComponent),
+        canActivate: [roleGuard],
+        data: { role: ['ROLE_EMPRESA'] }
       },
       {
         path: 'pedidos/:id',

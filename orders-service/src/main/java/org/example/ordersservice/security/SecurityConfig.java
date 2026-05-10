@@ -52,13 +52,13 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/clientes", "/empresas").permitAll()
 
                         // Operaciones de gestión (Admin o Restaurante)
-                        .requestMatchers(HttpMethod.POST, "/productos/**", "/empresas/**", "/categorias/**").hasAnyRole("ADMIN", "RESTAURANTE")
-                        .requestMatchers(HttpMethod.PUT, "/productos/**", "/empresas/**").hasAnyRole("ADMIN", "RESTAURANTE")
+                        .requestMatchers(HttpMethod.POST, "/productos/**", "/empresas/**", "/categorias/**").hasAnyRole("ADMIN", "EMPRESA")
+                        .requestMatchers(HttpMethod.PUT, "/productos/**", "/empresas/**").hasAnyRole("ADMIN", "EMPRESA")
                         .requestMatchers(HttpMethod.DELETE, "/productos/**", "/empresas/**", "/categorias/**").hasRole("ADMIN")
-
+                        .requestMatchers(HttpMethod.GET, "/pedidos/**").hasAnyRole("CLIENTE", "EMPRESA", "ADMIN")
                         // Acceso compartido (Admin y Cliente)
                         // Esta regla ahora cubrirá GET /clientes y cualquier subruta
-                        .requestMatchers("/carrito/**", "/pedidos/**", "/clientes/**").hasAnyRole("ADMIN", "CLIENTE")
+                        .requestMatchers("/carrito/**",  "/clientes/**").hasAnyRole("ADMIN", "CLIENTE")
 
                         .anyRequest().authenticated()
                 )

@@ -2,13 +2,12 @@ package org.example.ordersservice.services.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.exception.custom.NotFoundException;
+import org.example.ordersservice.models.Cliente;
+import org.example.ordersservice.models.Empresa;
 import org.example.ordersservice.models.Estado;
 import org.example.ordersservice.models.Pedido;
 import org.example.ordersservice.repositories.PedidoRepository;
-import org.example.ordersservice.services.EmpresaService;
-import org.example.ordersservice.services.EstadoService;
-import org.example.ordersservice.services.PedidoService;
-import org.example.ordersservice.services.RepartidorService;
+import org.example.ordersservice.services.*;
 import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +24,7 @@ public class PedidoServiceImpl implements PedidoService {
     private final EstadoService estadoService;
     private final RepartidorService repartidorService;
     private final EmpresaService empresaService;
+    private final ClienteService clienteService;
 
     @Override
     public Pedido save(Pedido pedido) {
@@ -45,12 +45,21 @@ public class PedidoServiceImpl implements PedidoService {
 
     @Override
     public Page<Pedido> findByClienteId(Long clienteId, Pageable pageable) {
-        return pedidoRepository.findAllByClienteId(clienteId, pageable);
+        Cliente cliente = clienteService.findById(clienteId);
+
+        return pedidoRepository.findAllByClienteId(cliente.getId(), pageable);
     }
 
     @Override
     public Page<Pedido> findByEstadoId(Long estadoId, Pageable pageable) {
         return pedidoRepository.findAllByEstadoId(estadoId, pageable);
+    }
+
+    @Override
+    public Page<Pedido> findByEmpresaId(Long empresaId, Pageable pageable) {
+        Empresa empresa = empresaService.findById(empresaId);
+
+        return pedidoRepository.findAllByEmpresaId(empresa.getId(), pageable);
     }
 
     @Override
