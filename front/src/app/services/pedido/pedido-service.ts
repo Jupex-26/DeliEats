@@ -41,4 +41,14 @@ export class PedidoService {
   actualizarEstado(id: number, estadoId: number): Observable<PedidoOutputDto> {
     return this.http.patch<PedidoOutputDto>(`${this.urlApi}/${id}/estado/${estadoId}`, {});
   }
+
+  // Cancela el pedido del cliente (estado CANCELADO = ID 5)
+  cancelar(id: number): Observable<PedidoOutputDto> {
+    return this.http.patch<PedidoOutputDto>(`${this.urlApi}/${id}/cancelar`, {});
+  }
+
+  // TODO: Endpoint por definir — GET /api/pedidos/{id}/factura (devuelve PDF como Blob)
+  descargarFactura(id: number): Observable<Blob> {
+    return this.http.get(`${this.urlApi}/${id}/factura`, { responseType: 'blob' });
+  }
 }

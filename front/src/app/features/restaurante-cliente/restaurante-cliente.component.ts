@@ -26,6 +26,8 @@ import { AperturaHoyPipe } from '../../pipe/apertura-hoy.pipe';
 import { EuroPipe } from '../../pipe/euro.pipe';
 import { EmpresaOutputDto, ProductoOutputDto, CarritoOutputDto } from '../../types';
 
+import { environment } from '../../../environments/environment';
+
 @Component({
   selector: 'app-restaurante-cliente',
   standalone: true,
@@ -34,6 +36,7 @@ import { EmpresaOutputDto, ProductoOutputDto, CarritoOutputDto } from '../../typ
   styleUrls: ['./restaurante-cliente.component.scss']
 })
 export class RestauranteClienteComponent implements OnInit {
+  protected environment = environment;
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private empresaService = inject(EmpresaService);

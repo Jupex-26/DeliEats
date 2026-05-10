@@ -1,0 +1,257 @@
+@use 'sass:color';
+@use '../../../../styles/variables' as *;
+
+.perfil-edicion {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+// ─── Sections ─────────────────────────────────────────────────────────────────
+.edicion-section {
+  border-bottom: 1px solid rgba($color-bg-alt, 0.6);
+  padding-bottom: 36px;
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Merriweather', serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: $color-text-main;
+  margin: 0 0 24px;
+
+  ion-icon {
+    font-size: 20px;
+    color: $color-primary;
+  }
+}
+
+// ─── Foto ─────────────────────────────────────────────────────────────────────
+.foto-container {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+.foto-preview-wrapper {
+  flex-shrink: 0;
+}
+
+.foto-preview {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid $color-primary;
+  box-shadow: 0 4px 16px rgba($color-primary, 0.2);
+}
+
+.foto-placeholder {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: rgba($color-bg-alt, 0.5);
+  border: 2px dashed rgba($color-primary, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ion-icon {
+    font-size: 36px;
+    color: rgba($color-primary, 0.4);
+  }
+}
+
+.foto-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.btn-upload {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 14px;
+  border: 2px solid $color-primary;
+  background: transparent;
+  color: $color-primary;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba($color-primary, 0.06);
+  }
+}
+
+// ─── Form ──────────────────────────────────────────────────────────────────────
+.edicion-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  &.col-span-2 {
+    grid-column: span 2;
+
+    @media (max-width: 640px) {
+      grid-column: span 1;
+    }
+  }
+
+  &.password-field {
+    position: relative;
+  }
+}
+
+.custom-input {
+  --background: #{rgba($color-bg-base, 0.6)};
+  --color: #{$color-text-main};
+  --label-color: #{rgba($color-text-main, 0.7)};
+  --label-color-focused: #{$color-primary};
+  --placeholder-color: #{rgba($color-text-main, 0.5)};
+  --highlight-color-focused: #{$color-primary};
+  --border-radius: 14px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  border: 1px solid rgba($color-bg-alt, 0.8);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+
+  ion-input {
+    color: $color-text-main !important;
+    --color: #{$color-text-main} !important;
+  }
+
+  &::part(native) {
+    color: $color-text-main;
+  }
+
+  &:focus-within {
+    border-color: $color-primary;
+  }
+}
+
+.btn-eye {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: rgba($color-text-main, 0.5);
+  font-size: 20px;
+  padding: 4px;
+  z-index: 10;
+
+  &:hover { color: $color-primary; }
+}
+
+.error-text {
+  font-size: 0.78rem;
+  color: $color-error;
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+// ─── Buttons ──────────────────────────────────────────────────────────────────
+.btn-guardar, .btn-save-foto {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 28px;
+  border-radius: 16px;
+  border: none;
+  background: linear-gradient(135deg, $color-primary, color.adjust($color-primary, $lightness: 10%));
+  color: white;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba($color-primary, 0.25);
+  width: fit-content;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba($color-primary, 0.35);
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    background: #bdc3c7;
+    box-shadow: none;
+  }
+
+  ion-icon { font-size: 1.1rem; }
+}
+
+// ─── Feedback ──────────────────────────────────────────────────────────────────
+.success-banner, .success-msg {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: rgba($color-success, 0.08);
+  border: 1px solid rgba($color-success, 0.2);
+  color: $color-success;
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  ion-icon { font-size: 18px; }
+}
+
+.error-banner, .error-msg {
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: rgba($color-error, 0.08);
+  border: 1px solid rgba($color-error, 0.2);
+  color: $color-error;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+// ─── Spinner ──────────────────────────────────────────────────────────────────
+.spinner-sm {
+  width: 18px;
+  height: 18px;
+  border: 3px solid rgba(white, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

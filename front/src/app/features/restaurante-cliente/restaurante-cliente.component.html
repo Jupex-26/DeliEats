@@ -30,7 +30,7 @@
     <!-- Imagen de cabecera -->
     <div class="hero-image-wrapper">
       @if (empresa()!.foto) {
-      <img [src]="empresa()!.foto" [alt]="empresa()!.nombre" class="hero-img">
+      <img [src]="environment.storageUrl + '/' + empresa()!.foto" [alt]="empresa()!.nombre" class="hero-img">
       } @else {
       <div class="hero-placeholder flex items-center justify-center">
         <span class="text-8xl">🍽️</span>
@@ -145,7 +145,7 @@
       <div class="product-card" [class.adding]="addingProductId() === producto.id">
         <div class="product-img-wrapper">
           @if (producto.foto) {
-          <img [src]="producto.foto" [alt]="producto.nombre" class="product-img">
+          <img [src]="environment.storageUrl + '/' + producto.foto" [alt]="producto.nombre" class="product-img">
           } @else {
           <div class="product-img-placeholder flex items-center justify-center text-4xl">🍽️</div>
           }

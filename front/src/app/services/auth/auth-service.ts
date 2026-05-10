@@ -38,9 +38,17 @@ export class AuthService {
     this.currentUserSignal.set(null);
   }
 
+  updateUser(userData: any): void {
+    const current = this.currentUser();
+    if (current) {
+      const updated = { ...current, userOutputDto: { ...current.userOutputDto, ...userData } };
+      localStorage.setItem('user', JSON.stringify(updated));
+      this.currentUserSignal.set(updated);
+    }
+  }
+
   getRol(): string | null {
-    // Buscamos el rol dentro de userOutputDto según tu respuesta de red
-    return this.currentUser()?.userOutputDto?.rol?.nombre || null;
+    return this.currentUser()?.userOutputDto?.nombreRol || null;
   }
 
   isLogin() {
