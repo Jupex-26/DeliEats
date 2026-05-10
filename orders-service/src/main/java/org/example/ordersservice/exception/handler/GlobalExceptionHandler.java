@@ -41,6 +41,16 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(CarritoVacioException.class)
+    public ResponseEntity<CustomError> handleCarritoVacio(CarritoVacioException ex) {
+        CustomError error = CustomError.builder()
+                .message(ex.getMessage())
+                .timestamp(LocalDateTime.now())
+                .httpCode(HttpStatus.CONFLICT.value())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<CustomError> handleConflictException(ConflictException ex) {
         CustomError error = CustomError.builder()
@@ -123,11 +133,19 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<CustomError> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
+        String tipoEsperado = (ex.getRequiredType() != null)
+                ? ex.getRequiredType().getSimpleName()
+                : "un tipo diferente";
+
+        String mensaje = String.format("El parámetro '%s' debe ser de tipo %s. Valor recibido: '%s'",
+                ex.getName(), tipoEsperado, ex.getValue());
+
         CustomError error = CustomError.builder()
-                .message("Parameter type mismatch: " + ex.getName() + " should be of type " + ex.getRequiredType().getSimpleName())
+                .message(mensaje)
                 .timestamp(LocalDateTime.now())
                 .httpCode(HttpStatus.BAD_REQUEST.value())
                 .build();
+
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
@@ -159,5 +177,15 @@ public class GlobalExceptionHandler {
                 .httpCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .build();
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(QuantityExceedsException.class)
+    public ResponseEntity<CustomError> handleQuantityExceedsException(QuantityExceedsException ex) {
+        CustomError error = CustomError.builder()
+                .message(ex.getMessage())
+                .timestamp(LocalDateTime.now())
+                .httpCode(HttpStatus.BAD_REQUEST.value())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 }

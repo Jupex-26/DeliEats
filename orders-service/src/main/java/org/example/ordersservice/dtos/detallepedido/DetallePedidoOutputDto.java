@@ -12,6 +12,4 @@ public class DetallePedidoOutputDto {
     private String nombreProducto;
     private Integer cantidad;
     private BigDecimal precioUnitario;
-
-    private BigDecimal subtotal;
 }

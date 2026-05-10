@@ -43,7 +43,7 @@ export class RestauranteClienteComponent implements OnInit {
 
   empresa = signal<EmpresaOutputDto | null>(null);
   productos = signal<ProductoOutputDto[]>([]);
-  carrito = signal<CarritoOutputDto | null>(null);
+  carrito = this.carritoService.carrito;
   carritoId = signal<number | null>(null);
 
   loadingEmpresa = signal(true);
@@ -126,7 +126,6 @@ export class RestauranteClienteComponent implements OnInit {
     const clienteId = user.userOutputDto.id;
     this.carritoService.obtenerPorUsuario(clienteId).subscribe({
       next: (c) => {
-        this.carrito.set(c);
         this.carritoId.set(c.id);
       },
       error: () => {
@@ -156,7 +155,6 @@ export class RestauranteClienteComponent implements OnInit {
     // Si no, intentamos obtenerlo o crearlo
     this.carritoService.obtenerPorUsuario(clienteId).subscribe({
       next: (c) => {
-        this.carrito.set(c);
         this.carritoId.set(c.id);
         this.ejecutarActualizacion(c.id, producto);
       },
@@ -198,7 +196,6 @@ export class RestauranteClienteComponent implements OnInit {
   }
 
   private procesarResultadoCarrito(c: CarritoOutputDto, productoId: number) {
-    this.carrito.set(c);
     this.carritoId.set(c.id);
     this.addingProductId.set(null);
     this.loadingCarrito.set(false);

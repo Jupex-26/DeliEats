@@ -1,0 +1,127 @@
+<ion-content>
+  <div class="checkout-page">
+
+    <!-- Header -->
+    <header class="checkout-header">
+      <button class="btn-back" (click)="cancelar()" aria-label="Volver">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <div class="header-title">
+        <ion-icon name="receipt-outline"></ion-icon>
+        <h1>Resumen de Pago</h1>
+      </div>
+    </header>
+
+    <!-- Loading -->
+    @if (loading()) {
+      <div class="loading-state">
+        <div class="spinner-checkout"></div>
+        <p class="font-bold opacity-60">Preparando tu resumen...</p>
+      </div>
+    }
+
+    <!-- Pedido realizado con éxito -->
+    @if (pedidoRealizado()) {
+      <div class="success-state">
+        <div class="success-icon">
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+        </div>
+        <h2>¡Compra realizada!</h2>
+        <p>Tu pedido ha sido procesado con éxito. En breve recibirás un correo con los detalles.</p>
+      </div>
+    }
+
+    <!-- Contenido principal -->
+    @if (!loading() && !pedidoRealizado() && carrito()) {
+      <main class="checkout-content">
+
+        <!-- Columna Izquierda: Productos -->
+        <section class="section-card">
+          <div class="section-header">
+            <ion-icon name="cart-outline"></ion-icon>
+            <h2>Tu selección</h2>
+            <span class="product-count">{{ detalles.length }} {{ detalles.length === 1 ? 'producto' : 'productos' }}</span>
+          </div>
+
+          <ul class="product-list">
+            @for (detalle of detalles; track detalle.id) {
+              <li class="product-item">
+                @if (detalle.fotoProducto) {
+                  <img [src]="detalle.fotoProducto" [alt]="detalle.nombreProducto" class="product-thumb">
+                } @else {
+                  <div class="product-thumb-placeholder">🍽️</div>
+                }
+                <div class="product-details">
+                  <p class="product-name">{{ detalle.nombreProducto }}</p>
+                  <p class="product-unit-price">{{ detalle.precioUnitario | euro }} por unidad</p>
+                </div>
+                <div class="product-qty-price">
+                  <span class="qty-badge">x{{ detalle.cantidad }}</span>
+                  <span class="subtotal">{{ detalle.subtotal | euro }}</span>
+                </div>
+              </li>
+            }
+          </ul>
+        </section>
+
+        <!-- Columna Derecha: Resumen y Acciones -->
+        <aside class="side-panel">
+          <div class="section-card price-summary">
+            <div class="section-header">
+              <ion-icon name="wallet-outline"></ion-icon>
+              <h2>Resumen de pago</h2>
+            </div>
+
+            <div class="price-row">
+              <span>Importe productos</span>
+              <span>{{ total | euro }}</span>
+            </div>
+            <div class="price-row">
+              <span>Servicio DeliEats</span>
+              <span class="free-shipping">Bonificado</span>
+            </div>
+            <div class="price-divider"></div>
+            <div class="price-row total-row">
+              <span>Total a pagar</span>
+              <span class="total-amount">{{ total | euro }}</span>
+            </div>
+
+            @if (error()) {
+              <div class="error-banner mt-6">
+                <ion-icon name="close-circle-outline"></ion-icon>
+                <p>{{ error() }}</p>
+              </div>
+            }
+
+            <div class="checkout-actions mt-8">
+              <button class="btn-pay" (click)="procesarPago()" [disabled]="procesando() || detalles.length === 0">
+                @if (procesando()) {
+                  <div class="spinner-sm"></div>
+                  Procesando...
+                } @else {
+                  <span>Confirmar y Pagar</span>
+                  <ion-icon name="arrow-forward-outline"></ion-icon>
+                }
+              </button>
+              <button class="btn-cancel" (click)="cancelar()" [disabled]="procesando()">
+                Volver a la tienda
+              </button>
+            </div>
+          </div>
+        </aside>
+
+      </main>
+    }
+
+    <!-- Error al cargar -->
+    @if (!loading() && !carrito() && error()) {
+      <div class="error-state">
+        <ion-icon name="close-circle-outline" class="text-6xl text-red-500"></ion-icon>
+        <h2 class="text-xl font-bold mt-4">¡Vaya! Algo ha fallado</h2>
+        <p>{{ error() }}</p>
+        <button class="btn-pay mt-6" (click)="cancelar()">Volver al restaurante</button>
+      </div>
+    }
+
+  </div>
+</ion-content>

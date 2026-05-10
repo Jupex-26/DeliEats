@@ -2,6 +2,7 @@ package org.example.ordersservice.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -70,5 +71,14 @@ public class Carrito {
         return this.detalles.stream()
                 .map(d -> d.getProducto().getPrecio().multiply(new BigDecimal(d.getCantidad())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+
+    public void cleanDetalles() {
+        this.getDetalles().clear();
+    }
+
+    public boolean notHasDetalles() {
+        return CollectionUtils.isEmpty(this.detalles);
     }
 }
