@@ -1,8 +1,9 @@
-import { Component, EventEmitter, inject, Output } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonItem, IonInput, IonTextarea } from '@ionic/angular/standalone';
-import { EmpresaInputDto } from '../../types';
+import { EmpresaInputDto, TipoCocinaOutputDto } from '../../types';
 import { Validador } from '../../validadores/validador';
+import { TipoCocinaService } from '../../services/tipococina/tipococina-service';
 
 @Component({
   selector: 'app-empresa-form',
@@ -11,17 +12,20 @@ import { Validador } from '../../validadores/validador';
   templateUrl: './empresa-form.component.html',
   styleUrls: ['./empresa-form.component.scss'],
 })
-export class EmpresaFormComponent {
+export class EmpresaFormComponent implements OnInit {
   private fb = inject(FormBuilder);
+  private tipoCocinaService = inject(TipoCocinaService);
 
   @Output() submitForm = new EventEmitter<EmpresaInputDto>();
+
+  tiposCocina = signal<TipoCocinaOutputDto[]>([]);
 
   form = this.fb.group({
     // Campos de UserInputDto (Herencia)
     nombre: ['', [Validators.required, Validador.isNombre]],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validador.isStrongPassword]],
-    telefono: ['', [Validators.required, Validador.isTelefono]], // ESTE ES EL QUE FALTA EN EL HTML
+    telefono: ['', [Validators.required, Validador.isTelefono]],
     direccion: ['', [Validators.required]],
     rolId: [3],
 
@@ -31,6 +35,17 @@ export class EmpresaFormComponent {
     telefonoContacto: ['', [Validador.isTelefono]], // Opcional según tu Java
     tipoCocina: ['', [Validators.required]],
   });
+
+  ngOnInit() {
+    this.cargarTiposCocina();
+  }
+
+  cargarTiposCocina() {
+    this.tipoCocinaService.listar(0, 100).subscribe({
+      next: (res) => this.tiposCocina.set(res.content),
+      error: (err) => console.error('Error al cargar tipos de cocina', err)
+    });
+  }
 
   onSubmit() {
     if (this.form.valid) {

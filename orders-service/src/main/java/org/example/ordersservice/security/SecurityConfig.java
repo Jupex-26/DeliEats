@@ -46,7 +46,7 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasRole("ADMIN")
 
                         // Endpoints públicos de lectura
-                        .requestMatchers(HttpMethod.GET, "/productos/**", "/empresas/**", "/categorias/**", "/aperturas/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/productos/**", "/empresas/**", "/categorias/**", "/aperturas/**", "/tiposcocina/**").permitAll()
 
                         // Registro (Público)
                         .requestMatchers(HttpMethod.POST, "/clientes", "/empresas").permitAll()

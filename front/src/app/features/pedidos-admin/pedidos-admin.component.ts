@@ -216,10 +216,15 @@ export class PedidosAdminComponent implements OnInit {
   }
 
   agregarDetalle() {
-    if (!this.tempProductoId || this.tempCantidad < 1) return;
+    if (!this.tempProductoId || this.tempCantidad < 1 || !this.tempEmpresaId) return;
 
     const productoEncontrado = this.productosList().find(p => p.id == this.tempProductoId);
     if (!productoEncontrado) return;
+
+    // Si es el primer producto, asignamos la empresa al pedido
+    if (this.pedidoForm.detalles.length === 0) {
+      this.pedidoForm.empresaId = this.tempEmpresaId;
+    }
 
     const nuevoDetalle: DetallePedidoInputDto = {
       pedidoId: 0, // se asignará en el backend
@@ -258,6 +263,7 @@ export class PedidosAdminComponent implements OnInit {
         // Preparar el formulario para el PUT (necesitamos clienteId y detalles)
         this.pedidoForm = {
           clienteId: pedidoCompleto.clienteId,
+          empresaId: pedidoCompleto.empresaId,
           idRepartidor: pedidoCompleto.repartidorId,
           detalles: pedidoCompleto.detalles.map(d => ({
             pedidoId: pedidoCompleto.id,
@@ -329,6 +335,7 @@ export class PedidosAdminComponent implements OnInit {
   private getEmptyPedidoForm(): PedidoInputDto {
     return {
       clienteId: 0,
+      empresaId: 0,
       detalles: []
     };
   }

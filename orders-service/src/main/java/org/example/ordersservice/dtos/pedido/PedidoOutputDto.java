@@ -23,5 +23,8 @@ public class PedidoOutputDto {
     private Long repartidorId;
     private String nombreRepartidor;
 
+    private Long empresaId;
+    private String nombreEmpresa;
+
     private List<DetallePedidoOutputDto> detalles;
 }

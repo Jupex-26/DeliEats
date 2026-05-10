@@ -21,6 +21,7 @@ public class OrderService {
     private final CarritoService carritoService;
     private final PedidoService pedidoService;
     private final PedidoMapper pedidoMapper;
+    private final EstadoService estadoService;
 
     @Transactional
     public PedidoOutputDto procesarCheckout(Long userId) {
@@ -31,17 +32,20 @@ public class OrderService {
         // 2. Validar productos y descontar stock
         validarYActualizarStock(carrito);
 
-        // 3. Crear y persistir el pedido
-        Pedido pedidoGuardado = crearYGuardarPedido(carrito);
+        // 3. Obtener la empresa del primer producto del carrito
+        Empresa empresa = carrito.getDetalles().getFirst().getProducto().getEmpresa();
 
-        // 4. Limpiar carrito
+        // 4. Crear y persistir el pedido
+        Pedido pedidoGuardado = crearYGuardarPedido(carrito, empresa);
+
+        // 5. Limpiar carrito
         carritoService.clearCarrito(carrito.getId());
 
         return pedidoMapper.toDto(pedidoGuardado);
     }
 
     private void validarCarrito(Carrito carrito) {
-        if (carrito.notHasDetalles()){
+        if (carrito.hasNotDetalles()){
             throw new CarritoVacioException("No puedes finalizar la compra porque tu carrito está vacío.");
         }
     }
@@ -63,11 +67,15 @@ public class OrderService {
         }
     }
 
-    private Pedido crearYGuardarPedido(Carrito carrito) {
+    private Pedido crearYGuardarPedido(Carrito carrito, Empresa empresa) {
+        Estado estadoPendiente = estadoService.findByNombre("PENDIENTE");
+
         Pedido nuevoPedido = Pedido.builder()
                 .cliente(carrito.getCliente())
+                .empresa(empresa)
                 .fechaCompra(LocalDateTime.now())
                 .precio(carrito.getPrecioTotal())
+                .estado(estadoPendiente)
                 .build();
 
         List<DetallePedido> detalles = carrito.getDetalles().stream()

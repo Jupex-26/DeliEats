@@ -46,6 +46,7 @@
 
           <!-- Info -->
           <div class="pedido-info">
+            <h4 class="pedido-restaurante text-primary font-bold">{{ pedido.nombreEmpresa }}</h4>
             <p class="pedido-fecha">{{ formatFecha(pedido.fechaCompra) }}</p>
             <p class="pedido-items">
               {{ pedido.detalles.length }} {{ pedido.detalles.length === 1 ? 'producto' : 'productos' }}

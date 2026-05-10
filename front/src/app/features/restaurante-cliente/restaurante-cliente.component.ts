@@ -57,11 +57,18 @@ export class RestauranteClienteComponent implements OnInit {
   addedProductId = signal<number | null>(null);
   showAllHorarios = signal(false);
 
-  /** Nombre del día actual en español, capitalizado, para buscar en aperturas */
+  /** Nombre del día actual en MAYÚSCULAS y SIN ACENTOS (formato back) */
   readonly diaHoy = (() => {
-    const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const dias = ['DOMINGO', 'LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO'];
     return dias[new Date().getDay()];
   })();
+
+  /** Lista ordenada de días para mostrar en el horario completo */
+  readonly diasSemanaList = ['LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO', 'DOMINGO'];
+
+  getAperturaPorDia(dia: string) {
+    return this.empresa()?.aperturas.find(a => a.dia === dia);
+  }
 
   /** Cálculo reactivo del total de productos en el carrito */
   totalProductosCarrito = computed(() => {
@@ -165,6 +172,7 @@ export class RestauranteClienteComponent implements OnInit {
         // Si falla (probablemente porque no existe), creamos uno nuevo
         this.carritoService.crear({
           clienteId,
+          empresaId: this.empresa()!.id!,
           detalles: [{ productoId: producto.id, cantidad: 1 }]
         }).subscribe({
           next: (c) => this.procesarResultadoCarrito(c, producto.id),

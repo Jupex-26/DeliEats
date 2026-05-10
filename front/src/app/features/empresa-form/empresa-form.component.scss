@@ -38,6 +38,16 @@ ion-item {
   }
 }
 
-ion-input, ion-textarea {
+ion-input, ion-textarea, ion-select {
   color: $color-text-main;
+}
+
+ion-select {
+  --placeholder-color: rgba(#{$color-text-main}, 0.4);
+  --placeholder-opacity: 1;
+  width: 100%;
+  
+  &::part(container) {
+    padding-top: 4px;
+  }
 }

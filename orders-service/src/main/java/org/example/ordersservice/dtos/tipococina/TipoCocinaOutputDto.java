@@ -7,4 +7,6 @@ public class TipoCocinaOutputDto {
 
     private Long id;
     private String nombre;
+
+
 }

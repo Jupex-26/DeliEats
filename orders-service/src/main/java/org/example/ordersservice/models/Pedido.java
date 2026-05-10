@@ -40,6 +40,10 @@ public class Pedido {
     @JoinColumn(name = "estado_id")
     private Estado estado;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "empresa_id")
+    private Empresa empresa;
+
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     private List<DetallePedido> detalles;
@@ -47,8 +51,8 @@ public class Pedido {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof User user)) return false;
-        return id != null && id.equals(user.getId());
+        if (!(o instanceof Pedido pedido)) return false;
+        return id != null && id.equals(pedido.getId());
     }
 
     @Override

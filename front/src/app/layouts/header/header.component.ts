@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth/auth-service';
 
 @Component({
@@ -12,6 +12,7 @@ import { AuthService } from '../../services/auth/auth-service';
 export class HeaderComponent {
   private authService = inject(AuthService);
   isMenuOpen = false;
+  private router = inject(Router);
 
   // Usamos el signal del servicio directamente para reactividad total
   public currentUser = this.authService.currentUser;
@@ -23,6 +24,7 @@ export class HeaderComponent {
   logout() {
     this.authService.logout();
     this.isMenuOpen = false;
+    this.router.navigate(['/']);
   }
 
   isLogin() {

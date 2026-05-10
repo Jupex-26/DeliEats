@@ -191,6 +191,12 @@ ion-item {
   --highlight-color-focused: #{$color-primary} !important;
 }
 
-ion-input {
+ion-input, ion-select {
   color: $color-text-main;
+}
+
+ion-select {
+  --placeholder-color: rgba(#{$color-text-main}, 0.4);
+  --placeholder-opacity: 1;
+  width: 100%;
 }

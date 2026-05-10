@@ -7,7 +7,6 @@ import org.springframework.util.CollectionUtils;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.IntStream;
 
 @Entity
 @Table(name = "carrito")
@@ -78,7 +77,7 @@ public class Carrito {
         this.getDetalles().clear();
     }
 
-    public boolean notHasDetalles() {
+    public boolean hasNotDetalles() {
         return CollectionUtils.isEmpty(this.detalles);
     }
 }

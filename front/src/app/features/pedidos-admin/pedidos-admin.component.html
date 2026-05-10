@@ -40,6 +40,7 @@
               <th class="text-left px-6 py-4 text-xs font-semibold opacity-70 tracking-wider uppercase border-y">ID</th>
               <th class="text-left px-6 py-4 text-xs font-semibold opacity-70 tracking-wider uppercase border-y">FECHA</th>
               <th class="text-left px-6 py-4 text-xs font-semibold opacity-70 tracking-wider uppercase border-y">CLIENTE</th>
+              <th class="text-left px-6 py-4 text-xs font-semibold opacity-70 tracking-wider uppercase border-y">RESTAURANTE</th>
               <th class="text-left px-6 py-4 text-xs font-semibold opacity-70 tracking-wider uppercase border-y">ESTADO</th>
               <th class="text-right px-6 py-4 text-xs font-semibold opacity-70 tracking-wider uppercase border-y">TOTAL</th>
               <th class="text-right px-6 py-4 text-xs font-semibold opacity-70 tracking-wider uppercase border-y">ACCIONES</th>
@@ -51,6 +52,7 @@
               <td class="td-id px-6 py-4 border-b font-bold">#{{ pedido.id }}</td>
               <td class="td-fecha px-6 py-4 border-b text-sm">{{ pedido.fechaCompra | date:'short' }}</td>
               <td class="td-cliente px-6 py-4 border-b text-sm font-medium">{{ pedido.nombreCliente }}</td>
+              <td class="td-empresa px-6 py-4 border-b text-sm font-bold text-primary">{{ pedido.nombreEmpresa }}</td>
               <td class="px-6 py-4 border-b">
                 <span class="px-3 py-1 rounded-full text-xs font-bold border" [class]="getEstadoColor(pedido.estadoNombre)">
                   {{ pedido.estadoNombre }}
@@ -130,8 +132,9 @@
                 
                 <div class="flex flex-col gap-3 mb-4">
                   <!-- Selector de Empresa -->
-                  <div class="border rounded-lg shadow-sm bg-white overflow-hidden p-1">
+                  <div class="border rounded-lg shadow-sm bg-white overflow-hidden p-1" [class.opacity-50]="pedidoForm.detalles.length > 0">
                     <select [(ngModel)]="tempEmpresaId" name="tempEmpresaId" (change)="onEmpresaChange()" (mousedown)="refrescarEmpresas()"
+                      [disabled]="pedidoForm.detalles.length > 0"
                       class="w-full bg-transparent border-none outline-none p-3 font-medium text-gray-900 cursor-pointer">
                       <option [value]="null" disabled class="text-gray-500 bg-white">-- 1º Selecciona una empresa --</option>
                       @for (empresa of empresasList(); track empresa.id) {
@@ -281,6 +284,16 @@
                     <div>
                       <p class="label text-xs font-bold uppercase">Cliente</p>
                       <p class="value font-medium mt-1">{{ viewingPedido()!.nombreCliente }} (ID: {{ viewingPedido()!.clienteId }})</p>
+                    </div>
+                  </div>
+
+                  <div class="detail-item flex gap-4 items-start">
+                    <div class="icon-box w-10 h-10 rounded-full flex items-center justify-center shrink-0">
+                      <ion-icon name="restaurant-outline" class="text-xl"></ion-icon>
+                    </div>
+                    <div>
+                      <p class="label text-xs font-bold uppercase">Restaurante</p>
+                      <p class="value font-medium mt-1 text-primary font-bold">{{ viewingPedido()!.nombreEmpresa }}</p>
                     </div>
                   </div>
 

@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/tipos-cocina")
+@RequestMapping("/tiposcocina")
 @RequiredArgsConstructor
 public class TipoCocinaController {
 
@@ -29,7 +29,7 @@ public class TipoCocinaController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<TipoCocinaOutputDto>> findAll(@PageableDefault(size = 10, page = 0) Pageable pageable) {
+    public ResponseEntity<Page<TipoCocinaOutputDto>> findAll(@PageableDefault Pageable pageable) {
         Page<TipoCocinaOutputDto> dtos = tipoCocinaService.findAll(pageable)
                 .map(tipoCocinaMapper::toDto);
         return ResponseEntity.ok(dtos);

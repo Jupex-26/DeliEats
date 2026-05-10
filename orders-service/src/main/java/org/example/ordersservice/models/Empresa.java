@@ -25,8 +25,9 @@ public class Empresa extends User {
     @Column(name = "telefono_contacto")
     private String telefonoContacto;
 
-    @Column(name = "tipo_cocina")
-    private String tipoCocina;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tipo_cocina_id")
+    private TipoCocina tipoCocina;
 
     @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL)
     @ToString.Exclude
@@ -35,6 +36,10 @@ public class Empresa extends User {
     @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<Apertura> aperturas;
+
+    @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private List<Pedido> pedidos;
 
     @Override
     public boolean equals(Object o) {

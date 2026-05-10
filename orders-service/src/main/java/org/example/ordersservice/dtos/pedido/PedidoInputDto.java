@@ -14,6 +14,9 @@ public class PedidoInputDto {
     @NotNull(message = "El ID del cliente es obligatorio")
     private Long clienteId;
 
+    @NotNull(message = "El ID de la empresa es obligatorio")
+    private Long empresaId;
+
     @NotEmpty(message = "El pedido debe tener al menos un producto")
     private List<DetallePedidoInputDto> detalles;
 

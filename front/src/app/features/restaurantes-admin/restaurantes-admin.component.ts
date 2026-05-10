@@ -31,7 +31,8 @@ import {
 } from 'ionicons/icons';
 import { EmpresaService } from '../../services/empresa/empresa-service';
 import { ProductoService } from '../../services/producto/producto-service';
-import { EmpresaOutputDto, EmpresaInputDto, ProductoOutputDto, ProductoInputDto } from '../../types';
+import { TipoCocinaService } from '../../services/tipococina/tipococina-service';
+import { EmpresaOutputDto, EmpresaInputDto, ProductoOutputDto, ProductoInputDto, TipoCocinaOutputDto } from '../../types';
 import { ConfirmModalComponent } from '../../shared/confirm-modal/confirm-modal.component';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 
@@ -59,6 +60,7 @@ import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 export class RestaurantesAdminComponent implements OnInit {
   private empresaService = inject(EmpresaService);
   private productoService = inject(ProductoService);
+  private tipoCocinaService = inject(TipoCocinaService);
 
   // --- Estado de Restaurantes ---
   empresas = signal<EmpresaOutputDto[]>([]);
@@ -77,6 +79,7 @@ export class RestaurantesAdminComponent implements OnInit {
   empresaIdParaEliminar = signal<number | null>(null);
 
   empresaForm: EmpresaInputDto = this.getEmptyEmpresaForm();
+  tiposCocina = signal<TipoCocinaOutputDto[]>([]);
 
   // --- Estado de Productos ---
   isProductsModalOpen = signal(false);
@@ -118,14 +121,21 @@ export class RestaurantesAdminComponent implements OnInit {
 
   ngOnInit() {
     this.cargarEmpresas();
+    this.cargarTiposCocina();
   }
 
   // ==========================================
   // GESTIÓN DE RESTAURANTES (EMPRESAS)
   // ==========================================
 
+  cargarTiposCocina() {
+    this.tipoCocinaService.listar(0, 100).subscribe({
+      next: (res) => this.tiposCocina.set(res.content),
+      error: (err) => console.error('Error al cargar tipos de cocina', err)
+    });
+  }
+
   cargarEmpresas() {
-    // Nota: El backend podría no soportar búsqueda por término en empresas, pero lo pasamos por si acaso
     this.empresaService
       .listar(this.currentPage(), this.pageSize())
       .subscribe({
@@ -154,7 +164,11 @@ export class RestaurantesAdminComponent implements OnInit {
 
   abrirModalEditar(empresa: EmpresaOutputDto) {
     this.editingEmpresa.set(empresa);
-    this.empresaForm = { ...empresa, rolId: 3 }; // Asumiendo rolId 3 para Empresa
+    this.empresaForm = {
+      ...empresa,
+      rolId: 3,
+      tipoCocina: empresa.tipoCocina.id?.toString() || ''
+    };
     this.isModalOpen.set(true);
   }
 
@@ -220,7 +234,6 @@ export class RestaurantesAdminComponent implements OnInit {
     if (empresaId) {
       this.empresaService.obtenerPorId(empresaId).subscribe((empresaActualizada) => {
         this.productos.set(empresaActualizada.productos || []);
-        // Actualizamos también la lista general para reflejar cambios
         this.cargarEmpresas();
       });
     }

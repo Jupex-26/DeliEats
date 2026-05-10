@@ -1,19 +1,20 @@
 package org.example.ordersservice.dtos.apertura;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import java.time.LocalDateTime;
+import org.example.ordersservice.models.Dia;
+
+import java.time.LocalTime;
 
 @Data
 public class AperturaInputDto {
 
-    @NotBlank(message = "El día de la semana es obligatorio")
-    private String dia;
+    @NotNull(message = "El día de la semana es obligatorio")
+    private Dia dia;
 
     @NotNull(message = "La hora de apertura es obligatoria")
-    private LocalDateTime horaApertura;
+    private LocalTime horaApertura;
 
     @NotNull(message = "La hora de cierre es obligatoria")
-    private LocalDateTime horaCierre;
+    private LocalTime horaCierre;
 }

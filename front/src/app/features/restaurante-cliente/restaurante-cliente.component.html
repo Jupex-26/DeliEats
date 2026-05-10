@@ -42,7 +42,7 @@
     <div class="hero-info max-w-4xl mx-auto px-6 py-8">
       <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
         <div>
-          <span class="cuisine-badge">{{ empresa()!.tipoCocina }}</span>
+          <span class="cuisine-badge">{{ empresa()!.tipoCocina.nombre }}</span>
           <h1 class="hero-title mt-2">{{ empresa()!.nombre }}</h1>
         </div>
       </div>
@@ -79,7 +79,7 @@
       <div class="horario-card-header">
         <div class="flex items-center gap-2">
           <ion-icon name="time-outline" class="text-xl"></ion-icon>
-          <span class="font-bold text-sm uppercase tracking-wide">Horario de apertura</span>
+          <span class="font-bold text-sm uppercase tracking-wide">Horario</span>
         </div>
 
 
@@ -102,14 +102,18 @@
       <!-- Todos los días (expandible) -->
       @if (showAllHorarios()) {
       <div class="horarios-todos">
-        @for (apertura of empresa()!.aperturas; track apertura.id) {
-        <div class="horario-row" [class.es-hoy]="apertura.dia === diaHoy">
-          <span class="horario-dia">{{ apertura.dia }}</span>
+        @for (dia of diasSemanaList; track dia) {
+        <div class="horario-row" [class.es-hoy]="dia === diaHoy">
+          <span class="horario-dia">{{ dia }}</span>
+          @if (getAperturaPorDia(dia); as apertura) {
           <span class="horario-rango">
             {{ apertura.horaApertura | hora }}
             <span class="separator">—</span>
             {{ apertura.horaCierre | hora }}
           </span>
+          } @else {
+          <span class="horario-rango opacity-50 font-bold">CERRADO</span>
+          }
         </div>
         }
       </div>

@@ -1,0 +1,167 @@
+<form [formGroup]="perfilForm" (ngSubmit)="guardarPerfil()" class="edicion-form">
+
+  <!-- Foto -->
+  <div class="foto-section">
+    <div class="foto-preview-wrapper">
+      @if (fotoPreview()) {
+        <img [src]="fotoPreview()!" alt="Foto empresa" class="foto-preview">
+      } @else {
+        <div class="foto-placeholder">
+          <ion-icon name="camera-outline"></ion-icon>
+        </div>
+      }
+    </div>
+    <div class="foto-actions">
+      <label class="btn-foto-pick" for="foto-input">
+        <ion-icon name="camera-outline"></ion-icon>
+        Cambiar foto
+      </label>
+      <input id="foto-input" type="file" accept="image/*" hidden (change)="onFotoSeleccionada($event)">
+      @if (fotoFile()) {
+        <button type="button" class="btn-save-foto" (click)="guardarFoto()" [disabled]="guardandoFoto()">
+          @if (guardandoFoto()) { <div class="spinner-sm"></div> } @else {
+            <ion-icon name="save-outline"></ion-icon>
+          }
+          {{ guardandoFoto() ? 'Subiendo...' : 'Guardar foto' }}
+        </button>
+      }
+      @if (exitoFoto()) {
+        <span class="success-inline"><ion-icon name="checkmark-circle-outline"></ion-icon> Foto actualizada</span>
+      }
+    </div>
+  </div>
+
+  <div class="form-grid">
+
+    <!-- Nombre -->
+    <div class="form-group">
+      <label class="form-label">Nombre del restaurante</label>
+      <ion-item lines="none" class="custom-input">
+        <ion-input formControlName="nombre" placeholder="Nombre" type="text"></ion-input>
+      </ion-item>
+      @if (perfilForm.get('nombre')?.touched && perfilForm.get('nombre')?.invalid) {
+        <span class="field-error">El nombre es obligatorio</span>
+      }
+    </div>
+
+    <!-- Email -->
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <ion-item lines="none" class="custom-input">
+        <ion-input formControlName="email" placeholder="email@restaurante.com" type="email"></ion-input>
+      </ion-item>
+      @if (perfilForm.get('email')?.touched && perfilForm.get('email')?.invalid) {
+        <span class="field-error">Email inválido</span>
+      }
+    </div>
+
+    <!-- Dirección -->
+    <div class="form-group">
+      <label class="form-label">Dirección</label>
+      <ion-item lines="none" class="custom-input">
+        <ion-input formControlName="direccion" placeholder="Calle, número..." type="text"></ion-input>
+      </ion-item>
+    </div>
+
+    <!-- Correo contacto -->
+    <div class="form-group">
+      <label class="form-label">Correo de contacto público</label>
+      <ion-item lines="none" class="custom-input">
+        <ion-input formControlName="correoContacto" placeholder="contacto@restaurante.com" type="email"></ion-input>
+      </ion-item>
+    </div>
+
+    <!-- Teléfono contacto -->
+    <div class="form-group">
+      <label class="form-label">Teléfono de contacto</label>
+      <ion-item lines="none" class="custom-input">
+        <ion-input formControlName="telefonoContacto" placeholder="6XX XXX XXX" type="tel"></ion-input>
+      </ion-item>
+    </div>
+
+    <!-- Tipo de Cocina -->
+    <div class="form-group">
+      <label class="form-label">Tipo de cocina</label>
+      <div class="select-wrapper">
+        <select formControlName="tipoCocina" class="select-native">
+          <option value="" disabled>-- Selecciona una categoría --</option>
+          @for (tc of tiposCocina(); track tc.id) {
+            <option [value]="tc.id">{{ tc.nombre }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <!-- Descripción (full width) -->
+    <div class="form-group form-group--full">
+      <label class="form-label">Descripción</label>
+      <ion-item lines="none" class="custom-input custom-input--textarea">
+        <ion-textarea formControlName="descripcion" placeholder="Describe tu restaurante..." [rows]="4" autoGrow="false"></ion-textarea>
+      </ion-item>
+    </div>
+
+  </div>
+
+  <div class="form-actions">
+    @if (exitoPerfil()) {
+      <span class="success-inline"><ion-icon name="checkmark-circle-outline"></ion-icon> Cambios guardados</span>
+    }
+    <button type="submit" class="btn-guardar" [disabled]="perfilForm.invalid || guardando()">
+      @if (guardando()) { <div class="spinner-sm spinner-sm--white"></div> } @else {
+        <ion-icon name="save-outline"></ion-icon>
+      }
+      {{ guardando() ? 'Guardando...' : 'Guardar cambios' }}
+    </button>
+  </div>
+</form>
+
+<!-- Cambio de contraseña -->
+<div class="password-section">
+  <h3 class="section-title">
+    <ion-icon name="lock-closed-outline"></ion-icon>
+    Cambiar contraseña
+  </h3>
+  <form [formGroup]="passwordForm" (ngSubmit)="guardarPassword()" class="edicion-form">
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Nueva contraseña</label>
+        <div class="input-password-wrapper">
+          <ion-item lines="none" class="custom-input">
+            <ion-input formControlName="nuevaPassword" [type]="mostrarPassword() ? 'text' : 'password'"
+                       placeholder="Nueva contraseña"></ion-input>
+          </ion-item>
+          <button type="button" class="btn-eye" (click)="togglePassword()">
+            <ion-icon [name]="mostrarPassword() ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+          </button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Confirmar contraseña</label>
+        <div class="input-password-wrapper">
+          <ion-item lines="none" class="custom-input">
+            <ion-input formControlName="confirmarPassword" [type]="mostrarConfirm() ? 'text' : 'password'"
+                       placeholder="Repite la contraseña"></ion-input>
+          </ion-item>
+          <button type="button" class="btn-eye" (click)="toggleConfirm()">
+            <ion-icon [name]="mostrarConfirm() ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+          </button>
+        </div>
+        @if (passwordForm.errors?.['noCoinciden'] && passwordForm.get('confirmarPassword')?.touched) {
+          <span class="field-error">Las contraseñas no coinciden</span>
+        }
+      </div>
+    </div>
+    <div class="form-actions">
+      @if (exitoPassword()) {
+        <span class="success-inline"><ion-icon name="checkmark-circle-outline"></ion-icon> Contraseña actualizada</span>
+      }
+      <button type="submit" class="btn-guardar" [disabled]="passwordForm.invalid || guardandoPassword()">
+        {{ guardandoPassword() ? 'Guardando...' : 'Cambiar contraseña' }}
+      </button>
+    </div>
+  </form>
+</div>
+
+<app-info-modal [isOpen]="isModalOpen" [title]="modalTitle" [message]="modalMessage"
+  [type]="modalType" (closed)="onModalClosed()">
+</app-info-modal>

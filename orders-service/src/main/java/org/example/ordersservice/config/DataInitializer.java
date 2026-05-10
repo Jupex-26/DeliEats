@@ -9,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
@@ -22,6 +24,7 @@ public class DataInitializer implements CommandLineRunner {
     private final EmpresaRepository empresaRepository;
     private final RepartidorRepository repartidorRepository;
     private final ProductoRepository productoRepository;
+    private final TipoCocinaRepository tipoCocinaRepository;
     private final PasswordEncoder passwordEncoder;
     private final AperturaRepository aperturaRepository;
 
@@ -46,19 +49,26 @@ public class DataInitializer implements CommandLineRunner {
         estadoRepository.save(Estado.builder().nombre("ENTREGADO").build());
         estadoRepository.save(Estado.builder().nombre("CANCELADO").build());
 
+        // 3. Crear Tipos de Cocina
+        TipoCocina cocinaItaliana = tipoCocinaRepository.save(TipoCocina.builder().nombre("Italiana").build());
+        TipoCocina cocinaJaponesa = tipoCocinaRepository.save(TipoCocina.builder().nombre("Japonesa").build());
+        tipoCocinaRepository.save(TipoCocina.builder().nombre("Mediterránea").build());
+        tipoCocinaRepository.save(TipoCocina.builder().nombre("Mexicana").build());
+        tipoCocinaRepository.save(TipoCocina.builder().nombre("Americana").build());
+
         String defaultPassword = passwordEncoder.encode("Admin@1234");
 
-        // 3. Crear Admin
+        // 4. Crear Admin
         userRepository.save(User.builder()
                 .nombre("Administrador")
                 .email("admin@gmail.com")
                 .password(defaultPassword)
-                .telefono(000000000L)
+                .telefono(666666666L)
                 .direccion("Oficina Central")
                 .rol(rolAdmin)
                 .build());
 
-        // 4. Crear Clientes
+        // 5. Crear Clientes
         clienteRepository.save(Cliente.builder()
                 .nombre("Juan Pérez")
                 .email("juan@cliente.com")
@@ -66,6 +76,7 @@ public class DataInitializer implements CommandLineRunner {
                 .telefono(123456789L)
                 .direccion("Calle Falsa 123")
                 .rol(rolCliente)
+                .foto("5f088ad3-448c-42fb-82e8-3802b19ae9d5_columbina.jpeg")
                 .fechaNacimiento(LocalDateTime.of(1990, 5, 15, 0, 0))
                 .build());
 
@@ -79,7 +90,7 @@ public class DataInitializer implements CommandLineRunner {
                 .fechaNacimiento(LocalDateTime.of(1995, 8, 20, 0, 0))
                 .build());
 
-        // 5. Crear Empresas
+        // 6. Crear Empresas
         Empresa pizzaNostra = Empresa.builder()
                 .nombre("Pizza Nostra")
                 .email("contacto@pizzanostra.com")
@@ -90,7 +101,8 @@ public class DataInitializer implements CommandLineRunner {
                 .descripcion("La mejor pizza italiana de la ciudad")
                 .correoContacto("info@pizzanostra.com")
                 .telefonoContacto("111222333")
-                .tipoCocina("Italiana")
+                .tipoCocina(cocinaItaliana)
+                .foto("pizza.png")
                 .build();
         // Guardamos primero para tener el ID
         pizzaNostra = empresaRepository.save(pizzaNostra);
@@ -105,38 +117,36 @@ public class DataInitializer implements CommandLineRunner {
                 .descripcion("Sushi fresco todos los días")
                 .correoContacto("info@sushimaster.com")
                 .telefonoContacto("444555666")
-                .tipoCocina("Japonesa")
+                .tipoCocina(cocinaJaponesa)
+                .foto("sushi.png")
                 .build();
         sushiMaster = empresaRepository.save(sushiMaster);
 
-        // 5.1 Crear Aperturas (Horarios)
-        List<Apertura> aperturasPizza = List.of(
-                Apertura.builder()
-                        .dia("Lunes a Viernes")
-                        .horaApertura(LocalDateTime.of(2024, 1, 1, 12, 0))
-                        .horaCierre(LocalDateTime.of(2024, 1, 1, 23, 0))
-                        .empresa(pizzaNostra)
-                        .build(),
-                Apertura.builder()
-                        .dia("Sábados y Domingos")
-                        .horaApertura(LocalDateTime.of(2024, 1, 1, 13, 0))
-                        .horaCierre(LocalDateTime.of(2024, 1, 1, 23, 30))
-                        .empresa(pizzaNostra)
-                        .build()
-        );
+        // 6.1 Crear Aperturas (Horarios) - Todos los días de 13:00 a 23:30 para Pizza Nostra
+        List<Apertura> aperturasPizza = new ArrayList<>();
+        for (Dia dia : Dia.values()) {
+            aperturasPizza.add(Apertura.builder()
+                    .dia(dia)
+                    .horaApertura(LocalTime.of(13, 0))
+                    .horaCierre(LocalTime.of(23, 30))
+                    .empresa(pizzaNostra)
+                    .build());
+        }
         aperturaRepository.saveAll(aperturasPizza);
 
-        List<Apertura> aperturasSushi = List.of(
-                Apertura.builder()
-                        .dia("Martes a Domingo")
-                        .horaApertura(LocalDateTime.of(2024, 1, 1, 19, 0))
-                        .horaCierre(LocalDateTime.of(2024, 1, 1, 23, 0))
-                        .empresa(sushiMaster)
-                        .build()
-        );
+        // Todos los días de 13:00 a 23:30 para Sushi Master
+        List<Apertura> aperturasSushi = new ArrayList<>();
+        for (Dia dia : Dia.values()) {
+            aperturasSushi.add(Apertura.builder()
+                    .dia(dia)
+                    .horaApertura(LocalTime.of(13, 0))
+                    .horaCierre(LocalTime.of(23, 30))
+                    .empresa(sushiMaster)
+                    .build());
+        }
         aperturaRepository.saveAll(aperturasSushi);
 
-        // 6. Crear Repartidores
+        // 7. Crear Repartidores
         repartidorRepository.save(Repartidor.builder()
                 .nombre("Carlos Gómez")
                 .email("carlos@repartidor.com")
@@ -157,7 +167,7 @@ public class DataInitializer implements CommandLineRunner {
                 .disponible(false)
                 .build());
 
-        // 7. Crear Productos
+        // 8. Crear Productos
         productoRepository.save(Producto.builder()
                 .nombre("Pizza Margarita")
                 .descripcion("Salsa de tomate, mozzarella y albahaca fresca")

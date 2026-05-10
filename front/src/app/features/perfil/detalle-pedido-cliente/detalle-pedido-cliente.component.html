@@ -27,6 +27,7 @@
             {{ pedido()!.estadoNombre }}
           </div>
           <div class="meta-info">
+            <p class="restaurante-nombre font-bold text-primary">{{ pedido()!.nombreEmpresa }}</p>
             <p class="fecha">{{ formatFecha(pedido()!.fechaCompra) }}</p>
             <p class="pedido-id">Pedido #{{ pedido()!.id }}</p>
           </div>
