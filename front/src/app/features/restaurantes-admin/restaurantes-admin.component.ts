@@ -167,7 +167,7 @@ export class RestaurantesAdminComponent implements OnInit {
     this.empresaForm = {
       ...empresa,
       rolId: 3,
-      tipoCocina: empresa.tipoCocina.id?.toString() || ''
+      tipoCocinaId: empresa.tipoCocina.id
     };
     this.isModalOpen.set(true);
   }
@@ -215,7 +215,7 @@ export class RestaurantesAdminComponent implements OnInit {
       descripcion: '',
       correoContacto: '',
       telefonoContacto: '',
-      tipoCocina: '',
+      tipoCocinaId: 0,
     };
   }
 

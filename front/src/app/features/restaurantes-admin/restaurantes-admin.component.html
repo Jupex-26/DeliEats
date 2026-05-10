@@ -142,11 +142,11 @@
               <div class="form-group">
                 <label class="form-label text-xs font-bold uppercase mb-2 block opacity-70">Categoría de Cocina</label>
                 <div class="border rounded-lg shadow-sm bg-white overflow-hidden p-1">
-                  <select [(ngModel)]="empresaForm.tipoCocina" name="tipoCocina"
+                  <select [(ngModel)]="empresaForm.tipoCocinaId" name="tipoCocinaId"
                     class="w-full bg-transparent border-none outline-none p-3 font-medium text-main cursor-pointer">
                     <option value="" disabled class="text-gray-400">-- Selecciona --</option>
                     @for (tipo of tiposCocina(); track tipo.id) {
-                      <option [value]="tipo.id.toString()" class="text-main bg-white">{{ tipo.nombre }}</option>
+                      <option [value]="tipo.id" class="text-main bg-white">{{ tipo.nombre }}</option>
                     }
                   </select>
                 </div>

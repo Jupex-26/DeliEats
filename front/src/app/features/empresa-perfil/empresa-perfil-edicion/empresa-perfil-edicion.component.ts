@@ -66,7 +66,7 @@ export class EmpresaPerfilEdicionComponent implements OnInit {
     descripcion: ['', [Validators.required]],
     correoContacto: ['', [Validators.required, Validators.email]],
     telefonoContacto: ['', [Validador.isTelefono]],
-    tipoCocina: ['', [Validators.required]],
+    tipoCocinaId: ['', [Validators.required]],
     aperturas: this.fb.array([])
   });
 
@@ -106,7 +106,7 @@ export class EmpresaPerfilEdicionComponent implements OnInit {
       descripcion: this.empresa.descripcion,
       correoContacto: this.empresa.correoContacto,
       telefonoContacto: this.empresa.telefonoContacto ?? '',
-      tipoCocina: String(this.empresa.tipoCocina?.id ?? '')
+      tipoCocinaId: String(this.empresa.tipoCocina?.id ?? '')
     });
 
     // Cargar aperturas
@@ -149,10 +149,12 @@ export class EmpresaPerfilEdicionComponent implements OnInit {
       horaApertura: ['09:00:00', Validators.required],
       horaCierre: ['22:00:00', Validators.required]
     }));
+    this.perfilForm.markAsDirty();
   }
 
   eliminarApertura(index: number) {
     this.aperturas.removeAt(index);
+    this.perfilForm.markAsDirty();
   }
 
   onFotoSeleccionada(event: Event) {
@@ -200,7 +202,7 @@ export class EmpresaPerfilEdicionComponent implements OnInit {
       descripcion: v.descripcion!,
       correoContacto: v.correoContacto!,
       telefonoContacto: v.telefonoContacto ?? '',
-      tipoCocina: v.tipoCocina!,
+      tipoCocinaId: Number(v.tipoCocinaId),
       aperturas: v.aperturas as any[],
       rolId: 3
     };
@@ -211,6 +213,7 @@ export class EmpresaPerfilEdicionComponent implements OnInit {
         this.exitoPerfil.set(true);
         this.authService.updateUser({ nombre: updated.nombre, email: updated.email });
         this.empresaActualizada.emit(updated);
+        this.perfilForm.markAsPristine();
         setTimeout(() => this.exitoPerfil.set(false), 3000);
       },
       error: (err) => { this.guardando.set(false); this.showError('Error al actualizar perfil', err); }

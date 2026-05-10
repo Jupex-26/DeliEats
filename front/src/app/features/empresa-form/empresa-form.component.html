@@ -100,15 +100,15 @@
     <div class="form-group md:col-span-2">
       <label class="form-label text-xs font-bold uppercase mb-2 block opacity-70">Categoría de Cocina</label>
       <div class="custom-input rounded-xl shadow-sm border bg-white overflow-hidden p-1">
-        <select formControlName="tipoCocina"
+        <select formControlName="tipoCocinaId"
           class="w-full bg-transparent border-none outline-none p-3 font-medium text-main cursor-pointer">
           <option value="" disabled class="text-gray-400">-- Selecciona una categoría --</option>
           @for (tipo of tiposCocina(); track tipo.id) {
-            <option [value]="tipo.id.toString()" class="text-main bg-white">{{ tipo.nombre }}</option>
+            <option [value]="tipo.id" class="text-main bg-white">{{ tipo.nombre }}</option>
           }
         </select>
       </div>
-      @if (form.get('tipoCocina')?.touched && form.get('tipoCocina')?.hasError('required')) {
+      @if (form.get('tipoCocinaId')?.touched && form.get('tipoCocinaId')?.hasError('required')) {
         <div class="error-text text-xs mt-1 ml-2 font-medium">Selecciona una categoría de cocina.</div>
       }
     </div>

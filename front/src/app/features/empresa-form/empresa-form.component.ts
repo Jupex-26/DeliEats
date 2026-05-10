@@ -33,7 +33,7 @@ export class EmpresaFormComponent implements OnInit {
     descripcion: ['', [Validators.required]],
     correoContacto: ['', [Validators.required, Validators.email]],
     telefonoContacto: ['', [Validador.isTelefono]], // Opcional según tu Java
-    tipoCocina: ['', [Validators.required]],
+    tipoCocinaId: ['', [Validators.required]],
   });
 
   ngOnInit() {
@@ -60,7 +60,7 @@ export class EmpresaFormComponent implements OnInit {
         descripcion: value.descripcion!,
         correoContacto: value.correoContacto!,
         telefonoContacto: value.telefonoContacto!,
-        tipoCocina: value.tipoCocina!,
+        tipoCocinaId: Number(value.tipoCocinaId!),
         rolId: 3,
       };
 

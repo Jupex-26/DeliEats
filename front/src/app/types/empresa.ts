@@ -16,7 +16,7 @@ export interface EmpresaInputDto extends UserInputDto {
     descripcion: string;
     correoContacto: string;
     telefonoContacto: string;
-    tipoCocina: string;
+    tipoCocinaId: number;
     aperturas?: AperturaInputDto[];
 }
 

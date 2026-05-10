@@ -127,8 +127,8 @@ public class DataInitializer implements CommandLineRunner {
         for (Dia dia : Dia.values()) {
             aperturasPizza.add(Apertura.builder()
                     .dia(dia)
-                    .horaApertura(LocalTime.of(13, 0))
-                    .horaCierre(LocalTime.of(23, 30))
+                    .horaApertura(LocalTime.of(0, 1))
+                    .horaCierre(LocalTime.of(23, 59))
                     .empresa(pizzaNostra)
                     .build());
         }
