@@ -31,6 +31,16 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(RepartidorExistsException.class)
+    public ResponseEntity<CustomError> handleRepartidorExistsException(RepartidorExistsException ex) {
+        CustomError error = CustomError.builder()
+                .message(ex.getMessage())
+                .timestamp(LocalDateTime.now())
+                .httpCode(HttpStatus.NOT_FOUND.value())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<CustomError> handleBadRequestException(BadRequestException ex) {
         CustomError error = CustomError.builder()

@@ -19,9 +19,11 @@ import {
   closeOutline,
   mailOutline,
   callOutline,
-  locationOutline
+  locationOutline,
+  checkmarkCircleOutline
 } from 'ionicons/icons';
 import { RepartidorService } from '../../services/repartidor/repartidor-service';
+import { UserService } from '../../services/user/user-service';
 import { RepartidorOutputDto, RepartidorInputDto } from '../../types';
 import { ConfirmModalComponent } from '../../shared/confirm-modal/confirm-modal.component';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
@@ -43,6 +45,7 @@ import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 })
 export class RepartidoresAdminComponent implements OnInit {
   private repartidorService = inject(RepartidorService);
+  private userService = inject(UserService);
 
   // --- Estado ---
   repartidores = signal<RepartidorOutputDto[]>([]);
@@ -51,6 +54,8 @@ export class RepartidoresAdminComponent implements OnInit {
   totalPages = signal(0);
   totalElements = signal(0);
   terminoBusqueda = signal('');
+  solicitudesCount = signal(0);
+  mostrarSolicitudes = signal(false);
 
   isModalOpen = signal(false);
   isConfirmModalOpen = signal(false);
@@ -76,7 +81,8 @@ export class RepartidoresAdminComponent implements OnInit {
       closeOutline,
       mailOutline,
       callOutline,
-      locationOutline
+      locationOutline,
+      checkmarkCircleOutline
     });
 
     this.debouncer.pipe(debounceTime(400), distinctUntilChanged()).subscribe((valor) => {
@@ -88,11 +94,22 @@ export class RepartidoresAdminComponent implements OnInit {
 
   ngOnInit() {
     this.cargarRepartidores();
+    this.cargarSolicitudesCount();
+  }
+
+  cargarSolicitudesCount() {
+    this.repartidorService.obtenerPorAprobado(false, 0, 1).subscribe({
+      next: (res) => this.solicitudesCount.set(res.totalElements)
+    });
   }
 
   cargarRepartidores() {
+    // Si mostrarSolicitudes es true, pedimos los NO aprobados (false)
+    // Por defecto (false) pedimos los SI aprobados (true)
+    const filtroAprobado = !this.mostrarSolicitudes();
+
     this.repartidorService
-      .listar(this.currentPage(), this.pageSize())
+      .obtenerPorAprobado(filtroAprobado, this.currentPage(), this.pageSize())
       .subscribe({
         next: (response) => {
           this.repartidores.set(response.content);
@@ -100,6 +117,21 @@ export class RepartidoresAdminComponent implements OnInit {
           this.totalElements.set(response.totalElements);
         },
       });
+  }
+
+  setMostrarSolicitudes(valor: boolean) {
+    this.mostrarSolicitudes.set(valor);
+    this.currentPage.set(0);
+    this.cargarRepartidores();
+  }
+
+  aprobarRepartidor(id: number) {
+    this.userService.aprobarRepartidor(id, true).subscribe({
+      next: () => {
+        this.cargarRepartidores();
+        this.cargarSolicitudesCount();
+      }
+    });
   }
 
   onSearch(event: any) {

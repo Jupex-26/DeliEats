@@ -19,7 +19,8 @@ import {
 import { ProductoService } from '../../../services/producto/producto-service';
 import { EuroPipe } from '../../../pipe/euro.pipe';
 import { ConfirmModalComponent } from '../../../shared/confirm-modal/confirm-modal.component';
-import { EmpresaOutputDto, ProductoInputDto, ProductoOutputDto } from '../../../types';
+import { InfoModalComponent } from '../../../shared/info-modal/info-modal.component';
+import { CustomError, EmpresaOutputDto, ProductoInputDto, ProductoOutputDto } from '../../../types';
 import { environment } from '../../../../environments/environment';
 
 @Component({
@@ -34,7 +35,8 @@ import { environment } from '../../../../environments/environment';
     IonTextarea,
     IonModal,
     EuroPipe,
-    ConfirmModalComponent
+    ConfirmModalComponent,
+    InfoModalComponent
   ],
   templateUrl: './empresa-productos.component.html',
   styleUrls: ['./empresa-productos.component.scss']
@@ -46,26 +48,33 @@ export class EmpresaProductosComponent implements OnInit {
   private productoService = inject(ProductoService);
   private fb = inject(FormBuilder);
 
-  productos    = signal<ProductoOutputDto[]>([]);
-  loading      = signal(true);
-  currentPage  = signal(0);
-  totalPages   = signal(0);
-  totalElem    = signal(0);
-  pageSize     = 8;
+  productos = signal<ProductoOutputDto[]>([]);
+  loading = signal(true);
+  currentPage = signal(0);
+  totalPages = signal(0);
+  totalElem = signal(0);
+  pageSize = 8;
 
-  isModalOpen       = signal(false);
-  isConfirmOpen     = signal(false);
-  editingProducto   = signal<ProductoOutputDto | null>(null);
-  deletingId        = signal<number | null>(null);
-  guardando         = signal(false);
-  fotoFile          = signal<File | null>(null);
-  fotoPreview       = signal<string | null>(null);
+  isModalOpen = signal(false);
+  isConfirmOpen = signal(false);
+  editingProducto = signal<ProductoOutputDto | null>(null);
+  deletingId = signal<number | null>(null);
+  guardando = signal(false);
+  fotoFile = signal<File | null>(null);
+  fotoPreview = signal<string | null>(null);
+
+  // Modal Info
+  isInfoModalOpen = signal(false);
+  modalTitle = signal('');
+  modalMessage = signal('');
+  modalType = signal<'success' | 'error' | 'info'>('info');
+  modalErrorData = signal<CustomError | null>(null);
 
   form = this.fb.group({
-    nombre:      ['', [Validators.required]],
+    nombre: ['', [Validators.required]],
     descripcion: ['', [Validators.required]],
-    precio:      [0, [Validators.required, Validators.min(0.01)]],
-    cantidad:    [1, [Validators.required, Validators.min(0)]]
+    precio: [0, [Validators.required, Validators.min(0.01)]],
+    cantidad: [1, [Validators.required, Validators.min(0)]]
   });
 
   constructor() {
@@ -109,10 +118,10 @@ export class EmpresaProductosComponent implements OnInit {
     this.fotoFile.set(null);
     this.fotoPreview.set(p.foto ? environment.storageUrl + '/' + p.foto : null);
     this.form.patchValue({
-      nombre:      p.nombre,
+      nombre: p.nombre,
       descripcion: p.descripcion,
-      precio:      p.precio,
-      cantidad:    p.cantidad
+      precio: p.precio,
+      cantidad: p.cantidad
     });
     this.isModalOpen.set(true);
   }
@@ -132,17 +141,23 @@ export class EmpresaProductosComponent implements OnInit {
     this.guardando.set(true);
     const v = this.form.value;
     const payload: ProductoInputDto = {
-      nombre:      v.nombre!,
+      nombre: v.nombre!,
       descripcion: v.descripcion!,
-      precio:      v.precio!,
-      cantidad:    v.cantidad!,
-      empresaId:   this.empresa.id!
+      precio: v.precio ?? 0,
+      cantidad: v.cantidad!,
+      empresaId: this.empresa.id!
     };
+
+    if (payload.precio <= 0) {
+      this.showError('Error de validación', { error: { message: 'El precio debe ser mayor que 0' } });
+      this.guardando.set(false);
+      return;
+    }
 
     const editing = this.editingProducto();
     const op$ = editing
-      ? this.productoService.actualizar(editing.id, payload)
-      : this.productoService.crear(payload);
+      ? this.productoService.actualizar(editing.id, payload, this.fotoFile())
+      : this.productoService.crear(payload, this.fotoFile());
 
     op$.subscribe({
       next: () => {
@@ -150,8 +165,23 @@ export class EmpresaProductosComponent implements OnInit {
         this.isModalOpen.set(false);
         this.cargarProductos();
       },
-      error: () => this.guardando.set(false)
+      error: (err) => {
+        this.guardando.set(false);
+        this.showError(editing ? 'Error al actualizar' : 'Error al crear', err);
+      }
     });
+  }
+
+  private showError(title: string, err: any) {
+    this.modalTitle.set(title);
+    this.modalType.set('error');
+    this.modalMessage.set(err?.error?.message ?? 'Ha ocurrido un error inesperado.');
+    this.modalErrorData.set(err?.error || null);
+    this.isInfoModalOpen.set(true);
+  }
+
+  onModalClosed() {
+    this.isInfoModalOpen.set(false);
   }
 
   confirmarEliminar(id: number) {

@@ -16,4 +16,5 @@ public interface ClienteService {
 
     void deleteById(Long id);
 
+    void solicitarSerRepartidor(Long id);
 }

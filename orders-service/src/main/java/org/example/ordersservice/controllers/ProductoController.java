@@ -11,8 +11,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/productos")
@@ -22,11 +24,37 @@ public class ProductoController {
     private final ProductoService productoService;
     private final ProductoMapper productoMapper;
 
-    @PostMapping
-    public ResponseEntity<ProductoOutputDto> create(@Valid @RequestBody ProductoInputDto dto) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ProductoOutputDto> create(
+            @Valid @ModelAttribute ProductoInputDto dto,
+            @RequestPart(value = "file", required = false) MultipartFile file) {
+        
         Producto entity = productoMapper.toEntity(dto);
-        Producto saved = productoService.save(entity);
+        Producto saved;
+        if (file != null && !file.isEmpty()) {
+            saved = productoService.saveWithFoto(entity, file);
+        } else {
+            saved = productoService.save(entity);
+        }
+        
         return new ResponseEntity<>(productoMapper.toDto(saved), HttpStatus.CREATED);
+    }
+
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ProductoOutputDto> update(
+            @PathVariable Long id,
+            @Valid @ModelAttribute ProductoInputDto dto,
+            @RequestPart(value = "file", required = false) MultipartFile file) {
+
+        Producto entity = productoMapper.toEntity(dto);
+        Producto updated;
+        if (file != null && !file.isEmpty()) {
+            updated = productoService.updateWithFoto(id, entity, file);
+        } else {
+            updated = productoService.update(id, entity);
+        }
+
+        return ResponseEntity.ok(productoMapper.toDto(updated));
     }
 
     @GetMapping
@@ -56,12 +84,7 @@ public class ProductoController {
         return ResponseEntity.ok(dtos);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ProductoOutputDto> update(@PathVariable Long id, @Valid @RequestBody ProductoInputDto dto) {
-        Producto entity = productoMapper.toEntity(dto);
-        Producto updated = productoService.update(id, entity);
-        return ResponseEntity.ok(productoMapper.toDto(updated));
-    }
+
 
     @PatchMapping("/{id}/stock")
     public ResponseEntity<Void> updateStock(@PathVariable Long id, @RequestParam Integer cantidad) {

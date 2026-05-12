@@ -2,6 +2,7 @@ package org.example.ordersservice.services.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.exception.custom.NotFoundException;
+import org.example.ordersservice.models.Cliente;
 import org.example.ordersservice.models.Repartidor;
 import org.example.ordersservice.repositories.RepartidorRepository;
 import org.example.ordersservice.services.RepartidorService;
@@ -60,9 +61,16 @@ public class RepartidorServiceImpl implements RepartidorService {
     }
 
     @Override
+    public Page<Repartidor> findByAprobado(boolean aprobado, Pageable pageable) {
+        return repartidorRepository.findByAprobado(aprobado, pageable);
+    }
+
+    @Override
     public Repartidor update(Long id, Repartidor repartidor) {
         Repartidor existingRepartidor = findById(id);
         repartidor.setId(existingRepartidor.getId());
+
+        repartidor.setAprobado(existingRepartidor.getAprobado());
 
         String rawPassword = repartidor.getPassword();
 
@@ -91,6 +99,36 @@ public class RepartidorServiceImpl implements RepartidorService {
     public Repartidor updateDisponibilidad(Long id, boolean disponible) {
         Repartidor repartidor = findById(id);
         repartidor.setDisponible(disponible);
+        return repartidorRepository.save(repartidor);
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return repartidorRepository.existsById(id);
+    }
+
+    @Override
+    public void createFromCliente(Cliente cliente) {
+        Repartidor repartidor = Repartidor.builder()
+                .id(cliente.getId())
+                .nombre(cliente.getNombre())
+                .email(cliente.getEmail())
+                .password(cliente.getPassword())
+                .foto(cliente.getFoto())
+                .aprobado(false)
+                .direccion(cliente.getDireccion())
+                .telefono(cliente.getTelefono())
+                .disponible(false)
+                .rol(cliente.getRol())
+                .build();
+
+        repartidorRepository.save(repartidor);
+    }
+
+    @Override
+    public Repartidor aprobarRepartidor(Long id, boolean aprobado) {
+        Repartidor repartidor = findById(id);
+        repartidor.setAprobado(aprobado);
         return repartidorRepository.save(repartidor);
     }
 }

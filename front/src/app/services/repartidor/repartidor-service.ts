@@ -42,4 +42,16 @@ export class RepartidorService {
   eliminar(id: number): Observable<void> {
     return this.http.delete<void>(`${this.urlApi}/${id}`);
   }
+
+  obtenerPorAprobado(aprobado: boolean, page: number = 0, size: number = 10, sort?: string): Observable<any> {
+    let params = new HttpParams()
+      .set('aprobado', aprobado.toString()) // El backend espera un booleano en @RequestParam
+      .set('page', page)
+      .set('size', size);
+
+    if (sort) params = params.set('sort', sort);
+
+    return this.http.get<any>(`${this.urlApi}/aprobado`, { params });
+  }
+
 }

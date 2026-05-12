@@ -41,8 +41,11 @@ export class UserService {
     return this.http.delete<void>(`${this.urlApi}/${id}`);
   }
 
-  // TODO: Endpoint por definir — POST /api/users/{id}/foto
   subirFoto(id: number, formData: FormData): Observable<UserOutputDto> {
     return this.http.post<UserOutputDto>(`${this.urlApi}/${id}/foto`, formData);
+  }
+
+  aprobarRepartidor(id: number, aprobado: boolean): Observable<void> {
+    return this.http.patch<void>(`${environment.apiUrl}/repartidores/${id}/aprobar?aprobado=${aprobado}`, {});
   }
 }

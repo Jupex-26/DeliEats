@@ -44,6 +44,8 @@ public class SecurityConfig {
 
                         // Reglas de ADMIN
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/users/repartidores/*/aprobar").hasRole("ADMIN") // endpoint de aprobar
+                        .requestMatchers(HttpMethod.GET, "/repartidores/aprobado**").hasRole("ADMIN")
 
                         // Endpoints públicos de lectura
                         .requestMatchers(HttpMethod.GET, "/productos/**", "/empresas/**", "/categorias/**", "/aperturas/**", "/tiposcocina/**").permitAll()

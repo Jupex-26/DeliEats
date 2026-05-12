@@ -11,8 +11,17 @@ export class ProductoService {
   private readonly http = inject(HttpClient);
   private readonly urlApi = `${environment.apiUrl}/productos`;
 
-  crear(producto: ProductoInputDto): Observable<ProductoOutputDto> {
-    return this.http.post<ProductoOutputDto>(this.urlApi, producto);
+  crear(producto: ProductoInputDto, file?: File | null): Observable<ProductoOutputDto> {
+    const formData = new FormData();
+    Object.entries(producto).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        formData.append(key, value.toString());
+      }
+    });
+    if (file) {
+      formData.append('file', file);
+    }
+    return this.http.post<ProductoOutputDto>(this.urlApi, formData);
   }
 
   listar(page: number = 0, size: number = 10, sort?: string): Observable<any> {
@@ -35,8 +44,17 @@ export class ProductoService {
     return this.http.get<ProductoOutputDto[]>(`${this.urlApi}/categoria/${categoriaId}`);
   }
 
-  actualizar(id: number, producto: ProductoInputDto): Observable<ProductoOutputDto> {
-    return this.http.put<ProductoOutputDto>(`${this.urlApi}/${id}`, producto);
+  actualizar(id: number, producto: ProductoInputDto, file?: File | null): Observable<ProductoOutputDto> {
+    const formData = new FormData();
+    Object.entries(producto).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        formData.append(key, value.toString());
+      }
+    });
+    if (file) {
+      formData.append('file', file);
+    }
+    return this.http.put<ProductoOutputDto>(`${this.urlApi}/${id}`, formData);
   }
 
   actualizarStock(id: number, cantidad: number): Observable<ProductoOutputDto> {

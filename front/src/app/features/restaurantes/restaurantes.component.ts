@@ -1,6 +1,8 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { timer, Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import {
   IonContent,
   IonIcon
@@ -29,6 +31,7 @@ export class RestaurantesComponent implements OnInit {
   protected environment = environment;
   private readonly empresaService = inject(EmpresaService);
   private readonly tipoCocinaService = inject(TipoCocinaService);
+  private pollSubscription?: Subscription;
 
   constructor() {
     addIcons({
@@ -69,8 +72,18 @@ export class RestaurantesComponent implements OnInit {
   });
 
   ngOnInit() {
-    this.loadRestaurantes();
     this.loadCategories();
+    // Polling cada 30 segundos para actualización en "tiempo real"
+    this.pollSubscription = timer(0, 30000).pipe(
+      switchMap(() => this.empresaService.listar())
+    ).subscribe({
+      next: (data) => this.restaurantes.set(data.content),
+      error: (err) => console.error('Error polling restaurantes', err),
+    });
+  }
+
+  ngOnDestroy() {
+    this.pollSubscription?.unsubscribe();
   }
 
   loadRestaurantes() {

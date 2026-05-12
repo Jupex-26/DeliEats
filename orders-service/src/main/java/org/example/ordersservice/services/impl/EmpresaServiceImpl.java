@@ -2,6 +2,7 @@ package org.example.ordersservice.services.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.exception.custom.NotFoundException;
+import org.example.ordersservice.models.Apertura;
 import org.example.ordersservice.models.Empresa;
 import org.example.ordersservice.repositories.EmpresaRepository;
 import org.example.ordersservice.services.EmpresaService;
@@ -11,7 +12,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Service
@@ -38,6 +42,10 @@ public class EmpresaServiceImpl implements EmpresaService {
         empresa.setPassword(passwordEncoder.encode(rawPassword));
 
         empresa.setRol(rolService.findByNombre("ROLE_EMPRESA"));
+        
+        if (empresa.hasAperturas()) {
+            empresa.getAperturas().forEach(a -> a.setEmpresa(empresa));
+        }
 
         return empresaRepository.save(empresa);
     }
@@ -57,6 +65,7 @@ public class EmpresaServiceImpl implements EmpresaService {
     public Empresa update(Long id, Empresa empresa) {
         Empresa existingEmpresa = findById(id);
         empresa.setId(existingEmpresa.getId());
+        empresa.setFoto(existingEmpresa.getFoto());
 
         String rawPassword = empresa.getPassword();
 
@@ -72,6 +81,28 @@ public class EmpresaServiceImpl implements EmpresaService {
         }
 
         empresa.setRol(rolService.findByNombre("ROLE_EMPRESA"));
+        
+        if (empresa.hasAperturas()) {
+            List<Apertura> existingAperturas = existingEmpresa.hasAperturas() ? existingEmpresa.getAperturas() : new ArrayList<>();
+            
+            for (Apertura newApertura : empresa.getAperturas()) {
+                Optional<Apertura> matchOpt = existingAperturas.stream()
+                        .filter(a -> a.getDia() == newApertura.getDia())
+                        .findFirst();
+                
+                if (matchOpt.isPresent()) {
+                    Apertura match = matchOpt.get();
+                    match.setHoraApertura(newApertura.getHoraApertura());
+                    match.setHoraCierre(newApertura.getHoraCierre());
+                } else {
+                    newApertura.setEmpresa(existingEmpresa);
+                    existingAperturas.add(newApertura);
+                }
+            }
+            empresa.setAperturas(existingAperturas);
+        } else {
+            empresa.setAperturas(existingEmpresa.getAperturas());
+        }
 
         return empresaRepository.save(empresa);
     }

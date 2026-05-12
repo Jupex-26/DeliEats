@@ -93,9 +93,36 @@
     color: $color-primary;
     &:hover { background-color: $color-primary; color: white; }
   }
+  &.approve {
+    color: #10b981; // emerald-500
+    &:hover { background-color: #10b981; color: white; }
+  }
   &.delete {
     color: $color-secondary;
     &:hover { background-color: $color-secondary; color: white; }
+  }
+}
+
+.tabs-toolbar {
+  background-color: $color-bg-base;
+  border-bottom-color: rgba($color-bg-alt, 0.5);
+  
+  .tab-btn {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: rgba($color-text-main, 0.5);
+    cursor: pointer;
+    
+    &.active {
+      color: $color-primary;
+      border-bottom-color: $color-primary;
+    }
+    
+    &:hover:not(.active) {
+      background-color: rgba($color-bg-alt, 0.1);
+      color: rgba($color-text-main, 0.8);
+    }
   }
 }
 

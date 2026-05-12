@@ -19,6 +19,9 @@ public class Repartidor extends User {
     @Column(nullable = false)
     private Boolean disponible = true;
 
+    @Column(nullable = false)
+    private Boolean aprobado = false;
+
     @OneToMany(mappedBy = "repartidor")
     @ToString.Exclude
     private List<Pedido> pedidos;

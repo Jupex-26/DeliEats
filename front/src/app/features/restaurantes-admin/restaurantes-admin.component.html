@@ -442,4 +442,13 @@
     [dangerAction]="true" (confirm)="ejecutarEliminacionProducto()" (cancel)="isProductConfirmModalOpen.set(false)">
   </app-confirm-modal>
 
+  <app-info-modal
+    [isOpen]="isInfoModalOpen()"
+    [title]="modalTitle()"
+    [message]="modalMessage()"
+    [errorData]="modalErrorData()"
+    [type]="modalType()"
+    (modalClosed)="onModalClosed()">
+  </app-info-modal>
+
 </div>

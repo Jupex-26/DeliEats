@@ -73,7 +73,7 @@ public class DataInitializer implements CommandLineRunner {
                 .nombre("Juan Pérez")
                 .email("juan@cliente.com")
                 .password(defaultPassword)
-                .telefono(123456789L)
+                .telefono(666666666L)
                 .direccion("Calle Falsa 123")
                 .rol(rolCliente)
                 .foto("5f088ad3-448c-42fb-82e8-3802b19ae9d5_columbina.jpeg")
@@ -95,12 +95,12 @@ public class DataInitializer implements CommandLineRunner {
                 .nombre("Pizza Nostra")
                 .email("contacto@pizzanostra.com")
                 .password(defaultPassword)
-                .telefono(111222333L)
+                .telefono(666666666L)
                 .direccion("Plaza Mayor 1")
                 .rol(rolEmpresa)
                 .descripcion("La mejor pizza italiana de la ciudad")
                 .correoContacto("info@pizzanostra.com")
-                .telefonoContacto("111222333")
+                .telefonoContacto("666666666")
                 .tipoCocina(cocinaItaliana)
                 .foto("pizza.png")
                 .build();
@@ -111,12 +111,12 @@ public class DataInitializer implements CommandLineRunner {
                 .nombre("Sushi Master")
                 .email("contacto@sushimaster.com")
                 .password(defaultPassword)
-                .telefono(444555666L)
+                .telefono(666666666L)
                 .direccion("Calle del Pez 2")
                 .rol(rolEmpresa)
                 .descripcion("Sushi fresco todos los días")
                 .correoContacto("info@sushimaster.com")
-                .telefonoContacto("444555666")
+                .telefonoContacto("666666666")
                 .tipoCocina(cocinaJaponesa)
                 .foto("sushi.png")
                 .build();
@@ -189,6 +189,7 @@ public class DataInitializer implements CommandLineRunner {
                 .descripcion("Rollo de arroz relleno de salmón fresco (6 uds)")
                 .precio(new BigDecimal("8.50"))
                 .cantidad(100)
+                .foto("b88a00c5-14c8-49f7-85ab-f4cf85c03256_makis-salmon.webp")
                 .empresa(sushiMaster)
                 .build());
 
@@ -197,6 +198,7 @@ public class DataInitializer implements CommandLineRunner {
                 .descripcion("Corte de atún sobre base de arroz (2 uds)")
                 .precio(new BigDecimal("4.50"))
                 .cantidad(40)
+                .foto("7579ce13-a553-4efc-a224-12676b2993ee_csm_417-recipe-page-Nigiri_desktop_4f926bea38.jpg")
                 .empresa(sushiMaster)
                 .build());
 

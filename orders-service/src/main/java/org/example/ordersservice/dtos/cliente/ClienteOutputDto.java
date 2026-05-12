@@ -10,5 +10,6 @@ import java.time.LocalDateTime;
 public class ClienteOutputDto extends UserOutputDto {
 
     private LocalDateTime fechaNacimiento;
+    private boolean isRepartidor;
 
 }

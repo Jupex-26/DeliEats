@@ -1,10 +1,13 @@
 package org.example.ordersservice.services.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.exception.custom.NotFoundException;
+import org.example.ordersservice.exception.custom.RepartidorExistsException;
 import org.example.ordersservice.models.Cliente;
 import org.example.ordersservice.repositories.ClienteRepository;
 import org.example.ordersservice.services.ClienteService;
+import org.example.ordersservice.services.RepartidorService;
 import org.example.ordersservice.services.RolService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +24,7 @@ public class ClienteServiceImpl implements ClienteService {
     private final ClienteRepository clienteRepository;
     private final PasswordEncoder passwordEncoder;
     private final RolService rolService;
+    private final RepartidorService repartidorService;
     private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$");
 
     @Override
@@ -80,5 +84,17 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     public void deleteById(Long id) {
         clienteRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public void solicitarSerRepartidor(Long id) {
+        if (repartidorService.existsById(id)) {
+            throw new RepartidorExistsException("Ya existe una solicitud o perfil de repartidor.");
+        }
+
+        Cliente cliente = findById(id);
+
+        repartidorService.createFromCliente(cliente);
     }
 }

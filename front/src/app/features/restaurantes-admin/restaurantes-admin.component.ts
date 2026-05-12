@@ -1,6 +1,8 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CurrencyPipe } from '@angular/common';
+import { timer, Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import {
   IonHeader,
   IonToolbar,
@@ -32,9 +34,11 @@ import {
 import { EmpresaService } from '../../services/empresa/empresa-service';
 import { ProductoService } from '../../services/producto/producto-service';
 import { TipoCocinaService } from '../../services/tipococina/tipococina-service';
-import { EmpresaOutputDto, EmpresaInputDto, ProductoOutputDto, ProductoInputDto, TipoCocinaOutputDto } from '../../types';
+import { EmpresaOutputDto, EmpresaInputDto, ProductoOutputDto, ProductoInputDto, TipoCocinaOutputDto, CustomError } from '../../types';
 import { ConfirmModalComponent } from '../../shared/confirm-modal/confirm-modal.component';
+
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+import { InfoModalComponent } from '../../shared/info-modal/info-modal.component';
 
 @Component({
   selector: 'app-restaurantes-admin',
@@ -51,6 +55,7 @@ import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
     IonModal,
     IonInput,
     ConfirmModalComponent,
+    InfoModalComponent,
     IonItem,
     CurrencyPipe,
   ],
@@ -61,6 +66,7 @@ export class RestaurantesAdminComponent implements OnInit {
   private empresaService = inject(EmpresaService);
   private productoService = inject(ProductoService);
   private tipoCocinaService = inject(TipoCocinaService);
+  private pollSubscription?: Subscription;
 
   // --- Estado de Restaurantes ---
   empresas = signal<EmpresaOutputDto[]>([]);
@@ -93,6 +99,13 @@ export class RestaurantesAdminComponent implements OnInit {
 
   productoForm: ProductoInputDto = this.getEmptyProductoForm(0);
 
+  // Modal Info
+  isInfoModalOpen = signal(false);
+  modalTitle = signal('');
+  modalMessage = signal('');
+  modalType = signal<'success' | 'error' | 'info'>('info');
+  modalErrorData = signal<CustomError | null>(null);
+
   private debouncer = new Subject<string>();
 
   constructor() {
@@ -120,8 +133,22 @@ export class RestaurantesAdminComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.cargarEmpresas();
     this.cargarTiposCocina();
+    // Polling cada 15 segundos para administración en "tiempo real"
+    this.pollSubscription = timer(0, 15000).pipe(
+      switchMap(() => this.empresaService.listar(this.currentPage(), this.pageSize()))
+    ).subscribe({
+      next: (response) => {
+        this.empresas.set(response.content);
+        this.totalPages.set(response.totalPages);
+        this.totalElements.set(response.totalElements);
+      },
+      error: (err) => console.error('Error polling empresas', err)
+    });
+  }
+
+  ngOnDestroy() {
+    this.pollSubscription?.unsubscribe();
   }
 
   // ==========================================
@@ -267,15 +294,37 @@ export class RestaurantesAdminComponent implements OnInit {
   }
 
   guardarProducto() {
+    if (this.productoForm.precio <= 0) {
+      this.showError('Error de validación', { error: { message: 'El precio debe ser mayor que 0' } });
+      return;
+    }
+
     const editId = this.editingProducto()?.id;
     const request = editId
       ? this.productoService.actualizar(editId, this.productoForm)
       : this.productoService.crear(this.productoForm);
 
-    request.subscribe(() => {
-      this.isProductFormModalOpen.set(false);
-      this.recargarProductosDeEmpresa();
+    request.subscribe({
+      next: () => {
+        this.isProductFormModalOpen.set(false);
+        this.recargarProductosDeEmpresa();
+      },
+      error: (err) => {
+        this.showError(editId ? 'Error al actualizar producto' : 'Error al crear producto', err);
+      }
     });
+  }
+
+  private showError(title: string, err: any) {
+    this.modalTitle.set(title);
+    this.modalType.set('error');
+    this.modalMessage.set(err?.error?.message ?? 'Ha ocurrido un error inesperado.');
+    this.modalErrorData.set(err?.error || null);
+    this.isInfoModalOpen.set(true);
+  }
+
+  onModalClosed() {
+    this.isInfoModalOpen.set(false);
   }
 
   private getEmptyProductoForm(empresaId: number): ProductoInputDto {

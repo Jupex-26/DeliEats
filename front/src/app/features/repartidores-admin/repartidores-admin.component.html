@@ -1,7 +1,10 @@
 <div class="admin-container h-full flex flex-col">
   <header class="admin-header px-8 py-5 shadow-sm">
     <div class="header-content flex justify-between items-center max-w-[1200px] mx-auto w-full">
-      <h1 class="title text-xl font-bold tracking-wide">Repartidores ({{ totalElements() }})</h1>
+      <h1 class="title text-xl font-bold tracking-wide">
+        {{ mostrarSolicitudes() ? 'Solicitudes de Registro' : 'Repartidores Aprobados' }}
+        <span class="count-badge ml-2 text-sm opacity-60">({{ totalElements() }})</span>
+      </h1>
       <button
         class="btn-new border-none px-5 py-2.5 rounded-md font-bold text-sm flex items-center gap-2 cursor-pointer transition-all hover:shadow-md"
         (click)="abrirModalNuevo()">
@@ -13,6 +16,24 @@
 
   <div class="main-content p-8 flex-1 overflow-y-auto">
     <div class="table-card max-w-[1200px] mx-auto bg-white rounded-xl shadow-lg border overflow-hidden">
+      
+      <div class="tabs-toolbar flex border-b">
+        <button 
+          class="tab-btn px-6 py-4 text-sm font-bold transition-all border-b-2"
+          [class.active]="!mostrarSolicitudes()"
+          (click)="setMostrarSolicitudes(false)">
+          APROBADOS
+        </button>
+        <button 
+          class="tab-btn px-6 py-4 text-sm font-bold transition-all border-b-2 flex items-center gap-2"
+          [class.active]="mostrarSolicitudes()"
+          (click)="setMostrarSolicitudes(true)">
+          SOLICITUDES
+          @if (solicitudesCount() > 0) {
+            <span class="sol-badge px-2 py-0.5 rounded-full text-[10px] bg-red-500 text-white">{{ solicitudesCount() }}</span>
+          }
+        </button>
+      </div>
 
       <div class="table-toolbar p-6 flex justify-between items-center bg-white border-b">
         <div
@@ -63,10 +84,19 @@
                     (click)="abrirModalVer(repartidor)" title="Ver detalle">
                     <ion-icon name="eye-outline"></ion-icon>
                   </button>
-                  <button class="btn-icon edit border rounded-md p-1.5 text-xl cursor-pointer transition-all"
-                    (click)="abrirModalEditar(repartidor)" title="Editar">
-                    <ion-icon name="create-outline"></ion-icon>
-                  </button>
+                  
+                  @if (mostrarSolicitudes()) {
+                    <button class="btn-icon approve border rounded-md p-1.5 text-xl cursor-pointer transition-all"
+                      (click)="aprobarRepartidor(repartidor.id!)" title="Aprobar Repartidor">
+                      <ion-icon name="checkmark-circle-outline"></ion-icon>
+                    </button>
+                  } @else {
+                    <button class="btn-icon edit border rounded-md p-1.5 text-xl cursor-pointer transition-all"
+                      (click)="abrirModalEditar(repartidor)" title="Editar">
+                      <ion-icon name="create-outline"></ion-icon>
+                    </button>
+                  }
+
                   <button class="btn-icon delete border rounded-md p-1.5 text-xl cursor-pointer transition-all"
                     (click)="confirmarEliminar(repartidor.id!)" title="Eliminar">
                     <ion-icon name="trash-outline"></ion-icon>

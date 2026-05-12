@@ -3,6 +3,7 @@ package org.example.ordersservice.models;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -52,5 +53,9 @@ public class Empresa extends User {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    public boolean hasAperturas() {
+        return !CollectionUtils.isEmpty(this.aperturas);
     }
 }
