@@ -155,6 +155,7 @@ public class DataInitializer implements CommandLineRunner {
                 .direccion("Calle Central 10")
                 .rol(rolRepartidor)
                 .disponible(true)
+                .aprobado(true)
                 .build());
 
         repartidorRepository.save(Repartidor.builder()
@@ -165,6 +166,7 @@ public class DataInitializer implements CommandLineRunner {
                 .direccion("Calle Norte 5")
                 .rol(rolRepartidor)
                 .disponible(false)
+                .aprobado(true)
                 .build());
 
         // 8. Crear Productos

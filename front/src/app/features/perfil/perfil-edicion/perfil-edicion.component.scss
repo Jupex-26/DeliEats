@@ -232,6 +232,69 @@
   ion-icon { font-size: 18px; }
 }
 
+.success-banner--full {
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 20px;
+  background: rgba($color-success, 0.1);
+  border-color: rgba($color-success, 0.3);
+
+  ion-icon {
+    font-size: 24px;
+    margin-top: 2px;
+  }
+
+  strong {
+    display: block;
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.95rem;
+    opacity: 0.9;
+    line-height: 1.4;
+  }
+}
+
+.btn-request {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 28px;
+  border-radius: 16px;
+  border: 2px solid $color-primary;
+  background: white;
+  color: $color-primary;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: fit-content;
+
+  &:hover:not(:disabled) {
+    background: $color-primary;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba($color-primary, 0.25);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.request-text {
+  color: rgba($color-text-main, 0.7);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  max-width: 600px;
+}
+
 .error-banner, .error-msg {
   padding: 12px 16px;
   border-radius: 14px;

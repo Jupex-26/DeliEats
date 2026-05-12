@@ -32,4 +32,8 @@ export class ClienteService {
   eliminar(id: number): Observable<void> {
     return this.http.delete<void>(`${this.urlApi}/${id}`);
   }
+
+  solicitarSerRepartidor(id: number): Observable<void> {
+    return this.http.post<void>(`${this.urlApi}/${id}/solicitar-repartidor`, {});
+  }
 }

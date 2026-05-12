@@ -114,6 +114,35 @@
     </form>
   </section>
 
+  <!-- ─── Trabaja con nosotros ─── -->
+  <section class="edicion-section request-section">
+    <h2 class="section-title">
+      <ion-icon name="bicycle-outline"></ion-icon>
+      Trabaja con nosotros
+    </h2>
+    <div class="request-content">
+      <p class="request-text">¿Quieres ganar dinero extra? Únete a nuestra red de repartidores y empieza a entregar pedidos hoy mismo.</p>
+      
+      @if (exitoSolicitud()) {
+        <div class="success-banner success-banner--full">
+          <ion-icon name="checkmark-circle-outline"></ion-icon> 
+          <div>
+            <strong>¡Solicitud enviada!</strong>
+            <p>Tu solicitud para ser repartidor está siendo revisada por el equipo administrativo. Te avisaremos pronto.</p>
+          </div>
+        </div>
+      } @else {
+        <button type="button" class="btn-request" (click)="solicitarSerRepartidor()" [disabled]="solicitandoRepartidor()">
+          @if (solicitandoRepartidor()) {
+            <div class="spinner-sm"></div> Enviando solicitud...
+          } @else {
+            <ion-icon name="bicycle-outline"></ion-icon> Solicitar ser repartidor
+          }
+        </button>
+      }
+    </div>
+  </section>
+
   <!-- Modal de Información -->
   <app-info-modal
     [isOpen]="isModalOpen"

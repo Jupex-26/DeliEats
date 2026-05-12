@@ -9,7 +9,8 @@ import {
   checkmarkCircleOutline,
   saveOutline,
   eyeOutline,
-  eyeOffOutline
+  eyeOffOutline,
+  bicycleOutline
 } from 'ionicons/icons';
 import { ClienteService } from '../../../services/cliente/cliente-service';
 import { UserService } from '../../../services/user/user-service';
@@ -44,6 +45,8 @@ export class PerfilEdicionComponent implements OnInit {
   exitoPerfil = signal(false);
   exitoPassword = signal(false);
   exitoFoto = signal(false);
+  solicitandoRepartidor = signal(false);
+  exitoSolicitud = signal(false);
 
   // Modal State
   isModalOpen = false;
@@ -65,7 +68,7 @@ export class PerfilEdicionComponent implements OnInit {
   protected environment = environment;
 
   constructor() {
-    addIcons({ cameraOutline, lockClosedOutline, checkmarkCircleOutline, saveOutline, eyeOutline, eyeOffOutline });
+    addIcons({ cameraOutline, lockClosedOutline, checkmarkCircleOutline, saveOutline, eyeOutline, eyeOffOutline, bicycleOutline });
   }
 
   ngOnInit() {
@@ -186,6 +189,25 @@ export class PerfilEdicionComponent implements OnInit {
       error: (err) => {
         this.guardandoPassword.set(false);
         this.showErrorModal('Error al cambiar contraseña', err);
+      }
+    });
+  }
+
+  solicitarSerRepartidor() {
+    if (this.solicitandoRepartidor()) return;
+    this.solicitandoRepartidor.set(true);
+
+    this.clienteService.solicitarSerRepartidor(this.cliente.id).subscribe({
+      next: () => {
+        this.solicitandoRepartidor.set(false);
+        this.exitoSolicitud.set(true);
+        // No necesitamos timer largo si mostramos un mensaje permanente o similar, 
+        // pero por ahora lo dejamos consistente.
+        setTimeout(() => this.exitoSolicitud.set(false), 5000);
+      },
+      error: (err) => {
+        this.solicitandoRepartidor.set(false);
+        this.showErrorModal('Error al enviar solicitud', err);
       }
     });
   }
