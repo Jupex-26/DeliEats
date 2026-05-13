@@ -1,5 +1,6 @@
 package org.example.ordersservice.services.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.exception.custom.NotFoundException;
 import org.example.ordersservice.exception.custom.QuantityExceedsException;
@@ -81,6 +82,7 @@ public class CarritoServiceImpl implements CarritoService {
     }
 
     @Override
+    @Transactional
     public void clearCarrito(Long carritoId) {
         Carrito carrito = findById(carritoId);
         detalleCarritoService.deleteByCarritoId(carrito.getId());

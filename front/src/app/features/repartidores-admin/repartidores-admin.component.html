@@ -213,8 +213,12 @@
             <div class="detail-card bg-white rounded-2xl shadow-xl overflow-hidden border">
               <div class="detail-header p-8 flex flex-col items-center border-b relative">
                 <div
-                  class="avatar w-24 h-24 rounded-full flex items-center justify-center text-white text-3xl font-bold mb-4 shadow-lg border-4 border-white">
-                  {{ viewingRepartidor()!.nombre.charAt(0).toUpperCase() }}
+                  class="avatar w-24 h-24 rounded-full flex items-center justify-center text-white text-3xl font-bold mb-4 shadow-lg border-4 border-white overflow-hidden">
+                  @if (viewingRepartidor()!.foto) {
+                    <img [src]="environment.storageUrl + '/' + viewingRepartidor()!.foto" alt="Foto de perfil" class="w-full h-full object-cover">
+                  } @else {
+                    {{ viewingRepartidor()!.nombre.charAt(0).toUpperCase() }}
+                  }
                 </div>
                 <h2 class="name text-2xl font-bold mb-1">{{ viewingRepartidor()!.nombre }}</h2>
                 <div class="flex gap-2">

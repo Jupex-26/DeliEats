@@ -46,6 +46,12 @@
         <ion-icon name="receipt-outline"></ion-icon>
         Mis Pedidos
       </button>
+      @if (cliente()?.repartidor) {
+        <button class="tab-btn" [class.active]="activeTab() === 'repartidor'" (click)="setTab('repartidor')">
+          <ion-icon name="bicycle-outline"></ion-icon>
+          Modo Repartidor
+        </button>
+      }
     </nav>
 
     <!-- Tab: Edición Perfil -->
@@ -59,6 +65,43 @@
     @if (activeTab() === 'pedidos') {
     <section class="tab-content">
       <app-mis-pedidos></app-mis-pedidos>
+    </section>
+    }
+
+    <!-- Tab: Modo Repartidor -->
+    @if (activeTab() === 'repartidor') {
+    <section class="tab-content repartidor-mode">
+      <div class="mode-card bg-white rounded-2xl shadow-sm border p-6 max-w-xl mx-auto mt-4 text-center">
+        <div class="icon-header w-16 h-16 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4 text-3xl">
+          <ion-icon name="bicycle-outline"></ion-icon>
+        </div>
+        <h2 class="text-xl font-bold mb-2">Modo Repartidor</h2>
+        <p class="text-sm text-gray-500 mb-6">Gestiona tu estado de disponibilidad para empezar a recibir o dejar de recibir pedidos asignados.</p>
+
+        @if (loadingRepartidor()) {
+          <div class="flex flex-col items-center justify-center py-8">
+            <div class="spinner-sm mb-2"></div>
+            <span class="text-xs text-gray-400">Cargando estado...</span>
+          </div>
+        } @else if (repartidor()) {
+          <div class="status-box bg-base p-5 rounded-xl border flex flex-col items-center gap-3">
+            <span class="text-xs font-bold uppercase tracking-wider text-gray-400">Estado actual</span>
+            <span class="status-badge px-4 py-1.5 rounded-full text-xs font-bold text-white transition-colors"
+                  [class]="repartidor()!.disponible ? 'bg-green-600' : 'bg-red-600'">
+              {{ repartidor()!.disponible ? 'DISPONIBLE PARA ENTREGAS' : 'NO DISPONIBLE' }}
+            </span>
+
+            <div class="toggle-wrapper flex items-center gap-3 mt-2 pt-3 border-t w-full justify-center">
+              <span class="text-sm font-medium">Cambiar disponibilidad:</span>
+              <ion-toggle [checked]="repartidor()!.disponible" (ionChange)="toggleDisponibilidad($event)" class="deli-toggle"></ion-toggle>
+            </div>
+          </div>
+        } @else {
+          <div class="p-4 text-sm text-red-500">
+            No se pudo cargar la información de repartidor.
+          </div>
+        }
+      </div>
     </section>
     }
     }

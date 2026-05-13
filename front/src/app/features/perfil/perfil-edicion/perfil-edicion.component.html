@@ -115,6 +115,7 @@
   </section>
 
   <!-- ─── Trabaja con nosotros ─── -->
+  @if (!cliente.repartidor) {
   <section class="edicion-section request-section">
     <h2 class="section-title">
       <ion-icon name="bicycle-outline"></ion-icon>
@@ -142,6 +143,8 @@
       }
     </div>
   </section>
+  }
+
 
   <!-- Modal de Información -->
   <app-info-modal

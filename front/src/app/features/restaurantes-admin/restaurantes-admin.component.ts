@@ -29,7 +29,8 @@ import {
   callOutline,
   fastFoodOutline,
   restaurantOutline,
-  locationOutline
+  locationOutline,
+  cameraOutline
 } from 'ionicons/icons';
 import { EmpresaService } from '../../services/empresa/empresa-service';
 import { ProductoService } from '../../services/producto/producto-service';
@@ -39,6 +40,7 @@ import { ConfirmModalComponent } from '../../shared/confirm-modal/confirm-modal.
 
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { InfoModalComponent } from '../../shared/info-modal/info-modal.component';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-restaurantes-admin',
@@ -98,6 +100,8 @@ export class RestaurantesAdminComponent implements OnInit {
   productoIdParaEliminar = signal<number | null>(null);
 
   productoForm: ProductoInputDto = this.getEmptyProductoForm(0);
+  productFotoFile = signal<File | null>(null);
+  productFotoPreview = signal<string | null>(null);
 
   // Modal Info
   isInfoModalOpen = signal(false);
@@ -105,6 +109,7 @@ export class RestaurantesAdminComponent implements OnInit {
   modalMessage = signal('');
   modalType = signal<'success' | 'error' | 'info'>('info');
   modalErrorData = signal<CustomError | null>(null);
+  protected environment = environment;
 
   private debouncer = new Subject<string>();
 
@@ -122,7 +127,8 @@ export class RestaurantesAdminComponent implements OnInit {
       callOutline,
       fastFoodOutline,
       restaurantOutline,
-      locationOutline
+      locationOutline,
+      cameraOutline
     });
 
     this.debouncer.pipe(debounceTime(400), distinctUntilChanged()).subscribe((valor) => {
@@ -269,13 +275,32 @@ export class RestaurantesAdminComponent implements OnInit {
   abrirModalNuevoProducto() {
     this.editingProducto.set(null);
     this.productoForm = this.getEmptyProductoForm(this.selectedEmpresaForProducts()!.id!);
+    this.productFotoFile.set(null);
+    this.productFotoPreview.set(null);
     this.isProductFormModalOpen.set(true);
   }
 
   abrirModalEditarProducto(producto: ProductoOutputDto) {
     this.editingProducto.set(producto);
     this.productoForm = { ...producto };
+    this.productFotoFile.set(null);
+    if (producto.foto) {
+      this.productFotoPreview.set(environment.storageUrl + '/' + producto.foto);
+    } else {
+      this.productFotoPreview.set(null);
+    }
     this.isProductFormModalOpen.set(true);
+  }
+
+  onProductFotoSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    this.productFotoFile.set(file);
+    const reader = new FileReader();
+    reader.onload = (e) => this.productFotoPreview.set(e.target?.result as string);
+    reader.readAsDataURL(file);
   }
 
   confirmarEliminarProducto(id: number) {
@@ -300,9 +325,10 @@ export class RestaurantesAdminComponent implements OnInit {
     }
 
     const editId = this.editingProducto()?.id;
+    const file = this.productFotoFile();
     const request = editId
-      ? this.productoService.actualizar(editId, this.productoForm)
-      : this.productoService.crear(this.productoForm);
+      ? this.productoService.actualizar(editId, this.productoForm, file)
+      : this.productoService.crear(this.productoForm, file);
 
     request.subscribe({
       next: () => {

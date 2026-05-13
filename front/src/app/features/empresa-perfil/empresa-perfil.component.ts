@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, effect, untracked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { IonContent, IonIcon } from '@ionic/angular/standalone';
@@ -52,23 +52,36 @@ export class EmpresaPerfilComponent implements OnInit {
       restaurantOutline,
       businessOutline
     });
+
+    // effect() sincroniza de forma garantizada y automática cada vez que cambia el usuario en el AuthService
+    effect(() => {
+      const user = this.authService.currentUser();
+      untracked(() => {
+        if (user?.userOutputDto) {
+          const id = user.userOutputDto.id;
+          this.loading.set(true);
+          this.empresa.set(null); // fuerza destrucción de subcomponentes cacheados
+          this.empresaService.obtenerPorId(id).subscribe({
+            next: (e) => {
+              this.empresa.set(e);
+              this.loading.set(false);
+            },
+            error: () => this.loading.set(false)
+          });
+        } else {
+          this.empresa.set(null);
+          this.loading.set(true);
+          this.activeTab.set('perfil');
+        }
+      });
+    });
   }
 
   ngOnInit() {
     const user = this.authService.currentUser();
     if (!user?.userOutputDto) {
       this.router.navigate(['/login']);
-      return;
     }
-
-    const id = user.userOutputDto.id;
-    this.empresaService.obtenerPorId(id).subscribe({
-      next: (e) => {
-        this.empresa.set(e);
-        this.loading.set(false);
-      },
-      error: () => this.loading.set(false)
-    });
   }
 
   get usuario() {
@@ -87,3 +100,4 @@ export class EmpresaPerfilComponent implements OnInit {
     this.router.navigate(['/restaurantes']);
   }
 }
+

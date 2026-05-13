@@ -68,12 +68,6 @@ public class PedidoServiceImpl implements PedidoService {
     }
 
     @Override
-    public BigDecimal calculateTotal(Long id) {
-        Pedido pedido = findById(id);
-        return pedido.calcularTotal();
-    }
-
-    @Override
     public Pedido update(Long id, Pedido pedido) {
         Pedido pedidoUpdated = findById(id);
         
@@ -90,6 +84,14 @@ public class PedidoServiceImpl implements PedidoService {
         Pedido pedido = findById(id);
         Estado nuevoEstado = estadoService.findById(estadoId);
         pedido.setEstado(nuevoEstado);
+        return pedidoRepository.save(pedido);
+    }
+    
+    @Override
+    public Pedido cancelarPedido(Long id) {
+        Pedido pedido = findById(id);
+        Estado estadoCancelado = estadoService.findByNombre("CANCELADO");
+        pedido.setEstado(estadoCancelado);
         return pedidoRepository.save(pedido);
     }
 

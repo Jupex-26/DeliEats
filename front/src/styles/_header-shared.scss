@@ -84,26 +84,44 @@
 }
 
 .btn-profile {
-  color: $color-primary;
-  background-color: transparent;
-  font-weight: bold;
-  border: 2px solid $color-primary;
-  padding: 3px 46px;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: $color-primary !important;
+  background-color: rgba($color-primary, 0.08) !important;
+  font-weight: 700 !important;
+  border: 2px solid $color-primary !important;
+  border-radius: 50px !important;
+  padding: 8px 24px !important;
+  height: auto !important;
+  line-height: 1.4 !important;
+  text-decoration: none !important;
+  transition: all 0.3s ease !important;
 
   &:hover {
-    background-color: $color-primary; // Un toque sutil de tu verde
-    color: white;
+    background-color: $color-primary !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba($color-primary, 0.25) !important;
   }
 }
 
 .btn-logout {
-  color: $color-secondary;
-  border: 2px solid $color-secondary;
-  background-color: transparent;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: $color-secondary !important;
+  background-color: transparent !important;
+  font-weight: 600 !important;
+  border: 2px solid $color-secondary !important;
+  border-radius: 50px !important;
+  padding: 8px 24px !important;
+  height: auto !important;
+  line-height: 1.4 !important;
+  transition: all 0.3s ease !important;
 
   &:hover {
-    background-color: $color-secondary;
-    color: white;
-    box-shadow: 0 2px 8px rgba($color-secondary, 0.3);
+    background-color: $color-secondary !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba($color-secondary, 0.25) !important;
   }
 }

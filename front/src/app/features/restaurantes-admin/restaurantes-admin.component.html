@@ -51,8 +51,11 @@
             @for (empresa of empresas(); track empresa.id) {
             <tr class="transition-colors group">
               <td class="td-name px-6 py-4 border-b font-bold">{{ empresa.nombre }}</td>
-              <td class="px-6 py-4 border-b text-sm"><span class="bg-gray-100 px-2 py-1 rounded-md">{{
-                  empresa.tipoCocina.nombre || 'N/A' }}</span></td>
+              <td class="px-6 py-4 border-b text-sm">
+                <span class="badge-cocina">
+                  {{ empresa.tipoCocina.nombre || 'N/A' }}
+                </span>
+              </td>
               <td class="td-email px-6 py-4 border-b text-sm">{{ empresa.email }}</td>
               <td class="px-6 py-4 border-b">
                 <div class="actions flex justify-end gap-2">
@@ -220,8 +223,12 @@
           <div class="detail-card bg-white rounded-2xl shadow-xl overflow-hidden border">
             <div class="detail-header p-8 flex flex-col items-center border-b relative">
               <div
-                class="avatar w-24 h-24 rounded-full flex items-center justify-center text-white text-3xl font-bold mb-4 shadow-lg border-4 border-white">
-                {{ viewingEmpresa()!.nombre.charAt(0).toUpperCase() }}
+                class="avatar w-24 h-24 rounded-full flex items-center justify-center text-white text-3xl font-bold mb-4 shadow-lg border-4 border-white overflow-hidden">
+                @if (viewingEmpresa()!.foto) {
+                  <img [src]="environment.storageUrl + '/' + viewingEmpresa()!.foto" alt="Foto del restaurante" class="w-full h-full object-cover">
+                } @else {
+                  {{ viewingEmpresa()!.nombre.charAt(0).toUpperCase() }}
+                }
               </div>
               <h2 class="name text-2xl font-bold mb-1">{{ viewingEmpresa()!.nombre }}</h2>
               <span class="role text-sm font-medium px-3 py-1 rounded-full">{{ viewingEmpresa()!.tipoCocina.nombre ||
@@ -341,7 +348,20 @@
                   }
                   @for (prod of productos(); track prod.id) {
                   <tr class="transition-colors group">
-                    <td class="td-name px-6 py-4 border-b font-bold">{{ prod.nombre }}</td>
+                    <td class="td-name px-6 py-4 border-b font-bold">
+                      <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-md overflow-hidden bg-gray-100 flex-shrink-0 border">
+                          @if (prod.foto) {
+                            <img [src]="environment.storageUrl + '/' + prod.foto" alt="Foto producto" class="w-full h-full object-cover">
+                          } @else {
+                            <div class="w-full h-full flex items-center justify-center opacity-30">
+                              <ion-icon name="fast-food-outline"></ion-icon>
+                            </div>
+                          }
+                        </div>
+                        {{ prod.nombre }}
+                      </div>
+                    </td>
                     <td class="px-6 py-4 border-b text-sm font-semibold">{{ prod.precio | currency:'EUR':'symbol' }}
                     </td>
                     <td class="px-6 py-4 border-b text-sm">
@@ -396,6 +416,28 @@
                   <ion-input label="Nombre del Producto" labelPlacement="stacked" [(ngModel)]="productoForm.nombre"
                     name="nombre" placeholder="Ej. Pizza Margarita" class="font-medium"></ion-input>
                 </ion-item>
+              </div>
+
+              <!-- Sección de Foto del Producto -->
+              <div class="form-group md:col-span-2">
+                <label class="form-label text-xs font-bold uppercase mb-2 block opacity-70">Imagen del Producto</label>
+                <div class="flex items-center gap-4 p-4 border rounded-lg bg-gray-50/50">
+                  <div class="w-20 h-20 rounded-lg overflow-hidden bg-white border-2 border-dashed border-gray-300 flex items-center justify-center">
+                    @if (productFotoPreview()) {
+                      <img [src]="productFotoPreview()" alt="Preview" class="w-full h-full object-cover">
+                    } @else {
+                      <ion-icon name="camera-outline" class="text-2xl opacity-20"></ion-icon>
+                    }
+                  </div>
+                  <div class="flex-1">
+                    <label class="btn-upload inline-flex items-center gap-2 px-4 py-2 border rounded-md cursor-pointer hover:bg-gray-100 transition-colors text-sm font-bold" for="prod-foto-input">
+                      <ion-icon name="camera-outline"></ion-icon>
+                      {{ productFotoPreview() ? 'Cambiar foto' : 'Subir foto' }}
+                    </label>
+                    <input id="prod-foto-input" type="file" accept="image/*" (change)="onProductFotoSelected($event)" hidden>
+                    <p class="text-[10px] opacity-50 mt-1">Formatos: JPG, PNG. Máx 2MB.</p>
+                  </div>
+                </div>
               </div>
 
               <div class="form-group">

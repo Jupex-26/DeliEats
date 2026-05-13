@@ -7,8 +7,10 @@ import org.example.ordersservice.models.Repartidor;
 import org.example.ordersservice.repositories.RepartidorRepository;
 import org.example.ordersservice.services.RepartidorService;
 import org.example.ordersservice.services.RolService;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,7 @@ public class RepartidorServiceImpl implements RepartidorService {
 
     private final RepartidorRepository repartidorRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JdbcTemplate jdbcTemplate;
 
     private final RolService rolService;
     private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$");
@@ -109,7 +112,7 @@ public class RepartidorServiceImpl implements RepartidorService {
 
     @Override
     public void createFromCliente(Cliente cliente) {
-        Repartidor repartidor = Repartidor.builder()
+        /*Repartidor repartidor = Repartidor.builder()
                 .id(cliente.getId())
                 .nombre(cliente.getNombre())
                 .email(cliente.getEmail())
@@ -122,7 +125,12 @@ public class RepartidorServiceImpl implements RepartidorService {
                 .rol(cliente.getRol())
                 .build();
 
-        repartidorRepository.save(repartidor);
+        repartidorRepository.save(repartidor);*/
+        // Definimos el SQL que ataca DIRECTO a la tabla del diagrama
+        String sql = "INSERT INTO repartidor (id, disponible, aprobado) VALUES (?, ?, ?)";
+
+        // Ejecutamos la orden enviando los valores
+        jdbcTemplate.update(sql, cliente.getId(), false, false);
     }
 
     @Override
@@ -130,5 +138,15 @@ public class RepartidorServiceImpl implements RepartidorService {
         Repartidor repartidor = findById(id);
         repartidor.setAprobado(aprobado);
         return repartidorRepository.save(repartidor);
+    }
+
+    @Override
+    public boolean isRepartidor(Long id) {
+        String sql = "SELECT aprobado FROM repartidor WHERE id = ?";
+        try {
+            return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, id));
+        } catch (EmptyResultDataAccessException e) {
+            return false;
+        }
     }
 }

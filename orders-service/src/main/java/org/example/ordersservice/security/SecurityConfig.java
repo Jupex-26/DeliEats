@@ -58,6 +58,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/productos/**", "/empresas/**").hasAnyRole("ADMIN", "EMPRESA")
                         .requestMatchers(HttpMethod.DELETE, "/productos/**", "/empresas/**", "/categorias/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/pedidos/**").hasAnyRole("CLIENTE", "EMPRESA", "ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/pedidos/*/cancelar").hasAnyRole("CLIENTE", "EMPRESA", "ADMIN")
                         // Acceso compartido (Admin y Cliente)
                         // Esta regla ahora cubrirá GET /clientes y cualquier subruta
                         .requestMatchers("/carrito/**",  "/clientes/**").hasAnyRole("ADMIN", "CLIENTE")

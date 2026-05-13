@@ -27,6 +27,7 @@ import { UserService } from '../../services/user/user-service';
 import { RepartidorOutputDto, RepartidorInputDto } from '../../types';
 import { ConfirmModalComponent } from '../../shared/confirm-modal/confirm-modal.component';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-repartidores-admin',
@@ -65,6 +66,7 @@ export class RepartidoresAdminComponent implements OnInit {
   viewingRepartidor = signal<RepartidorOutputDto | null>(null);
   repartidorIdParaEliminar = signal<number | null>(null);
 
+  protected environment = environment;
   repartidorForm: RepartidorInputDto = this.getEmptyRepartidorForm();
 
   private debouncer = new Subject<string>();

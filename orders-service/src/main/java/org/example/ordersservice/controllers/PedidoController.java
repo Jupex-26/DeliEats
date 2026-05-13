@@ -68,6 +68,12 @@ public class PedidoController {
         Pedido updated = pedidoService.updateEstado(id, estadoId);
         return ResponseEntity.ok(pedidoMapper.toDto(updated));
     }
+    
+    @PatchMapping("/{id}/cancelar")
+    public ResponseEntity<PedidoOutputDto> cancelarPedido(@PathVariable Long id) {
+        Pedido updated = pedidoService.cancelarPedido(id);
+        return ResponseEntity.ok(pedidoMapper.toDto(updated));
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
