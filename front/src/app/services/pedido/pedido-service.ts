@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { PedidoInputDto, PedidoOutputDto } from '../../types/pedido';
 
@@ -11,13 +11,19 @@ export class PedidoService {
   private readonly http = inject(HttpClient);
   private readonly urlApi = `${environment.apiUrl}/pedidos`;
 
+  private refreshPedidosSource = new Subject<void>();
+  refreshPedidos$ = this.refreshPedidosSource.asObservable();
+
+  notificarCambio() {
+    this.refreshPedidosSource.next();
+  }
+
   crear(pedido: PedidoInputDto): Observable<PedidoOutputDto> {
     return this.http.post<PedidoOutputDto>(this.urlApi, pedido);
   }
 
-  listar(page: number = 0, size: number = 10, sort?: string): Observable<any> {
-    let params = new HttpParams().set('page', page).set('size', size);
-    if (sort) params = params.set('sort', sort);
+  listar(page: number = 0, size: number = 10, sort: string = 'fechaCompra,desc'): Observable<any> {
+    let params = new HttpParams().set('page', page).set('size', size).set('sort', sort);
     return this.http.get<any>(this.urlApi, { params });
   }
 
@@ -33,8 +39,8 @@ export class PedidoService {
     return this.http.delete<void>(`${this.urlApi}/${id}`);
   }
 
-  listarPorCliente(clienteId: number, page: number = 0, size: number = 10): Observable<any> {
-    let params = new HttpParams().set('page', page).set('size', size);
+  listarPorCliente(clienteId: number, page: number = 0, size: number = 10, sort: string = 'fechaCompra,desc'): Observable<any> {
+    let params = new HttpParams().set('page', page).set('size', size).set('sort', sort);
     return this.http.get<any>(`${this.urlApi}/cliente/${clienteId}`, { params });
   }
 
@@ -54,9 +60,11 @@ export class PedidoService {
     return this.http.patch<PedidoOutputDto>(`${this.urlApi}/${id}/estado/${estadoId}`, {});
   }
 
-  // Cancela el pedido del cliente (estado CANCELADO = ID 5)
+
   cancelar(id: number): Observable<PedidoOutputDto> {
-    return this.http.patch<PedidoOutputDto>(`${this.urlApi}/${id}/cancelar`, {});
+    return this.http.patch<PedidoOutputDto>(`${this.urlApi}/${id}/cancelar`, {}).pipe(
+      tap(() => this.notificarCambio())
+    );
   }
 
   // TODO: Endpoint por definir — GET /api/pedidos/{id}/factura (devuelve PDF como Blob)

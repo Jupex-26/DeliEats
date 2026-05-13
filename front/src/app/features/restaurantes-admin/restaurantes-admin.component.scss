@@ -17,9 +17,26 @@
 .btn-new {
   background-color: $color-bg-base;
   color: $color-primary;
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
   &:hover {
     background-color: $color-bg-alt;
   }
+}
+
+.badge-cocina {
+  background-color: rgba($color-primary, 0.12);
+  color: $color-primary;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid rgba($color-primary, 0.2);
+  display: inline-block;
 }
 
 .table-card {

@@ -13,7 +13,7 @@ public abstract class ClienteMapper {
     @Autowired
     protected RepartidorService repartidorService;
 
-    @Mapping(target = "repartidor", expression = "java(repartidorService.existsById(cliente.getId()))")
+    @Mapping(target = "repartidor", expression = "java(repartidorService.isRepartidor(cliente.getId()))")
     @Mapping(target = "nombreRol", source = "rol.nombre")
     public abstract ClienteOutputDto toDto(Cliente cliente);
 

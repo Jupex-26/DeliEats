@@ -32,6 +32,7 @@ import { ClienteOutputDto, ClienteInputDto } from '../../types';
 import { ConfirmModalComponent } from '../../shared/confirm-modal/confirm-modal.component';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { DatePipe } from '@angular/common';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-clientes-admin',
@@ -70,6 +71,7 @@ export class ClientesAdminComponent implements OnInit {
   editingCliente = signal<ClienteOutputDto | null>(null);
   viewingCliente = signal<ClienteOutputDto | null>(null);
   clienteIdParaEliminar = signal<number | null>(null);
+  protected environment = environment;
 
   private debouncer = new Subject<string>();
   clienteForm: ClienteInputDto = this.getEmptyForm();

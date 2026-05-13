@@ -10,4 +10,6 @@ export interface ClienteInputDto extends UserInputDto {
 
 export interface ClienteOutputDto extends UserOutputDto {
     fechaNacimiento: string;
+    repartidor?: boolean;
 }
+

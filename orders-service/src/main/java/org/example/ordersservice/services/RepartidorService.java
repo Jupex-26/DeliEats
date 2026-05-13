@@ -28,4 +28,6 @@ public interface RepartidorService {
     void createFromCliente(Cliente cliente);
 
     Repartidor aprobarRepartidor(Long id, boolean aprobado);
+
+    boolean isRepartidor(Long id);
 }

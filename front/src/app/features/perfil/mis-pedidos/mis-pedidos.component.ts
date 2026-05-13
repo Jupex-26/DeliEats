@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { IonIcon } from '@ionic/angular/standalone';
@@ -17,6 +17,7 @@ import { PedidoService } from '../../../services/pedido/pedido-service';
 import { AuthService } from '../../../services/auth/auth-service';
 import { PedidoOutputDto } from '../../../types';
 import { EuroPipe } from '../../../pipe/euro.pipe';
+import { Subscription } from 'rxjs';
 
 type EstadoPedido = 'PENDIENTE' | 'PREPARANDO' | 'EN CAMINO' | 'ENTREGADO' | 'CANCELADO';
 
@@ -27,7 +28,7 @@ type EstadoPedido = 'PENDIENTE' | 'PREPARANDO' | 'EN CAMINO' | 'ENTREGADO' | 'CA
   templateUrl: './mis-pedidos.component.html',
   styleUrls: ['./mis-pedidos.component.scss']
 })
-export class MisPedidosComponent implements OnInit {
+export class MisPedidosComponent implements OnInit, OnDestroy {
   private pedidoService = inject(PedidoService);
   private authService = inject(AuthService);
   private router = inject(Router);
@@ -36,6 +37,7 @@ export class MisPedidosComponent implements OnInit {
   loading = signal(true);
   error = signal<string | null>(null);
   descargando = signal<number | null>(null);
+  private refreshSub?: Subscription;
 
   constructor() {
     addIcons({
@@ -52,6 +54,13 @@ export class MisPedidosComponent implements OnInit {
 
   ngOnInit() {
     this.cargarPedidos();
+    this.refreshSub = this.pedidoService.refreshPedidos$.subscribe(() => {
+      this.cargarPedidos();
+    });
+  }
+
+  ngOnDestroy() {
+    this.refreshSub?.unsubscribe();
   }
 
   cargarPedidos() {

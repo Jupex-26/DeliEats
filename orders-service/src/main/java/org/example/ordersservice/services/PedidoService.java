@@ -23,8 +23,9 @@ public interface PedidoService {
     Pedido update(Long id, Pedido pedido);
 
     Pedido updateEstado(Long id, Long estadoId);
+    
+    Pedido cancelarPedido(Long id);
 
     void deleteById(Long id);
 
-    BigDecimal calculateTotal(Long id);
 }

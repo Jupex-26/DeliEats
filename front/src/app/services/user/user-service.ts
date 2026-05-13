@@ -46,6 +46,6 @@ export class UserService {
   }
 
   aprobarRepartidor(id: number, aprobado: boolean): Observable<void> {
-    return this.http.patch<void>(`${environment.apiUrl}/repartidores/${id}/aprobar?aprobado=${aprobado}`, {});
+    return this.http.patch<void>(`${this.urlApi}/repartidores/${id}/aprobar?aprobado=${aprobado}`, {});
   }
 }
