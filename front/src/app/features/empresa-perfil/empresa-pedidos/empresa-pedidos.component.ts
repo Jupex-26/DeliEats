@@ -17,8 +17,9 @@ import {
   cartOutline
 } from 'ionicons/icons';
 import { PedidoService } from '../../../services/pedido/pedido-service';
+import { EstadoService } from '../../../services/estado/estado-service';
 import { EuroPipe } from '../../../pipe/euro.pipe';
-import { PedidoOutputDto } from '../../../types';
+import { PedidoOutputDto, EstadoOutputDto } from '../../../types';
 
 export type PedidoFiltro = 'recientes' | 'mes' | 'mayor-importe';
 
@@ -33,6 +34,7 @@ export class EmpresaPedidosComponent implements OnInit {
   @Input({ required: true }) empresaId!: number;
 
   private pedidoService = inject(PedidoService);
+  private estadoService = inject(EstadoService);
 
   pedidos     = signal<PedidoOutputDto[]>([]);
   loading     = signal(true);
@@ -44,6 +46,10 @@ export class EmpresaPedidosComponent implements OnInit {
   filtroActivo = signal<PedidoFiltro>('recientes');
   pedidoDetalle = signal<PedidoOutputDto | null>(null);
 
+  // --- Estados de Pedidos ---
+  estadosList = signal<EstadoOutputDto[]>([]);
+  actualizandoEstadoId = signal<number | null>(null);
+
   constructor() {
     addIcons({
       chevronBackOutline, chevronForwardOutline, receiptOutline,
@@ -52,7 +58,16 @@ export class EmpresaPedidosComponent implements OnInit {
     });
   }
 
-  ngOnInit() { this.cargarPedidos(); }
+  ngOnInit() {
+    this.cargarPedidos();
+    this.cargarEstados();
+  }
+
+  cargarEstados() {
+    this.estadoService.listar(0, 100).subscribe({
+      next: (res) => this.estadosList.set(res.content || [])
+    });
+  }
 
   // Mapea el filtro visual al parámetro `sort` de Pageable
   private getSortParam(): string {
@@ -103,6 +118,28 @@ export class EmpresaPedidosComponent implements OnInit {
 
   cerrarDetalle() { this.pedidoDetalle.set(null); }
 
+  actualizarEstado(pedidoId: number, event: any) {
+    const nuevoEstadoId = Number(event.target.value);
+    if (!nuevoEstadoId || isNaN(nuevoEstadoId)) return;
+
+    this.actualizandoEstadoId.set(pedidoId);
+    this.pedidoService.actualizarEstado(pedidoId, nuevoEstadoId).subscribe({
+      next: () => {
+        this.actualizandoEstadoId.set(null);
+        this.cargarPedidos();
+      },
+      error: () => {
+        this.actualizandoEstadoId.set(null);
+        this.cargarPedidos();
+      }
+    });
+  }
+
+  isPedidoFinalizado(estadoNombre: string): boolean {
+    const e = estadoNombre?.toLowerCase() ?? '';
+    return e.includes('entregado') || e.includes('cancelado');
+  }
+
   getEstadoClass(estado: string): string {
     const e = estado?.toLowerCase() ?? '';
     if (e.includes('pendiente'))  return 'estado--pendiente';
@@ -113,3 +150,4 @@ export class EmpresaPedidosComponent implements OnInit {
     return '';
   }
 }
+

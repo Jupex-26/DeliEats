@@ -5,6 +5,8 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Entity
@@ -57,5 +59,25 @@ public class Empresa extends User {
 
     public boolean hasAperturas() {
         return !CollectionUtils.isEmpty(this.aperturas);
+    }
+
+    public boolean isNotOpen() {
+        if (!hasAperturas()) {
+            return true;
+        }
+
+        LocalDateTime ahora = LocalDateTime.now();
+        Dia hoy = Dia.from(ahora.getDayOfWeek());
+        LocalTime horaActual = ahora.toLocalTime();
+
+        boolean estaAbierta = this.aperturas.stream()
+                .filter(a -> a.getDia() == hoy)
+                .anyMatch(a -> {
+                    boolean despuesOIgualApertura = !horaActual.isBefore(a.getHoraApertura());
+                    boolean antesOIgualCierre = !horaActual.isAfter(a.getHoraCierre());
+                    return despuesOIgualApertura && antesOIgualCierre;
+                });
+
+        return !estaAbierta;
     }
 }

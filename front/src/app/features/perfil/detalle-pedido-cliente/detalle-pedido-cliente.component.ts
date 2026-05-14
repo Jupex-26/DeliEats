@@ -17,7 +17,8 @@ import {
   checkmarkCircleOutline,
   downloadOutline,
   alertCircleOutline,
-  receiptOutline
+  receiptOutline,
+  chatbubblesOutline
 } from 'ionicons/icons';
 import { Subscription } from 'rxjs';
 import * as L from 'leaflet';
@@ -25,6 +26,7 @@ import { PedidoService } from '../../../services/pedido/pedido-service';
 import { TrackingService } from '../../../services/tracking/tracking-service';
 import { PedidoOutputDto } from '../../../types';
 import { EuroPipe } from '../../../pipe/euro.pipe';
+import { ChatModalComponent } from '../../../shared/chat-modal/chat-modal.component';
 
 // Fix Leaflet default icon paths for Angular bundling
 const iconDefault = L.icon({
@@ -46,7 +48,7 @@ const repartidorIcon = L.icon({
 @Component({
   selector: 'app-detalle-pedido-cliente',
   standalone: true,
-  imports: [CommonModule, IonContent, IonIcon, EuroPipe],
+  imports: [CommonModule, IonContent, IonIcon, EuroPipe, ChatModalComponent],
   templateUrl: './detalle-pedido-cliente.component.html',
   styleUrls: ['./detalle-pedido-cliente.component.scss']
 })
@@ -65,6 +67,11 @@ export class DetallePedidoClienteComponent implements OnInit, AfterViewInit, OnD
   errorCancelar = signal<string | null>(null);
   exitoCancelar = signal(false);
 
+  // --- Chat ---
+  isChatOpen = signal(false);
+  chatReceptorId = signal<number | null>(null);
+  chatReceptorNombre = signal<string>('');
+
   private map?: L.Map;
   private repartidorMarker?: L.Marker;
   private trackingSub?: Subscription;
@@ -74,7 +81,7 @@ export class DetallePedidoClienteComponent implements OnInit, AfterViewInit, OnD
       arrowBackOutline, personOutline, locationOutline,
       closeCircleOutline, bicycleOutline, timeOutline,
       refreshOutline, checkmarkCircleOutline, downloadOutline,
-      alertCircleOutline, receiptOutline
+      alertCircleOutline, receiptOutline, chatbubblesOutline
     });
   }
 
@@ -209,5 +216,14 @@ export class DetallePedidoClienteComponent implements OnInit, AfterViewInit, OnD
 
   volver() {
     this.router.navigate(['/perfil']);
+  }
+
+  abrirChatRepartidor() {
+    const p = this.pedido();
+    if (p?.repartidorId) {
+      this.chatReceptorId.set(p.repartidorId);
+      this.chatReceptorNombre.set(p.nombreRepartidor || 'Repartidor');
+      this.isChatOpen.set(true);
+    }
   }
 }

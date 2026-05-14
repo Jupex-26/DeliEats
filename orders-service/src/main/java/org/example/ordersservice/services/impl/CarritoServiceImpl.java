@@ -4,14 +4,13 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.exception.custom.NotFoundException;
 import org.example.ordersservice.exception.custom.QuantityExceedsException;
+import org.example.ordersservice.exception.custom.UnauthorizedException;
 import org.example.ordersservice.models.Carrito;
 import org.example.ordersservice.models.Cliente;
+import org.example.ordersservice.models.Empresa;
 import org.example.ordersservice.models.Producto;
 import org.example.ordersservice.repositories.CarritoRepository;
-import org.example.ordersservice.services.CarritoService;
-import org.example.ordersservice.services.ClienteService;
-import org.example.ordersservice.services.DetalleCarritoService;
-import org.example.ordersservice.services.ProductoService;
+import org.example.ordersservice.services.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,6 +24,7 @@ public class CarritoServiceImpl implements CarritoService {
     private final ProductoService productoService;
     private final DetalleCarritoService detalleCarritoService;
     private final ClienteService clienteService;
+    private final EmpresaService empresaService;
 
     @Override
     public Page<Carrito> findAll(Pageable pageable) {
@@ -47,6 +47,11 @@ public class CarritoServiceImpl implements CarritoService {
     public Carrito create(Carrito carrito) {
         Cliente cliente = clienteService.findById(carrito.getCliente().getId());
 
+        Empresa empresa = empresaService.findById(carrito.getEmpresaId());
+
+        if (empresa.isNotOpen()){
+            throw new UnauthorizedException("No puede agregar un producto de una empresa cerrada");
+        }
         carrito.setCliente(cliente);
 
         carrito.getDetalles().forEach(d -> d.setCarrito(carrito));

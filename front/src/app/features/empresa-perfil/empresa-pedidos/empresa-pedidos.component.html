@@ -70,6 +70,27 @@
         </div>
       </div>
 
+      <!-- Sección de Estado Editable para Empresa -->
+      <div class="pedido-estado-edit">
+        <span class="label-est">Estado:</span>
+        @if (!isPedidoFinalizado(pedido.estadoNombre)) {
+          <div class="select-estado-wrapper">
+            <select (change)="actualizarEstado(pedido.id, $event)"
+                    [disabled]="actualizandoEstadoId() === pedido.id"
+                    class="select-estado">
+              @for (estado of estadosList(); track estado.id) {
+                <option [value]="estado.id" [selected]="estado.nombre === pedido.estadoNombre">{{ estado.nombre }}</option>
+              }
+            </select>
+            @if (actualizandoEstadoId() === pedido.id) {
+              <div class="spinner-xs text-primary"></div>
+            }
+          </div>
+        } @else {
+          <span class="estado-locked">No modificable</span>
+        }
+      </div>
+
       <div class="pedido-footer">
         <span class="productos-count">{{ pedido.detalles.length || 0 }} productos</span>
         <button class="btn-ver" (click)="abrirDetalle(pedido)">

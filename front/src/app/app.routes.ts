@@ -57,7 +57,7 @@ export const routes: Routes = [
         path: 'perfil',
         loadComponent: () => import('./features/perfil/perfil.component').then(m => m.PerfilComponent),
         canActivate: [roleGuard],
-        data: { role: ['ROLE_CLIENTE'] }
+        data: { role: ['ROLE_CLIENTE', 'ROLE_REPARTIDOR'] }
       },
       {
         path: 'empresa-perfil',

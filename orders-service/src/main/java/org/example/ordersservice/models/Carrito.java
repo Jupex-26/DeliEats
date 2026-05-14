@@ -80,4 +80,8 @@ public class Carrito {
     public boolean hasNotDetalles() {
         return CollectionUtils.isEmpty(this.detalles);
     }
+
+    public Long getEmpresaId() {
+        return detalles.getFirst().getProducto().getEmpresa().getId();
+    }
 }
