@@ -49,6 +49,12 @@
                 <p class="repartidor-hint">Se asignará cuando el pedido esté en camino</p>
               }
             </div>
+            @if (pedido()!.repartidorId) {
+              <button (click)="abrirChatRepartidor()" class="btn-chat-repartidor">
+                <ion-icon name="chatbubbles-outline"></ion-icon>
+                Chat
+              </button>
+            }
           </div>
         </section>
 
@@ -161,4 +167,16 @@
     }
 
   </div>
+
+  <!-- Modal de Chat en Tiempo Real -->
+  @if (isChatOpen() && pedido() && chatReceptorId()) {
+    @defer (on immediate) {
+      <app-chat-modal [isOpen]="isChatOpen()"
+                      [pedidoId]="pedido()!.id"
+                      [receptorId]="chatReceptorId()!"
+                      [receptorNombre]="chatReceptorNombre()"
+                      (closed)="isChatOpen.set(false)">
+      </app-chat-modal>
+    }
+  }
 </ion-content>

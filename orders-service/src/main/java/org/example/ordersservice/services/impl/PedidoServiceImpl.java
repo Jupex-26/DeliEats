@@ -2,6 +2,7 @@ package org.example.ordersservice.services.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.exception.custom.NotFoundException;
+import org.example.ordersservice.exception.custom.UnauthorizedException;
 import org.example.ordersservice.models.Cliente;
 import org.example.ordersservice.models.Empresa;
 import org.example.ordersservice.models.Estado;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -106,6 +108,9 @@ public class PedidoServiceImpl implements PedidoService {
         }
 
         if (pedido.hasRepartidor()) {
+            if (Objects.equals(pedido.getRepartidor().getId(), pedido.getCliente().getId())) {
+                throw new UnauthorizedException("No puede asignarse el mismo repartidor que cliente");
+            }
             pedido.setRepartidor(repartidorService.findById(pedido.getRepartidor().getId()));
         } else {
             pedido.setRepartidor(null);

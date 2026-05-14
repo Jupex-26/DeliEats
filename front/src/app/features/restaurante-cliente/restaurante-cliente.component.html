@@ -169,7 +169,7 @@
             <span class="product-price">{{ producto.precio | euro }}</span>
 
             <button class="btn-add-cart" [class.added]="addedProductId() === producto.id"
-              [disabled]="addingProductId() === producto.id || producto.cantidad === 0 || (cantidadesEnCarrito().get(producto.id) || 0) >= producto.cantidad || loadingCarrito()"
+              [disabled]="!estaAbierto() || addingProductId() === producto.id || producto.cantidad === 0 || (cantidadesEnCarrito().get(producto.id) || 0) >= producto.cantidad || loadingCarrito()"
               (click)="agregarAlCarrito(producto)">
               @if (addedProductId() === producto.id) {
               <ion-icon name="checkmark-circle-outline"></ion-icon>
@@ -209,7 +209,7 @@
           <span class="price-label">Total</span>
           <span class="total-price">{{ carrito()?.precioTotal | euro }}</span>
         </div>
-        <button class="btn-checkout-bar">
+        <button class="btn-checkout-bar" (click)="goToCheckout($event)">
           Ver pedido
           <ion-icon name="arrow-forward-outline"></ion-icon>
         </button>
@@ -218,4 +218,11 @@
   </div>
   }
 
+  <!-- Modal de Aviso al Salir -->
+  <app-info-modal [isOpen]="showExitWarningModal()"
+                  title="Aviso de Carrito"
+                  message="Si sales se vaciará el carrito"
+                  type="info"
+                  (modalClosed)="confirmarSalida()">
+  </app-info-modal>
 </ion-content>

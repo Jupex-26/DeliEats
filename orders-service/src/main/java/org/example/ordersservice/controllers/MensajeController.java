@@ -7,6 +7,7 @@ import org.example.ordersservice.dtos.mensaje.MensajeOutputDto;
 import org.example.ordersservice.models.Mensaje;
 import org.example.ordersservice.mappers.MensajeMapper;
 import org.example.ordersservice.services.MensajeService;
+import org.example.ordersservice.services.MensajeProducerService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -21,12 +22,17 @@ public class MensajeController {
 
     private final MensajeService mensajeService;
     private final MensajeMapper mensajeMapper;
+    private final MensajeProducerService mensajeProducerService;
 
     @PostMapping
     public ResponseEntity<MensajeOutputDto> create(@Valid @RequestBody MensajeInputDto dto) {
         Mensaje entity = mensajeMapper.toEntity(dto);
         Mensaje saved = mensajeService.save(entity);
-        return new ResponseEntity<>(mensajeMapper.toDto(saved), HttpStatus.CREATED);
+        MensajeOutputDto outputDto = mensajeMapper.toDto(saved);
+
+        mensajeProducerService.sendMessage(outputDto);
+        
+        return new ResponseEntity<>(outputDto, HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -46,11 +52,5 @@ public class MensajeController {
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         mensajeService.deleteById(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @PatchMapping("/{id}/leer")
-    public ResponseEntity<Void> markAsRead(@PathVariable Long id) {
-        mensajeService.markAsRead(id);
-        return ResponseEntity.ok().build();
     }
 }

@@ -1,0 +1,76 @@
+================================================================================
+TODO: IMPLEMENTACIÓN DE CHAT EN VIVO Y UBICACIÓN VÍA WEBSOCKETS (SOCKET.IO)
+================================================================================
+
+Para habilitar la mensajería en tiempo real y la transmisión de coordenadas GPS 
+entre el Repartidor y el Cliente, se debe seguir la siguiente arquitectura 
+en el frontend de Angular:
+
+1. INSTALACIÓN DE DEPENDENCIAS
+--------------------------------------------------------------------------------
+Ejecutar en la raíz del frontend:
+  npm install @stomp/stompjs sockjs-client
+  npm install -D @types/sockjs-client
+
+
+2. CREACIÓN DEL SERVICIO WEBSOCKET (IMPLEMENTADO)
+--------------------------------------------------------------------------------
+Ruta: src/app/services/websocket/websocket-service.ts
+
+Código implementado:
+
+import { Injectable } from '@angular/core';
+import { Client } from '@stomp/stompjs';
+import * as SockJS from 'sockjs-client';
+import { Subject } from 'rxjs';
+import { environment } from '../../../environments/environment';
+
+@Injectable({ providedIn: 'root' })
+export class WebSocketService {
+  private stompClient!: Client;
+  private mensajeSubject = new Subject<any>();
+  public mensajeObservable = this.mensajeSubject.asObservable();
+
+  conectar(miUsuarioId: number) {
+    this.stompClient = new Client({
+      webSocketFactory: () => new SockJS(`${environment.apiUrl}/ws-chat`),
+      reconnectDelay: 5000,
+    });
+
+    this.stompClient.onConnect = () => {
+      this.stompClient.subscribe(`/topic/mensajes/${miUsuarioId}`, (mensaje) => {
+        if (mensaje.body) {
+          this.mensajeSubject.next(JSON.parse(mensaje.body));
+        }
+      });
+    };
+    this.stompClient.activate();
+  }
+
+  enviarMensaje(destinoId: number, mensaje: any) {
+    this.stompClient.publish({
+      destination: `/app/chat/${destinoId}`,
+      body: JSON.stringify(mensaje),
+    });
+  }
+
+  desconectar() {
+    this.stompClient?.deactivate();
+  }
+}
+
+
+
+3. INTEGRACIÓN EN LA VISTA DEL REPARTIDOR Y DEL CLIENTE
+--------------------------------------------------------------------------------
+- Inyectar `SocketService` en los componentes donde se despliegue el mapa o el chat.
+- Al abrir el chat/mapa, invocar `socketService.connect(authService.getToken())` y `socketService.joinPedidoRoom(pedido.id)`.
+- Para emitir la ubicación periódicamente, utilizar la API nativa de geolocalización del navegador mediante un intervalo o suscripción a `navigator.geolocation.watchPosition`:
+
+  navigator.geolocation.watchPosition((pos) => {
+    socketService.emitirUbicacion(
+      pedidoId, 
+      pos.coords.latitude, 
+      pos.coords.longitude
+    );
+  });

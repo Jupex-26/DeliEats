@@ -41,6 +41,6 @@ describe('PerfilEdicionComponent', () => {
     });
     
     fixture.detectChanges();
-    expect(component.form).toBeDefined();
+    expect(component.passwordForm).toBeDefined();
   });
 });

@@ -13,5 +13,7 @@ public class MensajeInputDto {
     @NotNull(message = "Debes indicar el receptor del mensaje")
     private Long receptorId;
 
-    // Nota: El emisorId NO se pide aquí, se extrae del JWT en el backend por seguridad.
+    @NotNull(message = "Debes indicar el emisor del mensaje")
+    private Long emisorId;
+
 }

@@ -212,6 +212,33 @@ ion-content {
   margin: 0;
 }
 
+.btn-chat-repartidor {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 12px;
+  background: rgba($color-primary, 0.1);
+  color: $color-primary;
+  border: 1px solid rgba($color-primary, 0.2);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-left: auto;
+
+  &:hover {
+    background: $color-primary;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba($color-primary, 0.2);
+  }
+
+  ion-icon {
+    font-size: 18px;
+  }
+}
+
 // Mapa card
 .mapa-card {
   .mapa-hint {

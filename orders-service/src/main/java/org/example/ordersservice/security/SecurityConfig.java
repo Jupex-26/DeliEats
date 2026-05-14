@@ -35,12 +35,13 @@ public class SecurityConfig {
                     corsConfiguration.addAllowedOrigin("http://www.delieats.com");
                     corsConfiguration.addAllowedHeader("*");
                     corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+                    corsConfiguration.setAllowCredentials(true);
                     return corsConfiguration;
                 }))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/auth/**", "/uploads/**", "/error").permitAll() // ¡No olvides /error!
+                        .requestMatchers("/auth/**", "/uploads/**", "/error", "/ws-chat/**").permitAll() // ¡Permitir WS!
 
                         // Reglas de ADMIN
                         .requestMatchers("/admin/**").hasRole("ADMIN")
@@ -57,11 +58,15 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/productos/**", "/empresas/**", "/categorias/**").hasAnyRole("ADMIN", "EMPRESA")
                         .requestMatchers(HttpMethod.PUT, "/productos/**", "/empresas/**").hasAnyRole("ADMIN", "EMPRESA")
                         .requestMatchers(HttpMethod.DELETE, "/productos/**", "/empresas/**", "/categorias/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/pedidos/**").hasAnyRole("CLIENTE", "EMPRESA", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/pedidos/**").hasAnyRole("CLIENTE", "EMPRESA", "ADMIN", "REPARTIDOR")
                         .requestMatchers(HttpMethod.PATCH, "/pedidos/*/cancelar").hasAnyRole("CLIENTE", "EMPRESA", "ADMIN")
+                        
+                        // Mensajes (Solo Cliente y Repartidor)
+                        .requestMatchers("/mensajes/**").hasAnyRole("CLIENTE", "REPARTIDOR")
+
                         // Acceso compartido (Admin y Cliente)
                         // Esta regla ahora cubrirá GET /clientes y cualquier subruta
-                        .requestMatchers("/carrito/**",  "/clientes/**").hasAnyRole("ADMIN", "CLIENTE")
+                        .requestMatchers("/carrito/**",  "/clientes/**").hasAnyRole("ADMIN", "CLIENTE", "REPARTIDOR")
 
                         .anyRequest().authenticated()
                 )

@@ -21,4 +21,6 @@ public interface MensajeService {
     Long countUnreadByReceptorId(Long receptorId);
 
     void markAsRead(Long id);
+    
+    void validateUsersRole(Long emisorId, Long receptorId);
 }

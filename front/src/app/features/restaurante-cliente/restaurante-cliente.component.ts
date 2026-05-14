@@ -24,6 +24,7 @@ import { CarritoComponent } from '../../shared/carrito/carrito.component';
 import { HoraPipe } from '../../pipe/hora.pipe';
 import { AperturaHoyPipe } from '../../pipe/apertura-hoy.pipe';
 import { EuroPipe } from '../../pipe/euro.pipe';
+import { InfoModalComponent } from '../../shared/info-modal/info-modal.component';
 import { EmpresaOutputDto, ProductoOutputDto, CarritoOutputDto } from '../../types';
 
 import { environment } from '../../../environments/environment';
@@ -31,7 +32,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-restaurante-cliente',
   standalone: true,
-  imports: [CommonModule, IonContent, IonIcon, EuroPipe, CarritoComponent, HoraPipe, AperturaHoyPipe],
+  imports: [CommonModule, IonContent, IonIcon, EuroPipe, CarritoComponent, HoraPipe, AperturaHoyPipe, InfoModalComponent],
   templateUrl: './restaurante-cliente.component.html',
   styleUrls: ['./restaurante-cliente.component.scss']
 })
@@ -56,6 +57,7 @@ export class RestauranteClienteComponent implements OnInit {
   addingProductId = signal<number | null>(null);
   addedProductId = signal<number | null>(null);
   showAllHorarios = signal(false);
+  showExitWarningModal = signal(false);
 
   /** Nombre del día actual en MAYÚSCULAS y SIN ACENTOS (formato back) */
   readonly diaHoy = (() => {
@@ -83,6 +85,28 @@ export class RestauranteClienteComponent implements OnInit {
       mapa.set(d.productoId, d.cantidad);
     });
     return mapa;
+  });
+
+  /** Señal computada para saber si el restaurante está abierto actualmente */
+  estaAbierto = computed(() => {
+    const e = this.empresa();
+    if (!e?.aperturas || e.aperturas.length === 0) return false;
+
+    const ahora = new Date();
+    const diasSemana = ['DOMINGO', 'LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO'];
+    const diaActual = diasSemana[ahora.getDay()];
+    const horaActualMin = ahora.getHours() * 60 + ahora.getMinutes();
+
+    const aperturaHoy = e.aperturas.find(a => a.dia === diaActual);
+    if (!aperturaHoy) return false;
+
+    const [hA, mA] = aperturaHoy.horaApertura.split(':').map(Number);
+    const [hC, mC] = aperturaHoy.horaCierre.split(':').map(Number);
+
+    const minApertura = hA * 60 + mA;
+    const minCierre = hC * 60 + mC;
+
+    return horaActualMin >= minApertura && horaActualMin <= minCierre;
   });
 
   constructor() {
@@ -120,6 +144,7 @@ export class RestauranteClienteComponent implements OnInit {
         this.productos.set(e.productos || []);
         this.loadingEmpresa.set(false);
         this.loadingProductos.set(false);
+        this.cargarCarritoUsuario();
       },
       error: () => {
         this.loadingEmpresa.set(false);
@@ -136,7 +161,13 @@ export class RestauranteClienteComponent implements OnInit {
     const clienteId = user.userOutputDto.id;
     this.carritoService.obtenerPorUsuario(clienteId).subscribe({
       next: (c) => {
-        this.carritoId.set(c.id);
+        if (this.empresa() && c.empresaId !== this.empresa()?.id) {
+          this.carritoService.eliminar(c.id).subscribe(() => {
+            this.carritoId.set(null);
+          });
+        } else {
+          this.carritoId.set(c.id);
+        }
       },
       error: () => {
         // No tiene carrito activo, es normal
@@ -226,6 +257,31 @@ export class RestauranteClienteComponent implements OnInit {
   }
 
   volver() {
+    if (this.totalProductosCarrito() > 0 && this.carritoId()) {
+      this.showExitWarningModal.set(true);
+    } else {
+      this.ejecutarSalida();
+    }
+  }
+
+  confirmarSalida() {
+    this.showExitWarningModal.set(false);
+    if (this.carritoId()) {
+      this.carritoService.eliminar(this.carritoId()!).subscribe({
+        next: () => this.ejecutarSalida(),
+        error: () => this.ejecutarSalida()
+      });
+    } else {
+      this.ejecutarSalida();
+    }
+  }
+
+  private ejecutarSalida() {
     this.router.navigate(['/restaurantes']);
+  }
+
+  goToCheckout(event: Event) {
+    event.stopPropagation();
+    this.router.navigate(['/checkout']);
   }
 }

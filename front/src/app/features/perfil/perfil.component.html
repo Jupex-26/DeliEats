@@ -71,7 +71,7 @@
     <!-- Tab: Modo Repartidor -->
     @if (activeTab() === 'repartidor') {
     <section class="tab-content repartidor-mode">
-      <div class="mode-card bg-white rounded-2xl shadow-sm border p-6 max-w-xl mx-auto mt-4 text-center">
+      <div class="mode-card bg-white rounded-2xl shadow-sm border p-6 max-w-2xl mx-auto mt-4 text-center">
         <div class="icon-header w-16 h-16 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4 text-3xl">
           <ion-icon name="bicycle-outline"></ion-icon>
         </div>
@@ -96,6 +96,125 @@
               <ion-toggle [checked]="repartidor()!.disponible" (ionChange)="toggleDisponibilidad($event)" class="deli-toggle"></ion-toggle>
             </div>
           </div>
+
+          <!-- Listado de Pedidos Entrantes para el Repartidor Disponible -->
+          @if (repartidor()!.disponible) {
+            <div class="pedidos-repartidor-section mt-10 pt-8 border-t text-left">
+              <div class="flex items-center justify-between mb-6">
+                <div>
+                  <h3 class="text-lg font-bold text-main m-0 flex items-center gap-2">
+                    Pedidos Activos
+                    <span class="text-xs px-2.5 py-0.5 bg-primary/10 text-primary rounded-full font-bold">
+                      {{ pedidosDisponibles().length }}
+                    </span>
+                  </h3>
+                  <p class="text-xs text-gray-400 m-0 mt-1">Pedidos de restaurantes listos para ser recogidos o entregados</p>
+                </div>
+                <button (click)="cargarPedidosRepartidor()" [disabled]="loadingPedidos()"
+                        class="btn-refresh p-2 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 transition cursor-pointer text-gray-600 flex items-center justify-center">
+                  <ion-icon name="refresh-outline" [class.animate-spin]="loadingPedidos()"></ion-icon>
+                </button>
+              </div>
+
+              @if (loadingPedidos()) {
+                <div class="flex flex-col items-center justify-center py-12">
+                  <div class="spinner-sm mb-3"></div>
+                  <span class="text-xs text-gray-400">Buscando pedidos disponibles...</span>
+                </div>
+              } @else if (pedidosDisponibles().length > 0) {
+                <div class="grid grid-cols-1 gap-4">
+                  @for (pedido of pedidosDisponibles(); track pedido.id) {
+                    <div class="pedido-driver-card bg-base border rounded-xl p-5 shadow-sm transition-all hover:shadow-md relative overflow-hidden">
+                      <div class="flex items-start justify-between gap-3 mb-3 pb-3 border-b border-gray-100">
+                        <div>
+                          <span class="text-xs font-bold text-primary block uppercase tracking-wider">{{ pedido.nombreEmpresa }}</span>
+                          <span class="text-sm font-semibold text-main block mt-0.5">Cliente: {{ pedido.nombreCliente }}</span>
+                        </div>
+                        <span class="text-xs font-bold px-2.5 py-1 rounded-full border text-right inline-block" [class]="getEstadoColor(pedido.estadoNombre)">
+                          {{ pedido.estadoNombre }}
+                        </span>
+                      </div>
+
+                      <div class="space-y-1.5 text-xs text-gray-600 mb-4">
+                        <div class="flex items-center gap-2">
+                          <strong class="text-gray-400 min-w-[65px]">Fecha:</strong>
+                          <span>{{ pedido.fechaCompra | date:'short' }}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                          <strong class="text-gray-400 min-w-[65px]">Total:</strong>
+                          <span class="font-bold text-main">{{ pedido.precioTotal | euro }}</span>
+                        </div>
+                        @if (pedido.direccionEntrega) {
+                          <div class="flex items-start gap-2 pt-1">
+                            <strong class="text-gray-400 min-w-[65px]">Entrega en:</strong>
+                            <span class="font-medium text-main">{{ pedido.direccionEntrega }}</span>
+                          </div>
+                        }
+                      </div>
+
+                      <!-- Acciones según estado de asignación -->
+                      <div class="pt-3 border-t border-gray-100 flex items-center justify-end gap-2">
+                        @if (!pedido.repartidorId) {
+                          <button (click)="asignarRepartidor(pedido)" [disabled]="asignandoPedidoId() === pedido.id"
+                                  class="btn-asignar w-full sm:w-auto px-4 py-2 rounded-xl font-bold text-xs text-white shadow-sm cursor-pointer flex items-center justify-center gap-2">
+                            @if (asignandoPedidoId() === pedido.id) {
+                              <div class="spinner-xs"></div>
+                              <span>Asignando...</span>
+                            } @else {
+                              <ion-icon name="bicycle-outline" class="text-sm"></ion-icon>
+                              <span>Asignarme este pedido</span>
+                            }
+                          </button>
+                        } @else {
+                          <!-- El pedido ya es de este repartidor, permitir marcar como entregado y acceder a chat/ubicación -->
+                          <div class="w-full flex flex-col gap-2.5">
+                            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-primary/5 p-3 rounded-xl border border-primary/15">
+                              <span class="text-xs font-bold text-primary flex items-center gap-1.5">
+                                <ion-icon name="checkmark-circle-outline" class="text-base"></ion-icon>
+                                Asignado a ti
+                              </span>
+                              
+                              <!-- Botón exclusivo para pasar a ENTREGADO -->
+                              <button (click)="marcarComoEntregado(pedido.id)"
+                                      [disabled]="actualizandoEstadoPedidoId() === pedido.id"
+                                      class="px-4 py-2 rounded-xl bg-green-600 hover:bg-green-700 text-white font-bold text-xs shadow-sm transition-all border-none cursor-pointer flex items-center justify-center gap-2">
+                                @if (actualizandoEstadoPedidoId() === pedido.id) {
+                                  <div class="spinner-xs"></div>
+                                  <span>Actualizando...</span>
+                                } @else {
+                                  <ion-icon name="checkmark-circle-outline" class="text-sm"></ion-icon>
+                                  <span>Marcar como Entregado</span>
+                                }
+                              </button>
+                            </div>
+
+                            <!-- Botonera Chat y Ubicación en vivo con alto contraste -->
+                            <div class="grid grid-cols-2 gap-2 pt-1">
+                              <button (click)="abrirChatCliente(pedido)"
+                                      class="px-3 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 border border-gray-300 text-xs font-bold text-gray-800 flex items-center justify-center gap-1.5 transition-all shadow-2xs cursor-pointer">
+                                <ion-icon name="chatbubbles-outline" class="text-primary text-base"></ion-icon>
+                                <span>Chat Cliente</span>
+                              </button>
+                              <button (click)="enviarUbicacionLive(pedido)"
+                                      class="px-3 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 border border-gray-300 text-xs font-bold text-gray-800 flex items-center justify-center gap-1.5 transition-all shadow-2xs cursor-pointer">
+                                <ion-icon name="location-outline" class="text-primary text-base"></ion-icon>
+                                <span>Enviar Ubicación</span>
+                              </button>
+                            </div>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+              } @else {
+                <div class="p-8 text-center bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                  <ion-icon name="receipt-outline" class="text-3xl text-gray-300 mb-2"></ion-icon>
+                  <p class="text-xs text-gray-400 m-0 font-medium">No hay pedidos pendientes de entrega en este momento.</p>
+                </div>
+              }
+            </div>
+          }
         } @else {
           <div class="p-4 text-sm text-red-500">
             No se pudo cargar la información de repartidor.
@@ -116,4 +235,24 @@
     }
 
   </div>
+
+  <!-- Modal de Éxito de Entrega -->
+  <app-info-modal [isOpen]="isSuccessModalOpen()"
+                  title="Entrega Completada"
+                  [message]="successModalMessage()"
+                  type="success"
+                  (modalClosed)="isSuccessModalOpen.set(false)">
+  </app-info-modal>
+
+  <!-- Modal de Chat en Tiempo Real (Carga diferida) -->
+  @if (isChatOpen() && chatPedidoId() && chatReceptorId()) {
+    @defer (on immediate) {
+      <app-chat-modal [isOpen]="isChatOpen()"
+                      [pedidoId]="chatPedidoId()!"
+                      [receptorId]="chatReceptorId()!"
+                      [receptorNombre]="chatReceptorNombre()"
+                      (closed)="isChatOpen.set(false)">
+      </app-chat-modal>
+    }
+  }
 </ion-content>

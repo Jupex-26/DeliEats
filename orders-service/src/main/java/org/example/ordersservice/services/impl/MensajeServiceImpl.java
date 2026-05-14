@@ -1,22 +1,42 @@
 package org.example.ordersservice.services.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.example.ordersservice.exception.custom.ConflictException;
 import org.example.ordersservice.exception.custom.NotFoundException;
 import org.example.ordersservice.models.Mensaje;
+import org.example.ordersservice.models.User;
 import org.example.ordersservice.repositories.MensajeRepository;
 import org.example.ordersservice.services.MensajeService;
+import org.example.ordersservice.services.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
 public class MensajeServiceImpl implements MensajeService {
 
     private final MensajeRepository mensajeRepository;
+    private final UserService userService;
 
     @Override
     public Mensaje save(Mensaje mensaje) {
+        // En MapStruct si mapeamos ID pero la entidad entera es null porque no se ha consultado 
+        // necesitamos setear correctamente los objetos. Aquí asumimos que el Mapper sí 
+        // creó las instancias con los IDs, así que validamos:
+        validateUsersRole(mensaje.getEmisor().getId(), mensaje.getReceptor().getId());
+        
+        // Ahora asignamos las entidades completas recuperadas de BD, 
+        // esto evita problemas de Null Constraints por intentar insertar con objetos proxy
+        mensaje.setEmisor(userService.findById(mensaje.getEmisor().getId()));
+        mensaje.setReceptor(userService.findById(mensaje.getReceptor().getId()));
+
+        if (mensaje.getFecha() == null) {
+            mensaje.setFecha(LocalDateTime.now());
+        }
+
         return mensajeRepository.save(mensaje);
     }
 
@@ -57,5 +77,21 @@ public class MensajeServiceImpl implements MensajeService {
         Mensaje mensaje = findById(id);
         mensaje.setLeido(true);
         mensajeRepository.save(mensaje);
+    }
+    
+    @Override
+    public void validateUsersRole(Long emisorId, Long receptorId) {
+        User emisor = userService.findById(emisorId);
+        User receptor = userService.findById(receptorId);
+        
+        String emisorRol = emisor.getRol().getNombre();
+        String receptorRol = receptor.getRol().getNombre();
+        
+        boolean validCombination = (emisorRol.equals("ROLE_CLIENTE") && receptorRol.equals("ROLE_REPARTIDOR")) ||
+                                   (emisorRol.equals("ROLE_REPARTIDOR") && receptorRol.equals("ROLE_CLIENTE"));
+                                   
+        if (!validCombination) {
+            throw new ConflictException("Los mensajes solo están permitidos entre clientes y repartidores.");
+        }
     }
 }
