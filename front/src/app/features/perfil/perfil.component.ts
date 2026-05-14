@@ -97,7 +97,7 @@ export class PerfilComponent implements OnInit {
         if (user?.userOutputDto) {
           const rol = user.userOutputDto.nombreRol;
           const id = user.userOutputDto.id;
-          if (rol === 'ROLE_CLIENTE') {
+          if (rol === 'ROLE_CLIENTE' || rol === 'ROLE_REPARTIDOR') {
             this.loading.set(true);
             this.cliente.set(null); // fuerza la destrucción de subcomponentes para evitar retención de estado local
             this.clienteService.obtenerPorId(id).subscribe({

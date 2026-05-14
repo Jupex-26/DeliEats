@@ -7,8 +7,10 @@ import { sendOutline, closeOutline, personCircleOutline } from 'ionicons/icons';
 import { WebSocketService } from '../../services/websocket/websocket-service';
 import { AuthService } from '../../services/auth/auth-service';
 import { Subscription } from 'rxjs';
+import { MensajeService } from '../../services/mensaje/mensaje-service';
 
 export interface MensajeChat {
+  id?: number;
   pedidoId?: number;
   emisorId: number;
   receptorId: number;
@@ -34,6 +36,7 @@ export class ChatModalComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   private webSocketService = inject(WebSocketService);
   private authService = inject(AuthService);
+  private mensajeService = inject(MensajeService);
   private ngZone = inject(NgZone);
 
   mensajes = signal<MensajeChat[]>([]);
@@ -53,6 +56,9 @@ export class ChatModalComponent implements OnInit, OnDestroy, AfterViewChecked {
 
       // Vincular con el store persistente del servicio
       this.mensajes = this.webSocketService.getMensajesPedido(this.pedidoId);
+
+      // Cargar historial desde el servidor
+      this.cargarHistorial();
 
       this.subscription = this.webSocketService.mensajeObservable.subscribe((msg) => {
         this.ngZone.run(() => {
@@ -112,5 +118,24 @@ export class ChatModalComponent implements OnInit, OnDestroy, AfterViewChecked {
   close() {
     this.isOpen = false;
     this.closed.emit();
+  }
+
+  private cargarHistorial() {
+    this.mensajeService.obtenerChat(this.miUsuarioId, this.receptorId).subscribe({
+      next: (res) => {
+        const historial = res.content || res; // Manejar Page o Array
+        if (Array.isArray(historial)) {
+          // Filtrar duplicados que ya pudieran estar en el store de la sesión actual
+          this.mensajes.update(actuales => {
+            const idsActuales = new Set(actuales.map(m => m.id).filter(id => id !== undefined));
+            const nuevos = historial.filter(m => !idsActuales.has(m.id));
+            // Combinar y ordenar por fecha
+            const total = [...actuales, ...nuevos];
+            return total.sort((a, b) => new Date(a.fechaEnvio).getTime() - new Date(b.fechaEnvio).getTime());
+          });
+        }
+      },
+      error: (err) => console.error('Error cargando historial de chat:', err)
+    });
   }
 }

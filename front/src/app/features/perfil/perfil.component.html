@@ -33,8 +33,8 @@
     </div>
     }
 
-    <!-- Contenido CLIENTE -->
-    @if (!loading() && rol === 'ROLE_CLIENTE') {
+    <!-- Contenido CLIENTE / REPARTIDOR -->
+    @if (!loading() && (rol === 'ROLE_CLIENTE' || rol === 'ROLE_REPARTIDOR')) {
 
     <!-- Tabs -->
     <nav class="tabs-nav">
@@ -46,7 +46,7 @@
         <ion-icon name="receipt-outline"></ion-icon>
         Mis Pedidos
       </button>
-      @if (cliente()?.repartidor) {
+      @if (cliente()?.repartidor || rol === 'ROLE_REPARTIDOR') {
         <button class="tab-btn" [class.active]="activeTab() === 'repartidor'" (click)="setTab('repartidor')">
           <ion-icon name="bicycle-outline"></ion-icon>
           Modo Repartidor

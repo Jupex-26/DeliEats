@@ -47,10 +47,26 @@ public class MensajeController {
         Mensaje entity = mensajeService.findById(id);
         return ResponseEntity.ok(mensajeMapper.toDto(entity));
     }
+    
+    @GetMapping("/chat")
+    public ResponseEntity<Page<MensajeOutputDto>> getChat(
+            @RequestParam Long usuario1Id, 
+            @RequestParam Long usuario2Id, 
+            @PageableDefault Pageable pageable) {
+        Page<MensajeOutputDto> dtos = mensajeService.findChat(usuario1Id, usuario2Id, pageable)
+                .map(mensajeMapper::toDto);
+        return ResponseEntity.ok(dtos);
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         mensajeService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/leer")
+    public ResponseEntity<Void> markAsRead(@PathVariable Long id) {
+        mensajeService.markAsRead(id);
+        return ResponseEntity.ok().build();
     }
 }

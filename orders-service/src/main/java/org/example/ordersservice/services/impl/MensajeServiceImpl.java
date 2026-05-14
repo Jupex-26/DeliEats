@@ -60,6 +60,15 @@ public class MensajeServiceImpl implements MensajeService {
     public Page<Mensaje> findByReceptorId(Long receptorId, Pageable pageable) {
         return mensajeRepository.findByReceptor_Id(receptorId, pageable);
     }
+    
+    @Override
+    public Page<Mensaje> findChat(Long usuario1Id, Long usuario2Id, Pageable pageable) {
+        // Validar que los usuarios existen y tienen roles válidos para chatear
+        validateUsersRole(usuario1Id, usuario2Id);
+        return mensajeRepository.findByEmisor_IdAndReceptor_IdOrEmisor_IdAndReceptor_IdOrderByFechaAsc(
+                usuario1Id, usuario2Id, usuario2Id, usuario1Id, pageable
+        );
+    }
 
 
     @Override
