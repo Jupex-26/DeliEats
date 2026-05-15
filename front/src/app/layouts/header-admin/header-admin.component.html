@@ -2,7 +2,7 @@
   class="flex bg-base items-center justify-between px-6 py-4 text-main relative z-50 w-full shadow-sm border-b border-alt">
 
   <div class="flex items-center gap-4">
-    <!-- Logo / Título -->
+    
     <div class="text-2xl font-bold text-primary tracking-wider">
       <a routerLink="/admin" class="text-inherit no-underline flex items-center gap-2">
         <img src="logo.png" alt="Logo DeliEats" class="w-24">
@@ -14,10 +14,9 @@
     </div>
   </div>
 
-  <!-- Acciones de Usuario -->
   <div class="flex items-center gap-2 sm:gap-4">
     @if (isLogin()) {
-    <!-- Info del Usuario (Oculto en móviles muy pequeños) -->
+    
     <div class="hidden sm:flex flex-col items-end mr-2 text-right">
       <span class="text-sm font-bold text-primary leading-tight">
         {{ user.nombre }}
@@ -27,17 +26,15 @@
       </span>
     </div>
 
-    <!-- Botones de Acción -->
     <div class="hidden lg:flex items-center gap-4">
       @if (isLogin()) {
       <div class="flex items-center gap-3">
-        <!-- Botón Perfil Escritorio -->
+        
         <button routerLink="/perfil"
           class="btn-profile px-4 py-2 rounded-full font-medium transition border-none cursor-pointer">
           Mi Perfil
         </button>
 
-        <!-- Botón Cerrar Sesión Escritorio -->
         <button (click)="logout()" class="btn-logout px-5 py-2 rounded-full font-semibold transition cursor-pointer">
           Cerrar Sesión
         </button>
@@ -46,7 +43,7 @@
     </div>
     }
   </div>
-  <!-- Mobile Hamburger Button -->
+  
   <button
     class="lg:hidden flex flex-col justify-between items-center w-8 h-6 border-none bg-transparent cursor-pointer p-0 z-50 relative focus:outline-none"
     (click)="toggleMenu()" aria-label="Toggle menu">
@@ -58,7 +55,6 @@
       [class.-rotate-45]="isMenuOpen"></span>
   </button>
 </nav>
-
 
 <div
   class="mobile-menu-panel lg:hidden w-full z-40 shadow-lg bg-base transition-all duration-300 ease-in-out overflow-hidden absolute left-0"
@@ -72,13 +68,12 @@
         Mi Perfil
       </button>
 
-      <!-- Botón Cerrar Sesión -->
       <button (click)="logout(); toggleMenu()"
         class="btn-logout mt-2 px-5 py-3 rounded-full font-semibold transition cursor-pointer w-full text-center">
         Cerrar Sesión
       </button>
       } @else {
-      <!-- Opción móvil para invitados -->
+      
       <button routerLink="/login" (click)="toggleMenu()"
         class="px-5 py-3 rounded-full font-semibold text-white bg-secondary hover:opacity-90 transition border-none cursor-pointer w-full text-center">
         Iniciar Sesión

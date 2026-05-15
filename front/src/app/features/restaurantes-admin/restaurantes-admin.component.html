@@ -99,7 +99,6 @@
     </div>
   </div>
 
-  <!-- Modal Formularios de Restaurante (Empresa) -->
   <ion-modal [isOpen]="isModalOpen()" (didDismiss)="isModalOpen.set(false)" class="custom-modal-form">
     <ng-template>
       <ion-header class="ion-no-border">
@@ -203,7 +202,6 @@
     </ng-template>
   </ion-modal>
 
-  <!-- Modal de Detalles del Restaurante -->
   <ion-modal [isOpen]="isViewModalOpen()" (didDismiss)="isViewModalOpen.set(false)" class="custom-modal-form">
     <ng-template>
       <ion-header class="ion-no-border">
@@ -296,9 +294,6 @@
     (cancel)="isConfirmModalOpen.set(false)">
   </app-confirm-modal>
 
-  <!-- ============================================== -->
-  <!-- MODAL PARA LA LISTA DE PRODUCTOS DE LA EMPRESA -->
-  <!-- ============================================== -->
   <ion-modal [isOpen]="isProductsModalOpen()" (didDismiss)="isProductsModalOpen.set(false)" class="custom-modal-form">
     <ng-template>
       <ion-header class="ion-no-border">
@@ -392,7 +387,6 @@
     </ng-template>
   </ion-modal>
 
-  <!-- MODAL PARA CREAR/EDITAR PRODUCTO -->
   <ion-modal [isOpen]="isProductFormModalOpen()" (didDismiss)="isProductFormModalOpen.set(false)"
     class="custom-modal-form">
     <ng-template>
@@ -418,7 +412,6 @@
                 </ion-item>
               </div>
 
-              <!-- Sección de Foto del Producto -->
               <div class="form-group md:col-span-2">
                 <label class="form-label text-xs font-bold uppercase mb-2 block opacity-70">Imagen del Producto</label>
                 <div class="flex items-center gap-4 p-4 border rounded-lg bg-gray-50/50">
@@ -478,7 +471,6 @@
     </ng-template>
   </ion-modal>
 
-  <!-- CONFIRMACIÓN BORRAR PRODUCTO -->
   <app-confirm-modal [isOpen]="isProductConfirmModalOpen()" title="Eliminar Producto"
     message="¿Estás seguro de que deseas eliminar este producto? La acción no se puede deshacer." confirmText="ELIMINAR"
     [dangerAction]="true" (confirm)="ejecutarEliminacionProducto()" (cancel)="isProductConfirmModalOpen.set(false)">

@@ -1,8 +1,6 @@
 @use '../../../styles/variables' as *;
 $aside-width: 260px;
 
-
-
 .aside-container {
   position: relative;
   width: $aside-width;
@@ -11,7 +9,6 @@ $aside-width: 260px;
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 100;
 
-  // Estado COLAPSADO (Se oculta a la izquierda)
   &.is-collapsed {
     transform: translateX(-100%);
   }
@@ -59,7 +56,6 @@ $aside-width: 260px;
   border-radius: 12px;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   border-left: 4px solid transparent;
-
 
   .nav-label {
     font-weight: 500;

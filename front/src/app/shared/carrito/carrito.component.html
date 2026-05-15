@@ -2,7 +2,6 @@
 
 <div class="carrito-panel flex flex-col h-full">
 
-  <!-- Header -->
   <div class="carrito-header flex items-center justify-between px-6 py-5">
     <div class="flex items-center gap-3">
       <ion-icon name="cart-outline" class="text-2xl"></ion-icon>
@@ -13,7 +12,6 @@
     </button>
   </div>
 
-  <!-- Body -->
   <div class="flex-1 overflow-y-auto px-5 py-3">
 
     @if (loading()) {
@@ -48,7 +46,6 @@
               <p class="font-bold text-sm leading-tight truncate">{{ detalle.nombreProducto }}</p>
               <p class="price-unit text-xs mt-1">{{ detalle.precioUnitario | euro }} c/u</p>
 
-              <!-- Quantity controls -->
               <div class="qty-controls flex items-center gap-2 mt-2">
                 <button class="qty-btn" (click)="actualizarCantidad(detalle.productoId, detalle.cantidad - 1)">
                   <ion-icon name="remove-outline"></ion-icon>
@@ -72,14 +69,12 @@
         }
       </ul>
 
-      <!-- Vaciar carrito -->
       <button class="btn-clear w-full mt-4 py-2 rounded-xl text-sm font-semibold transition-all" (click)="vaciarCarrito()">
         Vaciar carrito
       </button>
     }
   </div>
 
-  <!-- Footer -->
   @if (detalles.length > 0) {
     <div class="cart-footer px-6 py-5 border-t">
       <div class="flex justify-between items-center mb-4">

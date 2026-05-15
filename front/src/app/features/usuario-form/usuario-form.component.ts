@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonItem, IonInput } from '@ionic/angular/standalone';
 import { ClienteInputDto, ClienteOutputDto } from '../../types';
 import { Validador } from '../../validadores/validador';
+import { GeocodingService } from '../../services/geocoding/geocoding-service';
 
 @Component({
   selector: 'app-usuario-form',
@@ -13,6 +14,9 @@ import { Validador } from '../../validadores/validador';
 })
 export class UsuarioFormComponent implements OnInit, OnChanges {
   private fb = inject(FormBuilder);
+  private geocodingService = inject(GeocodingService);
+  validandoDireccion = false;
+  errorDireccion = false;
 
   readonly fechaLimite16 = new Date(new Date().setFullYear(new Date().getFullYear() - 16));
 
@@ -70,18 +74,31 @@ export class UsuarioFormComponent implements OnInit, OnChanges {
   onSubmit() {
     if (this.form.valid) {
       const value = this.form.value;
+      const direccion = value.direccion!;
 
-      const clienteData: ClienteInputDto = {
-        nombre: value.nombre!,
-        email: value.email!,
-        password: value.password || '', // Empty if editing basic info
-        telefono: value.telefono ? Number(value.telefono) : undefined,
-        direccion: value.direccion!,
-        fechaNacimiento: value.fechaNacimiento ? new Date(value.fechaNacimiento).toISOString() : '',
-        rolId: 2,
-      };
+      this.validandoDireccion = true;
+      this.errorDireccion = false;
 
-      this.submitForm.emit(clienteData);
+      this.geocodingService.verificarDireccion(direccion).subscribe(isValid => {
+        this.validandoDireccion = false;
+        
+        if (!isValid) {
+          this.errorDireccion = true;
+          return;
+        }
+
+        const clienteData: ClienteInputDto = {
+          nombre: value.nombre!,
+          email: value.email!,
+          password: value.password || '', 
+          telefono: value.telefono ? Number(value.telefono) : undefined,
+          direccion: direccion,
+          fechaNacimiento: value.fechaNacimiento ? new Date(value.fechaNacimiento).toISOString() : '',
+          rolId: 2,
+        };
+
+        this.submitForm.emit(clienteData);
+      });
     }
   }
 }

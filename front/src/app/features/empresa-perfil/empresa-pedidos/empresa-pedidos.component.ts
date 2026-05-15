@@ -36,19 +36,30 @@ export class EmpresaPedidosComponent implements OnInit {
   private pedidoService = inject(PedidoService);
   private estadoService = inject(EstadoService);
 
-  pedidos     = signal<PedidoOutputDto[]>([]);
-  loading     = signal(true);
+  pedidos = signal<PedidoOutputDto[]>([]);
+  loading = signal(true);
   currentPage = signal(0);
-  totalPages  = signal(0);
-  totalElem   = signal(0);
-  pageSize    = 8;
+  totalPages = signal(0);
+  totalElem = signal(0);
+  pageSize = 8;
 
   filtroActivo = signal<PedidoFiltro>('recientes');
   pedidoDetalle = signal<PedidoOutputDto | null>(null);
 
-  // --- Estados de Pedidos ---
   estadosList = signal<EstadoOutputDto[]>([]);
   actualizandoEstadoId = signal<number | null>(null);
+
+  mesSeleccionado = signal<number>(new Date().getMonth() + 1);
+  anioSeleccionado = signal<number>(new Date().getFullYear());
+
+  meses = [
+    { id: 1, nombre: 'Enero' }, { id: 2, nombre: 'Febrero' }, { id: 3, nombre: 'Marzo' },
+    { id: 4, nombre: 'Abril' }, { id: 5, nombre: 'Mayo' }, { id: 6, nombre: 'Junio' },
+    { id: 7, nombre: 'Julio' }, { id: 8, nombre: 'Agosto' }, { id: 9, nombre: 'Septiembre' },
+    { id: 10, nombre: 'Octubre' }, { id: 11, nombre: 'Noviembre' }, { id: 12, nombre: 'Diciembre' }
+  ];
+
+  anios: number[] = [];
 
   constructor() {
     addIcons({
@@ -56,6 +67,11 @@ export class EmpresaPedidosComponent implements OnInit {
       timeOutline, calendarOutline, cashOutline, eyeOutline,
       closeOutline, personOutline, bicycleOutline, locationOutline, cartOutline
     });
+
+    const year = new Date().getFullYear();
+    for (let i = 0; i < 5; i++) {
+      this.anios.push(year - i);
+    }
   }
 
   ngOnInit() {
@@ -69,13 +85,12 @@ export class EmpresaPedidosComponent implements OnInit {
     });
   }
 
-  // Mapea el filtro visual al parámetro `sort` de Pageable
   private getSortParam(): string {
     switch (this.filtroActivo()) {
-      case 'recientes':     return 'fechaCompra,desc';
-      case 'mes':           return 'fechaCompra,desc';   // filtrado por mes → endpoint específico
-      case 'mayor-importe': return 'precioTotal,desc';
-      default:              return 'fechaCompra,desc';
+      case 'recientes': return 'fechaCompra,desc';
+      case 'mes': return 'fechaCompra,desc';
+      case 'mayor-importe': return 'precio,desc';
+      default: return 'fechaCompra,desc';
     }
   }
 
@@ -85,7 +100,7 @@ export class EmpresaPedidosComponent implements OnInit {
     const sort = this.getSortParam();
 
     const obs = this.filtroActivo() === 'mes'
-      ? this.pedidoService.listarPorEmpresaMesActual(this.empresaId, page, this.pageSize)
+      ? this.pedidoService.listarPorEmpresaYMes(this.empresaId, this.mesSeleccionado(), this.anioSeleccionado(), page, this.pageSize)
       : this.pedidoService.listarPorEmpresa(this.empresaId, page, this.pageSize, sort);
 
     obs.subscribe({
@@ -101,6 +116,18 @@ export class EmpresaPedidosComponent implements OnInit {
 
   setFiltro(f: PedidoFiltro) {
     this.filtroActivo.set(f);
+    this.currentPage.set(0);
+    this.cargarPedidos();
+  }
+
+  cambiarMes(event: any) {
+    this.mesSeleccionado.set(Number(event.target.value));
+    this.currentPage.set(0);
+    this.cargarPedidos();
+  }
+
+  cambiarAnio(event: any) {
+    this.anioSeleccionado.set(Number(event.target.value));
     this.currentPage.set(0);
     this.cargarPedidos();
   }
@@ -142,12 +169,11 @@ export class EmpresaPedidosComponent implements OnInit {
 
   getEstadoClass(estado: string): string {
     const e = estado?.toLowerCase() ?? '';
-    if (e.includes('pendiente'))  return 'estado--pendiente';
+    if (e.includes('pendiente')) return 'estado--pendiente';
     if (e.includes('preparando')) return 'estado--preparando';
-    if (e.includes('camino'))     return 'estado--camino';
-    if (e.includes('entregado'))  return 'estado--entregado';
-    if (e.includes('cancelado'))  return 'estado--cancelado';
+    if (e.includes('camino')) return 'estado--camino';
+    if (e.includes('entregado')) return 'estado--entregado';
+    if (e.includes('cancelado')) return 'estado--cancelado';
     return '';
   }
 }
-

@@ -14,7 +14,6 @@ ion-content {
   color: $color-text-main;
 }
 
-// ─── Header ───────────────────────────────────────────────────────────────────
 .checkout-header {
   display: flex;
   align-items: center;
@@ -73,7 +72,6 @@ ion-content {
   }
 }
 
-// ─── States ───────────────────────────────────────────────────────────────────
 .loading-state, .success-state, .error-state {
   display: flex;
   flex-direction: column;
@@ -133,7 +131,6 @@ ion-content {
   }
 }
 
-// ─── Main Layout ─────────────────────────────────────────────────────────────
 .checkout-content {
   max-width: 800px;
   margin: 0 auto;
@@ -196,7 +193,6 @@ ion-content {
   }
 }
 
-// ─── Product List ─────────────────────────────────────────────────────────────
 .product-list {
   list-style: none;
   margin: 0;
@@ -280,7 +276,6 @@ ion-content {
   }
 }
 
-// ─── Side Panel (Price Summary & Actions) ───────────────────────────────────
 .side-panel {
   display: flex;
   flex-direction: column;
@@ -332,7 +327,6 @@ ion-content {
   }
 }
 
-// ─── Actions ──────────────────────────────────────────────────────────────────
 .checkout-actions {
   display: flex;
   flex-direction: column;
@@ -413,7 +407,6 @@ ion-content {
   }
 }
 
-// ─── Error Banner ─────────────────────────────────────────────────────────────
 .error-banner {
   background: rgba(#ff4757, 0.1);
   border: 1px solid rgba(#ff4757, 0.2);
@@ -436,7 +429,6 @@ ion-content {
   }
 }
 
-// ─── Animations ───────────────────────────────────────────────────────────────
 @keyframes spin {
   to { transform: rotate(360deg); }
 }

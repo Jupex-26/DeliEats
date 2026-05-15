@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -29,4 +30,6 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
     Page<Pedido> findAllByEstadoId(Long estadoId, Pageable pageable);
 
     Page<Pedido> findAllByEmpresaId(Long empresaId, Pageable pageable);
+
+    Page<Pedido> findAllByEmpresaIdAndFechaCompraBetween(Long empresaId, LocalDateTime inicioMes, LocalDateTime finMes, Pageable pageable);
 }

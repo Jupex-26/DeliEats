@@ -23,7 +23,6 @@ describe('ChatModalComponent', () => {
     fixture = TestBed.createComponent(ChatModalComponent);
     component = fixture.componentInstance;
     
-    // Asignar inputs obligatorios antes de la detección de cambios inicial
     component.pedidoId = 1;
     component.receptorId = 2;
     component.receptorNombre = 'Test User';

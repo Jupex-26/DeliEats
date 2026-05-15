@@ -48,7 +48,6 @@ export class RepartidoresAdminComponent implements OnInit {
   private repartidorService = inject(RepartidorService);
   private userService = inject(UserService);
 
-  // --- Estado ---
   repartidores = signal<RepartidorOutputDto[]>([]);
   currentPage = signal(0);
   pageSize = signal(10);
@@ -106,8 +105,7 @@ export class RepartidoresAdminComponent implements OnInit {
   }
 
   cargarRepartidores() {
-    // Si mostrarSolicitudes es true, pedimos los NO aprobados (false)
-    // Por defecto (false) pedimos los SI aprobados (true)
+    
     const filtroAprobado = !this.mostrarSolicitudes();
 
     this.repartidorService
@@ -153,7 +151,7 @@ export class RepartidoresAdminComponent implements OnInit {
 
   abrirModalEditar(repartidor: RepartidorOutputDto) {
     this.editingRepartidor.set(repartidor);
-    this.repartidorForm = { ...repartidor, rolId: 4 }; // Rol Repartidor
+    this.repartidorForm = { ...repartidor, rolId: 4 }; 
     this.isModalOpen.set(true);
   }
 
@@ -190,23 +188,21 @@ export class RepartidoresAdminComponent implements OnInit {
   }
 
   toggleDisponibilidad(repartidor: RepartidorOutputDto, event: any) {
-    // Evitamos propagar eventos (por si pulsamos fila)
+    
     event.stopPropagation();
     
-    // Obtenemos el nuevo valor
     const isDisponible = event.detail.checked;
     
-    // Llamamos al servicio (método optimizado)
     this.repartidorService.actualizarDisponibilidad(repartidor.id, isDisponible).subscribe({
       next: () => {
-        // Actualizamos localmente
+        
         const actualizados = this.repartidores().map(r => 
           r.id === repartidor.id ? { ...r, disponible: isDisponible } : r
         );
         this.repartidores.set(actualizados);
       },
       error: () => {
-        // Revertir si hay error
+        
         const prev = this.repartidores().map(r => r);
         this.repartidores.set(prev);
       }
@@ -220,7 +216,7 @@ export class RepartidoresAdminComponent implements OnInit {
       telefono: undefined,
       direccion: '',
       foto: '',
-      rolId: 4, // Rol Repartidor (asumimos 4)
+      rolId: 4, 
       disponible: false,
     };
   }

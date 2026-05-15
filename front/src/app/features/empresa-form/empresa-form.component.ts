@@ -4,6 +4,7 @@ import { IonItem, IonInput, IonTextarea } from '@ionic/angular/standalone';
 import { EmpresaInputDto, TipoCocinaOutputDto } from '../../types';
 import { Validador } from '../../validadores/validador';
 import { TipoCocinaService } from '../../services/tipococina/tipococina-service';
+import { GeocodingService } from '../../services/geocoding/geocoding-service';
 
 @Component({
   selector: 'app-empresa-form',
@@ -15,13 +16,17 @@ import { TipoCocinaService } from '../../services/tipococina/tipococina-service'
 export class EmpresaFormComponent implements OnInit {
   private fb = inject(FormBuilder);
   private tipoCocinaService = inject(TipoCocinaService);
+  private geocodingService = inject(GeocodingService);
+
+  validandoDireccion = signal(false);
+  errorDireccion = signal(false);
 
   @Output() submitForm = new EventEmitter<EmpresaInputDto>();
 
   tiposCocina = signal<TipoCocinaOutputDto[]>([]);
 
   form = this.fb.group({
-    // Campos de UserInputDto (Herencia)
+    
     nombre: ['', [Validators.required, Validador.isNombre]],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validador.isStrongPassword]],
@@ -29,10 +34,9 @@ export class EmpresaFormComponent implements OnInit {
     direccion: ['', [Validators.required]],
     rolId: [3],
 
-    // Campos de EmpresaInputDto
     descripcion: ['', [Validators.required]],
     correoContacto: ['', [Validators.required, Validators.email]],
-    telefonoContacto: ['', [Validador.isTelefono]], // Opcional según tu Java
+    telefonoContacto: ['', [Validador.isTelefono]], 
     tipoCocinaId: ['', [Validators.required]],
   });
 
@@ -50,21 +54,34 @@ export class EmpresaFormComponent implements OnInit {
   onSubmit() {
     if (this.form.valid) {
       const value = this.form.value;
+      const direccion = value.direccion!;
 
-      const empresaData: EmpresaInputDto = {
-        nombre: value.nombre!,
-        email: value.email!,
-        password: value.password!,
-        telefono: value.telefono ? Number(value.telefono) : undefined,
-        direccion: value.direccion!,
-        descripcion: value.descripcion!,
-        correoContacto: value.correoContacto!,
-        telefonoContacto: value.telefonoContacto!,
-        tipoCocinaId: Number(value.tipoCocinaId!),
-        rolId: 3,
-      };
+      this.validandoDireccion.set(true);
+      this.errorDireccion.set(false);
 
-      this.submitForm.emit(empresaData);
+      this.geocodingService.verificarDireccion(direccion).subscribe(isValid => {
+        this.validandoDireccion.set(false);
+        
+        if (!isValid) {
+          this.errorDireccion.set(true);
+          return;
+        }
+
+        const empresaData: EmpresaInputDto = {
+          nombre: value.nombre!,
+          email: value.email!,
+          password: value.password!,
+          telefono: value.telefono ? Number(value.telefono) : undefined,
+          direccion: direccion,
+          descripcion: value.descripcion!,
+          correoContacto: value.correoContacto!,
+          telefonoContacto: value.telefonoContacto!,
+          tipoCocinaId: Number(value.tipoCocinaId!),
+          rolId: 3,
+        };
+
+        this.submitForm.emit(empresaData);
+      });
     }
   }
 }

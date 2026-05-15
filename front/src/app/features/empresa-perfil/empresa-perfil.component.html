@@ -1,7 +1,6 @@
 <ion-content>
   <div class="empresa-perfil-page">
 
-    <!-- Header -->
     <header class="empresa-header">
       <button class="btn-back" (click)="volver()" aria-label="Volver">
         <ion-icon name="arrow-back-outline"></ion-icon>
@@ -10,9 +9,8 @@
       @if (!loading()) {
       <div class="empresa-hero">
         <div class="avatar-wrapper">
-          @if (usuario?.foto || empresa()?.foto) {
-            <img [src]="environment.storageUrl + '/' + (empresa()?.foto || usuario?.foto)"
-                 [alt]="empresa()?.nombre" class="avatar-img">
+          @if (getFotoUrl(); as url) {
+            <img [src]="url" [alt]="empresa()?.nombre" class="avatar-img" (error)="onAvatarError($event)">
           } @else {
             <div class="avatar-placeholder">
               <ion-icon name="business-outline"></ion-icon>
@@ -28,17 +26,14 @@
       }
     </header>
 
-    <!-- Loading -->
     @if (loading()) {
     <div class="loading-state">
       <div class="spinner-empresa"></div>
     </div>
     }
 
-    <!-- Contenido -->
     @if (!loading() && empresa()) {
 
-    <!-- Tabs -->
     <nav class="tabs-nav">
       <button class="tab-btn" [class.active]="activeTab() === 'perfil'" (click)="setTab('perfil')">
         <ion-icon name="person-outline"></ion-icon>
@@ -54,7 +49,6 @@
       </button>
     </nav>
 
-    <!-- Tab: Edición Perfil -->
     @if (activeTab() === 'perfil') {
     <section class="tab-content">
       <app-empresa-perfil-edicion
@@ -64,14 +58,12 @@
     </section>
     }
 
-    <!-- Tab: Pedidos -->
     @if (activeTab() === 'pedidos') {
     <section class="tab-content tab-content--wide">
       <app-empresa-pedidos [empresaId]="empresa()!.id!"></app-empresa-pedidos>
     </section>
     }
 
-    <!-- Tab: Productos -->
     @if (activeTab() === 'productos') {
     <section class="tab-content tab-content--wide">
       <app-empresa-productos [empresa]="empresa()!"></app-empresa-productos>

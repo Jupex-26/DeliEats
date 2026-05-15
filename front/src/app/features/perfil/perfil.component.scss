@@ -12,7 +12,6 @@ ion-content {
   color: $color-text-main;
 }
 
-// ─── Header / Hero ────────────────────────────────────────────────────────────
 .perfil-header {
   background: linear-gradient(135deg, $color-primary, color.adjust($color-primary, $lightness: 12%));
   padding: 32px 28px 48px;
@@ -86,8 +85,6 @@ ion-content {
   }
 }
 
-
-// ─── Tabs ─────────────────────────────────────────────────────────────────────
 .tabs-nav {
   display: flex;
   gap: 4px;
@@ -130,7 +127,6 @@ ion-content {
   }
 }
 
-// ─── Tab Content ──────────────────────────────────────────────────────────────
 .tab-content {
   background: white;
   border: 1px solid rgba($color-bg-alt, 0.8);
@@ -141,7 +137,6 @@ ion-content {
   animation: fadeIn 0.3s ease;
 }
 
-// ─── States ───────────────────────────────────────────────────────────────────
 .loading-state {
   display: flex;
   justify-content: center;
@@ -199,7 +194,6 @@ ion-content {
   }
 }
 
-// ─── Modo Repartidor Premium Styles ───────────────────────────────────────────
 .repartidor-mode {
   .mode-card {
     border-radius: 20px;
@@ -269,7 +263,6 @@ ion-content {
     --background-checked: #{$color-primary};
   }
 
-  // --- Estilos de Pedidos de Repartidor ---
   .pedidos-repartidor-section {
     border-top-color: rgba($color-bg-alt, 0.6);
 
@@ -345,7 +338,6 @@ ion-content {
   }
 }
 
-// Spinners de tamaño reducido
 .spinner-sm {
   width: 24px;
   height: 24px;

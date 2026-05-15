@@ -45,7 +45,7 @@ export class RepartidorService {
 
   obtenerPorAprobado(aprobado: boolean, page: number = 0, size: number = 10, sort?: string): Observable<any> {
     let params = new HttpParams()
-      .set('aprobado', aprobado.toString()) // El backend espera un booleano en @RequestParam
+      .set('aprobado', aprobado.toString()) 
       .set('page', page)
       .set('size', size);
 

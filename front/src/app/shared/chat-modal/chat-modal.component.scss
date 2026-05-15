@@ -26,7 +26,6 @@
 .messages-area {
   scroll-behavior: smooth;
   
-  // Custom scrollbar
   &::-webkit-scrollbar {
     width: 4px;
   }
@@ -47,11 +46,11 @@
 }
 
 .chat-input {
-    color: #111827 !important; // text-gray-900
+    color: #111827 !important; 
     background-color: #ffffff;
     
     &::placeholder {
-        color: #9ca3af; // text-gray-400
+        color: #9ca3af; 
     }
     
     &:focus {

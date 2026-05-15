@@ -11,7 +11,6 @@ ion-content {
   --color: #{$color-text-main};
 }
 
-// ─── Back button ───────────────────────────────────────────────────────────────
 .back-bar {
   background: $color-bg-base;
   padding-top: 16px;
@@ -32,7 +31,6 @@ ion-content {
   }
 }
 
-// ─── Hero ──────────────────────────────────────────────────────────────────────
 .hero-section {
   position: relative;
 }
@@ -56,7 +54,6 @@ ion-content {
   background: linear-gradient(135deg, rgba($color-primary, 0.15), rgba($color-bg-alt, 0.6));
 }
 
-// ─── Info section debajo de la imagen ────────────────────────────────────────
 .hero-info {
   background-color: $color-bg-base;
   border-bottom: 2px solid rgba($color-bg-alt, 0.6);
@@ -112,7 +109,6 @@ ion-content {
   }
 }
 
-// ─── Section titles ─────────────────────────────────────────────────────────────
 .section-title {
   display: flex;
   align-items: center;
@@ -130,7 +126,6 @@ ion-content {
   }
 }
 
-// ─── Horarios (Card interactiva) ───────────────────────────────────────────────
 .horario-card {
   background: white;
   border-radius: 16px;
@@ -253,8 +248,6 @@ ion-content {
   }
 }
 
-
-// ─── Products grid ──────────────────────────────────────────────────────────────
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -394,7 +387,6 @@ ion-content {
   }
 }
 
-// ─── FAB Carrito ────────────────────────────────────────────────────────────────
 .cart-fab {
   position: fixed;
   bottom: 32px;
@@ -454,7 +446,6 @@ ion-content {
   }
 }
 
-// ─── Spinner ────────────────────────────────────────────────────────────────────
 .spinner-hero {
   width: 48px;
   height: 48px;
@@ -470,12 +461,10 @@ ion-content {
   }
 }
 
-// ─── Empty ──────────────────────────────────────────────────────────────────────
 .empty-products {
   color: $color-text-main;
 }
 
-// ─── Responsive ──────────────────────────────────────────────────────────────────
 @media (max-width: 640px) {
   .hero-title {
     font-size: 1.8rem;
@@ -495,7 +484,6 @@ ion-content {
   }
 }
 
-// ─── Summary Bar ──────────────────────────────────────────────────────────────
 .cart-summary-bar-wrapper {
   position: fixed;
   bottom: 24px;
@@ -626,7 +614,6 @@ ion-content {
   }
 }
 
-// ─── Product Card Quantity Badge ──────────────────────────────────────────────
 .product-qty-badge {
   position: absolute;
   top: 10px;

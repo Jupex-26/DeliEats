@@ -1,9 +1,4 @@
-// ==========================================
-// DeliEats - Formularios e Inputs
-// ==========================================
 @use "variables" as *;
-
-
 
 @layer components {
 
@@ -33,56 +28,54 @@
   .form-group {
 
     .form-label {
-      font-family: 'Lora', serif; //
-      font-weight: 600; //
-      font-size: 14px; //[cite: 1]
-      color: $color-text-main; //[cite: 1]
-      margin-bottom: 8px; //[cite: 1]
+      font-family: 'Lora', serif; 
+      font-weight: 600; 
+      font-size: 14px; 
+      color: $color-text-main; 
+      margin-bottom: 8px; 
     }
 
     .form-input {
-      background-color: #FFFFFF; //[cite: 1]
-      color: $color-text-main; //[cite: 1]
-      border: 1.5px solid $color-bg-alt; //[cite: 1]
-      border-radius: 8px; //[cite: 1]
-      padding: 12px 16px; //[cite: 1]
-      font-family: 'Lora', serif; //[cite: 1]
-      font-size: 16px; //[cite: 1]
+      background-color: #FFFFFF; 
+      color: $color-text-main; 
+      border: 1.5px solid $color-bg-alt; 
+      border-radius: 8px; 
+      padding: 12px 16px; 
+      font-family: 'Lora', serif; 
+      font-size: 16px; 
 
       &::placeholder {
-        color: $color-text-main; //[cite: 1]
-        opacity: 0.55; //[cite: 1]
+        color: $color-text-main; 
+        opacity: 0.55; 
       }
 
       &:focus {
-        border-color: $color-primary; //[cite: 1]
-        border-width: 2px; //[cite: 1]
-        box-shadow: 0 0 0 3px rgba(32, 74, 51, 0.1); //[cite: 1]
+        border-color: $color-primary; 
+        border-width: 2px; 
+        box-shadow: 0 0 0 3px rgba(32, 74, 51, 0.1); 
       }
 
       &.is-valid {
-        border-color: $color-success; //[cite: 1]
+        border-color: $color-success; 
       }
 
       &.is-invalid {
-        border-color: $color-error; //[cite: 1]
+        border-color: $color-error; 
       }
     }
 
-    // Mensajes de Error Corregidos
     .form-error-msg {
-      color: $color-error; //[cite: 1]
-      font-size: 12px; //[cite: 1]
-      margin-top: 4px; //[cite: 1]
+      color: $color-error; 
+      font-size: 12px; 
+      margin-top: 4px; 
       font-weight: 500;
-      // Reemplazamos el @apply problemático por una animación nativa
-      animation: fadeInError 0.3s ease-out forwards; //[cite: 1]
+      
+      animation: fadeInError 0.3s ease-out forwards; 
     }
 
   }
 }
 
-// Definición de la animación para el error
 @keyframes fadeInError {
   from {
     opacity: 0;

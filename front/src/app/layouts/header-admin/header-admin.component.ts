@@ -22,7 +22,7 @@ export class HeaderAdminComponent {
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);
-    // Opcional: redirigir al inicio tras cerrar sesión
+    
   }
 
   protected isLogin() {

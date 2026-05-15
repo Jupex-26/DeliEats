@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, inject, signal, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, inject, signal, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonItem, IonInput, IonIcon } from '@ionic/angular/standalone';
@@ -30,7 +30,7 @@ import { environment } from '../../../../environments/environment';
   templateUrl: './perfil-edicion.component.html',
   styleUrls: ['./perfil-edicion.component.scss']
 })
-export class PerfilEdicionComponent implements OnInit {
+export class PerfilEdicionComponent implements OnInit, OnChanges {
   @Input({ required: true }) cliente!: ClienteOutputDto;
   @Output() perfilActualizado = new EventEmitter<any>();
 
@@ -48,7 +48,6 @@ export class PerfilEdicionComponent implements OnInit {
   solicitandoRepartidor = signal(false);
   exitoSolicitud = signal(false);
 
-  // Modal State
   isModalOpen = false;
   modalTitle = '';
   modalMessage = '';
@@ -72,8 +71,20 @@ export class PerfilEdicionComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.cliente.foto) {
+    this.syncFoto();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['cliente'] && this.cliente) {
+      this.syncFoto();
+    }
+  }
+
+  private syncFoto() {
+    if (this.cliente?.foto) {
       this.fotoPreview.set(environment.storageUrl + '/' + this.cliente.foto);
+    } else {
+      this.fotoPreview.set(null);
     }
   }
 
@@ -134,13 +145,12 @@ export class PerfilEdicionComponent implements OnInit {
         const newFoto = updatedUser.foto;
         this.authService.updateUser({ foto: newFoto });
         
-        // Actualizamos el preview para que use la URL del servidor
         if (newFoto) {
           this.fotoPreview.set(environment.storageUrl + '/' + newFoto);
         }
         
         this.perfilActualizado.emit({ ...this.cliente, foto: newFoto });
-        this.fotoFile.set(null); // Limpiamos el archivo seleccionado
+        this.fotoFile.set(null); 
         setTimeout(() => this.exitoFoto.set(false), 3000);
       },
       error: (err) => {
@@ -201,8 +211,7 @@ export class PerfilEdicionComponent implements OnInit {
       next: () => {
         this.solicitandoRepartidor.set(false);
         this.exitoSolicitud.set(true);
-        // No necesitamos timer largo si mostramos un mensaje permanente o similar, 
-        // pero por ahora lo dejamos consistente.
+        
         setTimeout(() => this.exitoSolicitud.set(false), 5000);
       },
       error: (err) => {

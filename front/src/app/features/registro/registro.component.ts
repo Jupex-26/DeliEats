@@ -33,14 +33,12 @@ export class RegistroComponent {
   currentStep: RegistroType = 'seleccion';
   isLoading = false;
 
-  // Modal State
   isModalOpen = false;
   modalTitle = '';
   modalMessage = '';
   modalType: 'success' | 'error' | 'info' = 'info';
   errorData: CustomError | null = null;
 
-  // Flag to know if we should navigate after modal close
   private navigateAfterClose = false;
 
   setStep(step: RegistroType) {

@@ -3,7 +3,6 @@
 
 .empresa-pedidos { display: flex; flex-direction: column; gap: 20px; }
 
-// ─── Filtros ──────────────────────────────────────────────────────────────────
 .filtros-bar {
   display: flex;
   gap: 8px;
@@ -43,7 +42,53 @@
   margin: 0;
 }
 
-// ─── Loading / Empty ──────────────────────────────────────────────────────────
+.mes-selector-container {
+  display: flex;
+  gap: 12px;
+  background: rgba($color-bg-alt, 0.4);
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid rgba($color-bg-alt, 0.7);
+  margin-top: -8px;
+
+  .select-wrapper {
+    flex: 1;
+    position: relative;
+  }
+
+  .custom-select {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba($color-bg-alt, 0.9);
+    background: white;
+    color: $color-text-main;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    appearance: none;
+    transition: all 0.2s ease;
+
+    &:focus {
+      border-color: $color-primary;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
+    }
+  }
+
+  // Arrow for custom select
+  .select-wrapper::after {
+    content: '▼';
+    font-size: 10px;
+    color: rgba($color-text-main, 0.4);
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+}
+
 .loading-state {
   display: flex; flex-direction: column; align-items: center; gap: 14px;
   padding: 60px 24px; color: rgba($color-text-main, 0.5);
@@ -65,7 +110,6 @@
   p { margin: 0; font-size: 0.88rem; color: rgba($color-text-main, 0.5); }
 }
 
-// ─── Pedidos list ─────────────────────────────────────────────────────────────
 .pedidos-list {
   list-style: none; margin: 0; padding: 0;
   display: flex; flex-direction: column; gap: 12px;
@@ -92,7 +136,6 @@
   .pedido-fecha { font-size: 0.78rem; color: rgba($color-text-main, 0.5); }
 }
 
-// Estado badges
 .estado-badge {
   padding: 4px 12px; border-radius: 20px;
   font-size: 0.72rem; font-weight: 800;
@@ -132,7 +175,6 @@
   &:hover { background: $color-primary; color: white; }
 }
 
-// ─── Paginación ───────────────────────────────────────────────────────────────
 .paginacion {
   display: flex; align-items: center; justify-content: center; gap: 14px;
   padding-top: 8px;
@@ -150,7 +192,6 @@
   ion-icon { font-size: 16px; }
 }
 
-// ─── Modal ────────────────────────────────────────────────────────────────────
 .modal-overlay {
   position: fixed; inset: 0; z-index: 200;
   background: rgba(0,0,0,0.5);
@@ -235,7 +276,6 @@
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideUp { from { transform: translateY(24px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-// ─── Edición de Estado en Tarjeta ─────────────────────────────────────────────
 .pedido-estado-edit {
   display: flex;
   align-items: center;

@@ -40,6 +40,16 @@ public class GlobalExceptionHandler {
                 .build();
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
+    
+    @ExceptionHandler(EmailExistsException.class)
+    public ResponseEntity<CustomError> handleEmailExistsException(EmailExistsException ex) {
+        CustomError error = CustomError.builder()
+                .message(ex.getMessage())
+                .timestamp(LocalDateTime.now())
+                .httpCode(HttpStatus.CONFLICT.value())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<CustomError> handleBadRequestException(BadRequestException ex) {

@@ -1,6 +1,5 @@
 <div class="perfil-edicion">
 
-  <!-- ─── Foto de Perfil ─── -->
   <section class="edicion-section">
     <h2 class="section-title">
       <ion-icon name="camera-outline"></ion-icon>
@@ -42,7 +41,6 @@
     </div>
   </section>
 
-  <!-- ─── Datos Personales ─── -->
   <section class="edicion-section">
     <h2 class="section-title">
       <ion-icon name="save-outline"></ion-icon>
@@ -62,7 +60,6 @@
     }
   </section>
 
-  <!-- ─── Cambiar Contraseña ─── -->
   <section class="edicion-section">
     <h2 class="section-title">
       <ion-icon name="lock-closed-outline"></ion-icon>
@@ -114,7 +111,6 @@
     </form>
   </section>
 
-  <!-- ─── Trabaja con nosotros ─── -->
   @if (!cliente.repartidor) {
   <section class="edicion-section request-section">
     <h2 class="section-title">
@@ -145,8 +141,6 @@
   </section>
   }
 
-
-  <!-- Modal de Información -->
   <app-info-modal
     [isOpen]="isModalOpen"
     [title]="modalTitle"

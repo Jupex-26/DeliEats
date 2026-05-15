@@ -18,7 +18,6 @@ describe('PerfilEdicionComponent', () => {
     const fixture = TestBed.createComponent(PerfilEdicionComponent);
     const component = fixture.componentInstance;
     
-    // Asignamos un cliente mock para evitar errores de @Input
     fixture.componentRef.setInput('cliente', {
       id: 1,
       nombre: 'Test',

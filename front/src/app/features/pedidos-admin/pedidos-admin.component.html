@@ -97,7 +97,6 @@
     </div>
   </div>
 
-  <!-- Modal Formulario de Pedido (CRUD básico temporal) -->
   <ion-modal [isOpen]="isModalOpen()" (didDismiss)="isModalOpen.set(false)" class="custom-modal-form">
     <ng-template>
       <div class="modal-wrapper flex flex-col w-full h-full">
@@ -111,7 +110,7 @@
         <div class="modal-body flex-1 overflow-y-auto p-6">
           <form (ngSubmit)="guardarPedido()" class="modern-form flex flex-col gap-5">
             <div class="form-grid grid grid-cols-1 gap-5">
-              <!-- Campo para Crear (Cliente ID) -->
+              
               @if (!editingPedido()) {
               <div class="form-group">
                 <label class="form-label text-sm font-bold uppercase mb-2 block text-gray-700">Cliente</label>
@@ -126,12 +125,11 @@
                 </div>
               </div>
 
-              <!-- Sección para añadir productos al pedido -->
               <div class="form-group border-t pt-5 mt-2">
                 <label class="form-label text-sm font-bold uppercase mb-3 block text-gray-700">Productos del Pedido</label>
                 
                 <div class="flex flex-col gap-3 mb-4">
-                  <!-- Selector de Empresa -->
+                  
                   <div class="border rounded-lg shadow-sm bg-white overflow-hidden p-1" [class.opacity-50]="pedidoForm.detalles.length > 0">
                     <select [(ngModel)]="tempEmpresaId" name="tempEmpresaId" (change)="onEmpresaChange()" (mousedown)="refrescarEmpresas()"
                       [disabled]="pedidoForm.detalles.length > 0"
@@ -170,7 +168,6 @@
                   </div>
                 </div>
 
-                <!-- Lista de productos añadidos -->
                 @if (pedidoForm.detalles.length > 0) {
                   <ul class="flex flex-col gap-2 mt-2">
                     @for (detalle of pedidoForm.detalles; track $index) {
@@ -196,7 +193,6 @@
               </div>
               }
 
-              <!-- Campos para Editar (Estado y Repartidor) -->
               @if (editingPedido()) {
               <div class="form-group flex flex-col gap-5">
                 <div>
@@ -244,7 +240,6 @@
     </ng-template>
   </ion-modal>
 
-  <!-- Modal de Detalles del Pedido -->
   <ion-modal [isOpen]="isViewModalOpen()" (didDismiss)="isViewModalOpen.set(false)" class="custom-modal-form">
     <ng-template>
       <div class="modal-wrapper flex flex-col w-full h-full">
@@ -260,7 +255,6 @@
           <div class="p-8 max-w-3xl mx-auto">
             <div class="detail-card bg-white rounded-2xl shadow-xl overflow-hidden border">
               
-              <!-- Cabecera del Detalle -->
               <div class="detail-header p-8 flex flex-col items-center border-b">
                 <div class="avatar w-20 h-20 rounded-full flex items-center justify-center text-white text-3xl font-bold mb-4 shadow-md border-4 border-white">
                   <ion-icon name="cart-outline"></ion-icon>
@@ -272,7 +266,6 @@
                 <p class="mt-2 text-sm opacity-70 font-medium">{{ viewingPedido()!.fechaCompra | date:'medium' }}</p>
               </div>
 
-              <!-- Info de Contacto y Envío -->
               <div class="p-8 border-b">
                 <h3 class="section-title text-sm font-bold uppercase tracking-wider mb-6 pb-2 border-b">Información General</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -320,7 +313,6 @@
                 </div>
               </div>
 
-              <!-- Lista de Productos / Detalles -->
               <div class="p-8">
                 <h3 class="section-title text-sm font-bold uppercase tracking-wider mb-4 pb-2 border-b">Productos del Pedido</h3>
                 
@@ -346,7 +338,6 @@
                 }
               </div>
 
-              <!-- Footer -->
               <div class="footer px-8 py-4 flex justify-end border-t">
                 <button
                   class="btn-close bg-white border px-6 py-2.5 rounded-lg font-bold text-sm transition-colors shadow-sm"

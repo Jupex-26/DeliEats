@@ -7,7 +7,6 @@
   gap: 20px;
 }
 
-// ─── Toolbar ──────────────────────────────────────────────────────────────────
 .toolbar {
   display: flex;
   justify-content: space-between;
@@ -89,7 +88,6 @@
   flex-shrink: 0;
 }
 
-// ─── Loading / Empty ──────────────────────────────────────────────────────────
 .loading-state {
   display: flex;
   flex-direction: column;
@@ -140,7 +138,6 @@
   }
 }
 
-// ─── Grid ─────────────────────────────────────────────────────────────────────
 .productos-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -290,7 +287,6 @@
   }
 }
 
-// ─── Paginación ───────────────────────────────────────────────────────────────
 .paginacion {
   display: flex;
   align-items: center;
@@ -332,7 +328,6 @@
   }
 }
 
-// ─── Modal ────────────────────────────────────────────────────────────────────
 .producto-modal {
   --width: 540px;
   --border-radius: 24px;
@@ -392,7 +387,6 @@
   gap: 18px;
 }
 
-// Foto row
 .foto-row {
   display: flex;
   align-items: center;
@@ -443,7 +437,6 @@
   }
 }
 
-// form groups
 .form-group {
   display: flex;
   flex-direction: column;

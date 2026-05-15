@@ -1,7 +1,6 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()" class="modern-form flex flex-col gap-5 w-full">
   <div class="form-grid grid grid-cols-1 md:grid-cols-2 gap-5">
 
-    <!-- NOMBRE -->
     <div class="form-group md:col-span-2">
       <ion-item lines="none" class="custom-input rounded-xl shadow-sm border">
         <ion-input formControlName="nombre" type="text" label="Nombre Completo" labelPlacement="stacked" placeholder="Nombre completo" class="font-medium"></ion-input>
@@ -16,7 +15,6 @@
       }
     </div>
 
-    <!-- EMAIL -->
     <div class="form-group">
       <ion-item lines="none" class="custom-input rounded-xl shadow-sm border">
         <ion-input formControlName="email" type="email" label="Correo Electrónico" labelPlacement="stacked" placeholder="Correo electrónico" class="font-medium"></ion-input>
@@ -31,7 +29,6 @@
       }
     </div>
 
-    <!-- PASSWORD (Solo en registro) -->
     @if (mode === 'register') {
       <div class="form-group">
         <ion-item lines="none" class="custom-input rounded-xl shadow-sm border">
@@ -48,7 +45,6 @@
       </div>
     }
 
-    <!-- TELÉFONO -->
     <div class="form-group">
       <ion-item lines="none" class="custom-input rounded-xl shadow-sm border">
         <ion-input formControlName="telefono" type="tel" label="Teléfono" labelPlacement="stacked" placeholder="9 dígitos" class="font-medium"></ion-input>
@@ -58,7 +54,6 @@
       }
     </div>
 
-    <!-- FECHA NACIMIENTO -->
     <div class="form-group">
       <ion-item lines="none" class="custom-input rounded-xl shadow-sm border">
         <ion-input
@@ -81,20 +76,33 @@
       }
     </div>
 
-    <!-- DIRECCIÓN -->
     <div class="form-group md:col-span-2">
-      <ion-item lines="none" class="custom-input rounded-xl shadow-sm border">
-        <ion-input formControlName="direccion" type="text" label="Dirección" labelPlacement="stacked" placeholder="Tu dirección completa" class="font-medium"></ion-input>
+      <ion-item lines="none" class="custom-input rounded-xl shadow-sm border" [class.border-red-500]="errorDireccion">
+        <ion-input formControlName="direccion" type="text" label="Dirección" labelPlacement="stacked" placeholder="Tu dirección completa (Ej: Calle Mayor 1, Madrid)" class="font-medium"></ion-input>
       </ion-item>
       @if (form.get('direccion')?.touched && form.get('direccion')?.hasError('required')) {
         <div class="error-text text-xs mt-1 ml-2 font-medium">La dirección es obligatoria.</div>
+      }
+      @if (errorDireccion) {
+        <div class="error-text text-xs mt-1 ml-2 font-medium flex items-center gap-1">
+          <span class="text-red-500 font-bold">⚠️</span> No hemos podido encontrar esta dirección. Por favor, asegúrate de que sea correcta y completa.
+        </div>
+      }
+      @if (validandoDireccion) {
+        <div class="text-xs mt-1 ml-2 font-medium text-primary animate-pulse">
+          🔍 Verificando dirección...
+        </div>
       }
     </div>
 
   </div>
 
   <button type="submit" class="btn-submit w-full mt-4 font-bold py-3.5 px-4 rounded-xl shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed" 
-    [disabled]="form.invalid || (mode === 'edit' && form.pristine)">
-    {{ mode === 'register' ? 'COMPLETAR REGISTRO' : 'GUARDAR CAMBIOS' }}
+    [disabled]="form.invalid || (mode === 'edit' && form.pristine) || validandoDireccion">
+    @if (validandoDireccion) {
+      VERIFICANDO...
+    } @else {
+      {{ mode === 'register' ? 'COMPLETAR REGISTRO' : 'GUARDAR CAMBIOS' }}
+    }
   </button>
 </form>

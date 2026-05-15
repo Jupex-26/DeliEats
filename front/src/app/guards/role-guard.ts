@@ -7,13 +7,13 @@ export const roleGuard: CanActivateFn = (route, state) => {
   const requiredRoles = route.data['role'] as string[];
 
   if (!requiredRoles) {
-    return true; // Si no hay roles requeridos en la ruta, permitimos el acceso
+    return true; 
   }
 
   const userRole = authService.getRol();
 
   if (!userRole) {
-    return false; // Si no hay rol (usuario no logueado), denegamos el acceso
+    return false; 
   }
 
   const isAllowed = requiredRoles.includes(userRole);

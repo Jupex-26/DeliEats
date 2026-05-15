@@ -1,15 +1,11 @@
 <ion-content>
 
-
-
-  <!-- Carrito panel -->
   @if (cartOpen()) {
   <app-carrito [carritoId]="carritoId()" [productos]="productos()" (cerrar)="closeCart()"
     (pedidoRealizado)="closeCart()">
   </app-carrito>
   }
 
-  <!-- Botón volver -->
   <div class="back-bar px-6 pt-4">
     <button class="btn-back flex items-center gap-2 font-bold text-sm" (click)="volver()">
       <ion-icon name="arrow-back-outline" class="text-lg"></ion-icon>
@@ -17,7 +13,6 @@
     </button>
   </div>
 
-  <!-- Loading Empresa -->
   @if (loadingEmpresa()) {
   <div class="flex items-center justify-center py-20">
     <div class="spinner-hero"></div>
@@ -25,9 +20,9 @@
   }
 
   @if (!loadingEmpresa() && empresa()) {
-  <!-- Hero Section -->
+  
   <section class="hero-section">
-    <!-- Imagen de cabecera -->
+    
     <div class="hero-image-wrapper">
       @if (empresa()!.foto) {
       <img [src]="environment.storageUrl + '/' + empresa()!.foto" [alt]="empresa()!.nombre" class="hero-img">
@@ -38,7 +33,6 @@
       }
     </div>
 
-    <!-- Info del restaurante debajo de la imagen -->
     <div class="hero-info max-w-4xl mx-auto px-6 py-8">
       <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
         <div>
@@ -72,7 +66,6 @@
     </div>
   </section>
 
-  <!-- Horarios de apertura -->
   @if (empresa()!.aperturas && empresa()!.aperturas.length > 0) {
   <section class="max-w-4xl mx-auto px-6 py-6">
     <div class="horario-card" (click)="showAllHorarios.set(!showAllHorarios())">
@@ -81,7 +74,6 @@
           <ion-icon name="time-outline" class="text-xl"></ion-icon>
           <span class="font-bold text-sm uppercase tracking-wide">Horario</span>
         </div>
-
 
         @if (empresa()!.aperturas | aperturaHoy: diaHoy; as hoy) {
         <div class="horario-hoy">
@@ -99,7 +91,6 @@
         </button>
       </div>
 
-      <!-- Todos los días (expandible) -->
       @if (showAllHorarios()) {
       <div class="horarios-todos">
         @for (dia of diasSemanaList; track dia) {
@@ -122,8 +113,6 @@
   </section>
   }
 
-
-  <!-- Productos -->
   <section class="max-w-4xl mx-auto px-6 pb-20">
     <h2 class="section-title">
       <ion-icon name="restaurant-outline"></ion-icon>
@@ -188,7 +177,6 @@
   </section>
   }
 
-  <!-- Barra de resumen inferior -->
   @if (totalProductosCarrito() > 0 && !cartOpen()) {
   <div class="cart-summary-bar-wrapper">
     <div class="cart-summary-bar" (click)="openCart()">
@@ -218,7 +206,6 @@
   </div>
   }
 
-  <!-- Modal de Aviso al Salir -->
   <app-info-modal [isOpen]="showExitWarningModal()"
                   title="Aviso de Carrito"
                   message="Si sales se vaciará el carrito"

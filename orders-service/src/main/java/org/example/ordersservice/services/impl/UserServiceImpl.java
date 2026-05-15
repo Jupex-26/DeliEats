@@ -1,8 +1,8 @@
 package org.example.ordersservice.services.impl;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.exception.custom.ConflictException;
+import org.example.ordersservice.exception.custom.EmailExistsException;
 import org.example.ordersservice.exception.custom.NotFoundException;
 import org.example.ordersservice.models.User;
 import org.example.ordersservice.repositories.UserRepository;
@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User save(User user) {
         if (userRepository.existsByEmail(user.getEmail())) {
-            throw new ConflictException("El email ya está en uso: " + user.getEmail());
+            throw new EmailExistsException("El email " + user.getEmail() + " ya está registrado.");
         }
         if (Objects.nonNull(user.getPassword())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -66,10 +66,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public User update(Long id, User user) {
         User existingUser = findById(id);
-        if (Objects.nonNull(user.getEmail()) && !user.getEmail().equals(existingUser.getEmail()) && userRepository.existsByEmail(user.getEmail())) {
-            throw new ConflictException("El email ya está en uso: " + user.getEmail());
+        
+        if (Objects.nonNull(user.getEmail()) && !user.getEmail().equalsIgnoreCase(existingUser.getEmail()) && userRepository.existsByEmail(user.getEmail())) {
+            throw new EmailExistsException("El email " + user.getEmail() + " ya está en uso por otro usuario.");
         }
+        
         user.setId(existingUser.getId());
+        
         if (Objects.nonNull(user.getPassword()) && !user.getPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         } else {
@@ -98,7 +101,7 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-    @Transactional
+    // El método uploadFoto ya es correcto en cuanto a lógica
     public User uploadFoto(Long id, MultipartFile archivo) {
         User user = findById(id);
 

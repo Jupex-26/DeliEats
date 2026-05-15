@@ -1,6 +1,5 @@
 <div class="empresa-productos">
 
-  <!-- Toolbar -->
   <div class="toolbar">
     <div class="toolbar-left">
       <h2 class="section-title">
@@ -15,7 +14,6 @@
     </button>
   </div>
 
-  <!-- Loading -->
   @if (loading()) {
   <div class="loading-state">
     <div class="spinner"></div>
@@ -23,7 +21,6 @@
   </div>
   }
 
-  <!-- Empty -->
   @if (!loading() && productos().length === 0) {
   <div class="empty-state">
     <ion-icon name="restaurant-outline"></ion-icon>
@@ -36,7 +33,6 @@
   </div>
   }
 
-  <!-- Grid de productos -->
   @if (!loading() && productos().length > 0) {
   <div class="productos-grid">
     @for (producto of productos(); track producto.id) {
@@ -72,7 +68,6 @@
     }
   </div>
 
-  <!-- Paginación -->
   @if (totalPages() > 1) {
   <div class="paginacion">
     <button class="btn-pag" [disabled]="currentPage() === 0" (click)="cambiarPagina(-1)">
@@ -87,7 +82,6 @@
   }
 </div>
 
-<!-- Modal Crear/Editar -->
 <ion-modal [isOpen]="isModalOpen()" (didDismiss)="isModalOpen.set(false)" class="producto-modal">
   <ng-template>
     <div class="modal-wrapper">
@@ -101,7 +95,6 @@
       <div class="modal-body">
         <form [formGroup]="form" (ngSubmit)="guardar()" class="producto-form">
 
-          <!-- Foto -->
           <div class="foto-row">
             <div class="foto-thumb">
               @if (fotoPreview()) {
@@ -117,7 +110,6 @@
             <input id="foto-prod" type="file" accept="image/*" hidden (change)="onFotoSeleccionada($event)">
           </div>
 
-          <!-- Nombre -->
           <div class="form-group">
             <label class="form-label">Nombre *</label>
             <ion-item lines="none" class="custom-input">
@@ -125,7 +117,6 @@
             </ion-item>
           </div>
 
-          <!-- Descripción -->
           <div class="form-group">
             <label class="form-label">Descripción *</label>
             <ion-item lines="none" class="custom-input custom-input--textarea">
@@ -134,7 +125,7 @@
           </div>
 
           <div class="form-row">
-            <!-- Precio -->
+            
             <div class="form-group">
               <label class="form-label">Precio (€) *</label>
               <ion-item lines="none" class="custom-input">
@@ -142,7 +133,6 @@
               </ion-item>
             </div>
 
-            <!-- Cantidad / Stock -->
             <div class="form-group">
               <label class="form-label">Stock *</label>
               <ion-item lines="none" class="custom-input">
@@ -164,7 +154,6 @@
   </ng-template>
 </ion-modal>
 
-<!-- Confirm Eliminar -->
 <app-confirm-modal
   [isOpen]="isConfirmOpen()"
   title="Eliminar producto"

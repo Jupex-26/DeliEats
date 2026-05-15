@@ -7,7 +7,6 @@
   gap: 40px;
 }
 
-// ─── Sections ─────────────────────────────────────────────────────────────────
 .edicion-section {
   border-bottom: 1px solid rgba($color-bg-alt, 0.6);
   padding-bottom: 36px;
@@ -34,7 +33,6 @@
   }
 }
 
-// ─── Foto ─────────────────────────────────────────────────────────────────────
 .foto-container {
   display: flex;
   align-items: center;
@@ -96,7 +94,6 @@
   }
 }
 
-// ─── Form ──────────────────────────────────────────────────────────────────────
 .edicion-form {
   display: flex;
   flex-direction: column;
@@ -183,7 +180,6 @@
   margin-left: 4px;
 }
 
-// ─── Buttons ──────────────────────────────────────────────────────────────────
 .btn-guardar, .btn-save-foto {
   display: flex;
   align-items: center;
@@ -216,7 +212,6 @@
   ion-icon { font-size: 1.1rem; }
 }
 
-// ─── Feedback ──────────────────────────────────────────────────────────────────
 .success-banner, .success-msg {
   display: flex;
   align-items: center;
@@ -305,7 +300,6 @@
   font-weight: 600;
 }
 
-// ─── Spinner ──────────────────────────────────────────────────────────────────
 .spinner-sm {
   width: 18px;
   height: 18px;

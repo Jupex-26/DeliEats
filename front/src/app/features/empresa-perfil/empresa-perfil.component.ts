@@ -53,14 +53,13 @@ export class EmpresaPerfilComponent implements OnInit {
       businessOutline
     });
 
-    // effect() sincroniza de forma garantizada y automática cada vez que cambia el usuario en el AuthService
     effect(() => {
       const user = this.authService.currentUser();
       untracked(() => {
         if (user?.userOutputDto) {
           const id = user.userOutputDto.id;
           this.loading.set(true);
-          this.empresa.set(null); // fuerza destrucción de subcomponentes cacheados
+          this.empresa.set(null); 
           this.empresaService.obtenerPorId(id).subscribe({
             next: (e) => {
               this.empresa.set(e);
@@ -88,6 +87,18 @@ export class EmpresaPerfilComponent implements OnInit {
     return this.authService.currentUser()?.userOutputDto ?? null;
   }
 
+  getFotoUrl(): string | null {
+    const foto = this.empresa()?.foto || this.usuario?.foto;
+    if (!foto) return null;
+    
+    if (foto.startsWith('http')) return foto;
+    return `${this.environment.storageUrl}/${foto}`;
+  }
+
+  onAvatarError(event: any) {
+    console.error('[EmpresaPerfil] Error al cargar la foto:', event);
+  }
+
   setTab(tab: EmpresaTab) {
     this.activeTab.set(tab);
   }
@@ -100,4 +111,3 @@ export class EmpresaPerfilComponent implements OnInit {
     this.router.navigate(['/restaurantes']);
   }
 }
-

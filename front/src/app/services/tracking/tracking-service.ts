@@ -1,61 +1,93 @@
-import { Injectable, signal } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Injectable, inject, signal } from '@angular/core';
+import { Observable, Subject, Subscription, ReplaySubject } from 'rxjs';
+import { WebSocketService, UbicacionPayload } from '../websocket/websocket-service';
 
 export interface UbicacionRepartidor {
   lat: number;
   lng: number;
 }
 
-/**
- * TrackingService — Stub para tracking en tiempo real vía Kafka
- *
- * TODO: Cuando el backend de Kafka/WebSocket esté definido, sustituir
- * la simulación por una conexión real.
- * Protocolo esperado: WebSocket/STOMP sobre SockJS
- * Topic esperado: /topic/pedido/{pedidoId}/ubicacion
- * Mensaje: { lat: number, lng: number }
- *
- * Instalar dependencias cuando sea necesario:
- *   npm install @stomp/stompjs sockjs-client
- *   npm install --save-dev @types/sockjs-client
- */
 @Injectable({
   providedIn: 'root'
 })
 export class TrackingService {
+  private wsService = inject(WebSocketService);
+  private locationSub?: Subscription;
+  private watchId: number | null = null;
 
   private ubicacion = signal<UbicacionRepartidor | null>(null);
   readonly ubicacionActual = this.ubicacion.asReadonly();
 
-  // Subject para emitir actualizaciones
-  private ubicacionSubject = new Subject<UbicacionRepartidor>();
+  private ubicacionSubject = new ReplaySubject<UbicacionRepartidor>(1);
   ubicacion$ = this.ubicacionSubject.asObservable();
 
-  /**
-   * Conecta al canal de tracking de un pedido.
-   * TODO: Reemplazar con conexión STOMP/WebSocket real cuando el backend esté listo.
-   */
-  conectar(pedidoId: number): void {
-    console.warn(`[TrackingService] Conectando al canal del pedido ${pedidoId}... (TODO: conectar Kafka/WebSocket)`);
-    // Ejemplo de conexión STOMP (descomentar cuando el backend esté listo):
-    // const client = new Client({
-    //   webSocketFactory: () => new SockJS(`${environment.wsUrl}/ws`),
-    //   onConnect: () => {
-    //     client.subscribe(`/topic/pedido/${pedidoId}/ubicacion`, (msg) => {
-    //       const ubicacion: UbicacionRepartidor = JSON.parse(msg.body);
-    //       this.ubicacion.set(ubicacion);
-    //       this.ubicacionSubject.next(ubicacion);
-    //     });
-    //   }
-    // });
-    // client.activate();
+  conectar(clienteId: number): void {
+    console.log(`[TrackingService] Conectando al canal de ubicación del cliente ${clienteId}...`);
+    this.wsService.conectar();
+
+    this.locationSub = this.wsService
+      .suscribirseAUbicacionCliente(clienteId)
+      .subscribe({
+        next: (payload: UbicacionPayload) => {
+          console.log('[TrackingService] Recibido payload de WS:', payload);
+          const coords = { lat: payload.latitud, lng: payload.longitud };
+          this.ubicacion.set(coords);
+          this.ubicacionSubject.next(coords);
+        },
+        error: (err) => console.error('[TrackingService] Error en suscripción:', err)
+      });
   }
 
-  /**
-   * Desconecta del canal de tracking.
-   */
+  iniciarRastreo(repartidorId: number, clienteId: number, pedidoId: number) {
+    if (!navigator.geolocation) {
+      console.error('La geolocalización no es soportada por este navegador.');
+      return;
+    }
+
+    this.wsService.conectar();
+
+    const options: PositionOptions = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0
+    };
+
+    if (this.watchId !== null) {
+      clearInterval(this.watchId);
+    }
+
+    this.watchId = window.setInterval(() => {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const payload: UbicacionPayload = {
+            repartidorId,
+            clienteId,
+            pedidoId,
+            latitud: position.coords.latitude,
+            longitud: position.coords.longitude
+          };
+
+          console.log('[TrackingService] Enviando ubicación cada 1s:', payload);
+          this.wsService.enviarUbicacion(payload);
+        },
+        (error) => console.error('[TrackingService] Error al obtener ubicación:', error),
+        options
+      );
+    }, 1000) as any;
+  }
+
   desconectar(): void {
-    console.warn('[TrackingService] Desconectando... (TODO: cerrar WebSocket)');
+    if (this.watchId !== null) {
+      clearInterval(this.watchId);
+      this.watchId = null;
+      console.log('[TrackingService] Rastreo (emisor) detenido.');
+    }
+
+    if (this.locationSub) {
+      this.locationSub.unsubscribe();
+      console.log('[TrackingService] Suscripción (receptor) detenida.');
+    }
+
     this.ubicacion.set(null);
   }
 }
