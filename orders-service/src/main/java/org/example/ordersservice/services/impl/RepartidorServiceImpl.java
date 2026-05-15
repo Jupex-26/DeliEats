@@ -9,7 +9,6 @@ import org.example.ordersservice.repositories.RepartidorRepository;
 import org.example.ordersservice.repositories.UserRepository;
 import org.example.ordersservice.services.RepartidorService;
 import org.example.ordersservice.services.RolService;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -124,47 +123,16 @@ public class RepartidorServiceImpl implements RepartidorService {
     }
 
     @Override
-    public boolean existsById(Long id) {
-        return repartidorRepository.existsById(id);
-    }
-
-    @Override
     public void createFromCliente(Cliente cliente) {
-        /*Repartidor repartidor = Repartidor.builder()
-                .id(cliente.getId())
-                .nombre(cliente.getNombre())
-                .email(cliente.getEmail())
-                .password(cliente.getPassword())
-                .foto(cliente.getFoto())
-                .aprobado(false)
-                .direccion(cliente.getDireccion())
-                .telefono(cliente.getTelefono())
-                .disponible(false)
-                .rol(cliente.getRol())
-                .build();
-
-        repartidorRepository.save(repartidor);*/
-        // Definimos el SQL que ataca DIRECTO a la tabla del diagrama
         String sql = "INSERT INTO repartidor (id, disponible, aprobado) VALUES (?, ?, ?)";
-
-        // Ejecutamos la orden enviando los valores
         jdbcTemplate.update(sql, cliente.getId(), false, false);
     }
 
     @Override
-    public Repartidor aprobarRepartidor(Long id, boolean aprobado) {
+    public void aprobarRepartidor(Long id, boolean aprobado) {
         Repartidor repartidor = findById(id);
         repartidor.setAprobado(aprobado);
-        return repartidorRepository.save(repartidor);
+        repartidorRepository.save(repartidor);
     }
 
-    @Override
-    public boolean isRepartidor(Long id) {
-        String sql = "SELECT aprobado FROM repartidor WHERE id = ?";
-        try {
-            return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, id));
-        } catch (EmptyResultDataAccessException e) {
-            return false;
-        }
-    }
 }

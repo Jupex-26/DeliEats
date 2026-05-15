@@ -4,10 +4,10 @@
   </div>
 
   <div class="hidden lg:flex space-x-6 font-medium gap-4">
-    <a routerLink="/" class="hover:text-primary transition-colors text-inherit no-underline">Inicio</a>
+    <a routerLink="/" class="nav-link text-inherit no-underline">Inicio</a>
     <a routerLink="/restaurantes"
-      class="hover:text-primary transition-colors text-inherit no-underline">Restaurantes</a>
-    <a routerLink="/nosotros" class="hover:text-primary transition-colors text-inherit no-underline">Nosotros</a>
+      class="nav-link text-inherit no-underline">Restaurantes</a>
+    <a routerLink="/nosotros" class="nav-link text-inherit no-underline">Nosotros</a>
   </div>
 
   <div class="hidden lg:flex items-center gap-4">
@@ -47,11 +47,11 @@
   [class.menu-open]="isMenuOpen">
   <div class="mobile-menu-container flex flex-col gap-2 p-4 border-t">
     <a routerLink="/" (click)="toggleMenu()"
-      class="text-main no-underline font-medium hover:text-primary py-3 block w-full text-left">Inicio</a>
+      class="nav-link text-main no-underline font-medium py-3 block w-full text-left">Inicio</a>
     <a routerLink="/restaurantes" (click)="toggleMenu()"
-      class="text-main no-underline font-medium hover:text-primary py-3 block w-full text-left">Restaurantes</a>
+      class="nav-link text-main no-underline font-medium py-3 block w-full text-left">Restaurantes</a>
     <a routerLink="/nosotros" (click)="toggleMenu()"
-      class="text-main no-underline font-medium hover:text-primary py-3 block w-full text-left">Nosotros</a>
+      class="nav-link text-main no-underline font-medium py-3 block w-full text-left">Nosotros</a>
 
     <div class="pt-4 mt-2 border-t border-gray-100">
       @if (isLogin()) {

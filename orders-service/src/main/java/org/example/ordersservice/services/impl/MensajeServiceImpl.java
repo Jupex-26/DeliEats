@@ -23,13 +23,8 @@ public class MensajeServiceImpl implements MensajeService {
 
     @Override
     public Mensaje save(Mensaje mensaje) {
-        // En MapStruct si mapeamos ID pero la entidad entera es null porque no se ha consultado 
-        // necesitamos setear correctamente los objetos. Aquí asumimos que el Mapper sí 
-        // creó las instancias con los IDs, así que validamos:
         validateUsersRole(mensaje.getEmisor().getId(), mensaje.getReceptor().getId());
         
-        // Ahora asignamos las entidades completas recuperadas de BD, 
-        // esto evita problemas de Null Constraints por intentar insertar con objetos proxy
         mensaje.setEmisor(userService.findById(mensaje.getEmisor().getId()));
         mensaje.setReceptor(userService.findById(mensaje.getReceptor().getId()));
 
@@ -52,18 +47,7 @@ public class MensajeServiceImpl implements MensajeService {
     }
 
     @Override
-    public Page<Mensaje> findByEmisorId(Long emisorId, Pageable pageable) {
-        return mensajeRepository.findByEmisor_Id(emisorId, pageable);
-    }
-
-    @Override
-    public Page<Mensaje> findByReceptorId(Long receptorId, Pageable pageable) {
-        return mensajeRepository.findByReceptor_Id(receptorId, pageable);
-    }
-    
-    @Override
     public Page<Mensaje> findChat(Long usuario1Id, Long usuario2Id, Pageable pageable) {
-        // Validar que los usuarios existen y tienen roles válidos para chatear
         validateUsersRole(usuario1Id, usuario2Id);
         return mensajeRepository.findByEmisor_IdAndReceptor_IdOrEmisor_IdAndReceptor_IdOrderByFechaAsc(
                 usuario1Id, usuario2Id, usuario2Id, usuario1Id, pageable
@@ -76,10 +60,6 @@ public class MensajeServiceImpl implements MensajeService {
         mensajeRepository.deleteById(id);
     }
 
-    @Override
-    public Long countUnreadByReceptorId(Long receptorId) {
-        return mensajeRepository.countByReceptor_IdAndLeidoFalse(receptorId);
-    }
 
     @Override
     public void markAsRead(Long id) {

@@ -23,11 +23,8 @@ public interface RepartidorService {
 
     Repartidor updateDisponibilidad(Long id, boolean disponible);
 
-    boolean existsById(Long id);
-
     void createFromCliente(Cliente cliente);
 
-    Repartidor aprobarRepartidor(Long id, boolean aprobado);
+    void aprobarRepartidor(Long id, boolean aprobado);
 
-    boolean isRepartidor(Long id);
 }

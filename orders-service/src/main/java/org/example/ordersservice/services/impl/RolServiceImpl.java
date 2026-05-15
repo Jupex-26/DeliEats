@@ -48,9 +48,4 @@ public class RolServiceImpl implements RolService {
     public void deleteById(Long id) {
         rolRepository.deleteById(id);
     }
-
-    @Override
-    public boolean existsByNombre(String nombre) {
-        return rolRepository.findByNombre(nombre).isPresent();
-    }
 }

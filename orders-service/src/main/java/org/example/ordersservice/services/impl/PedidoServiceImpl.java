@@ -54,11 +54,6 @@ public class PedidoServiceImpl implements PedidoService {
     }
 
     @Override
-    public Page<Pedido> findByEstadoId(Long estadoId, Pageable pageable) {
-        return pedidoRepository.findAllByEstadoId(estadoId, pageable);
-    }
-
-    @Override
     public Page<Pedido> findByEmpresaId(Long empresaId, Pageable pageable) {
         Empresa empresa = empresaService.findById(empresaId);
 
@@ -89,12 +84,6 @@ public class PedidoServiceImpl implements PedidoService {
     @Override
     public void deleteById(Long id) {
         pedidoRepository.deleteById(id);
-    }
-
-    @Override
-    public BigDecimal calculateTotal(Long id) {
-        Pedido pedido = findById(id);
-        return pedido.calcularTotal();
     }
 
     @Override

@@ -63,11 +63,6 @@ public class ProductoServiceImpl implements ProductoService {
     }
 
     @Override
-    public Page<Producto> findByNombreContaining(String nombre, Pageable pageable) {
-        return productoRepository.findByNombreContainingIgnoreCase(nombre, pageable);
-    }
-
-    @Override
     public Producto update(Long id, Producto producto) {
         Producto existingProducto = findById(id);
 
@@ -113,11 +108,6 @@ public class ProductoServiceImpl implements ProductoService {
         Producto producto = findById(id);
         producto.setCantidad(cantidad);
         productoRepository.save(producto);
-    }
-
-    @Override
-    public boolean existsById(Long id) {
-        return productoRepository.existsById(id);
     }
 
     private String saveFile(MultipartFile archivo) {

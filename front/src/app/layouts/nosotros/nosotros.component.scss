@@ -1,0 +1,338 @@
+@use 'sass:color';
+@use '../../../styles/variables' as *;
+
+ion-content {
+  --background: #{$color-bg-base};
+  --color: #{$color-text-main};
+}
+
+.bg-base {
+  background-color: $color-bg-base;
+}
+
+.bg-alt {
+  background-color: $color-bg-alt;
+}
+
+.bg-primary {
+  background-color: $color-primary;
+}
+
+.bg-secondary {
+  background-color: $color-secondary;
+}
+
+.bg-warning {
+  background-color: $color-warning;
+}
+
+.text-main {
+  color: $color-text-main;
+}
+
+.text-primary {
+  color: $color-primary;
+}
+
+.text-secondary {
+  color: $color-secondary;
+}
+
+.text-warning {
+  color: $color-warning;
+}
+
+.text-alt {
+  color: $color-bg-alt;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 24px;
+}
+
+.section-title {
+  font-family: 'Merriweather', serif;
+  font-size: 2.5rem;
+  color: $color-text-main;
+  margin-bottom: 24px;
+  position: relative;
+  display: inline-block;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background-color: $color-primary;
+    border-radius: 2px;
+  }
+}
+
+.nosotros-hero {
+  height: 60vh;
+  min-height: 400px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url('/nosotros_hero.png');
+  background-size: cover;
+  background-position: center;
+  color: white;
+  text-align: center;
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.4));
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    padding: 0 24px;
+
+    h1 {
+      font-size: 4rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 16px;
+      color: white;
+
+      span {
+        color: #C1D0B4;
+      }
+
+      @media (max-width: 768px) {
+        font-size: 2.5rem;
+      }
+    }
+
+    p {
+      font-size: 1.25rem;
+      color: rgba(white, 0.9);
+      font-weight: 400;
+    }
+  }
+}
+
+.grid-about {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+
+  @media (max-width: 992px) {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .about-text {
+    p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: rgba($color-text-main, 0.8);
+      margin-bottom: 24px;
+    }
+  }
+
+  .about-image img {
+    border-radius: 24px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  }
+}
+
+.valores-section {
+  background-color: white;
+
+  .valores-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    margin-top: 48px;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .valor-card {
+    background: white;
+    padding: 48px 32px;
+    border-radius: 24px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba($color-bg-alt, 0.5);
+
+    &:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+    }
+
+    ion-icon {
+      font-size: 48px;
+      color: $color-primary;
+      margin-bottom: 24px;
+    }
+
+    h3 {
+      font-size: 1.5rem;
+      margin-bottom: 16px;
+      color: $color-text-main;
+    }
+
+    p {
+      color: rgba($color-text-main, 0.6);
+      line-height: 1.6;
+    }
+  }
+}
+
+.nosotros-stats {
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 32px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+
+    ion-icon {
+      font-size: 40px;
+      color: $color-secondary;
+    }
+
+    .stat-info {
+      display: flex;
+      flex-direction: column;
+
+      .number {
+        font-size: 2rem;
+        font-weight: 800;
+        color: $color-text-main;
+      }
+
+      .label {
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: rgba($color-text-main, 0.5);
+      }
+    }
+  }
+}
+
+.cta-section {
+  background-color: $color-bg-base;
+  color: $color-text-main;
+  border-top: 1px solid rgba($color-bg-alt, 0.5);
+
+  h2 {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+    color: $color-primary;
+  }
+
+  p {
+    font-size: 1.2rem;
+    margin-bottom: 40px;
+    color: rgba($color-text-main, 0.7);
+  }
+
+  .cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+
+    @media (max-width: 480px) {
+      flex-direction: column;
+    }
+  }
+
+  .btn-primary {
+    background: $color-primary;
+    color: white;
+    padding: 16px 40px;
+    border-radius: 50px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: scale(1.05);
+      background: color.adjust($color-primary, $lightness: 5%);
+    }
+  }
+
+  .btn-secondary-outline {
+    background: transparent;
+    color: $color-primary;
+    padding: 16px 40px;
+    border-radius: 50px;
+    font-weight: 700;
+    border: 2px solid $color-primary;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: $color-primary;
+      color: white;
+    }
+  }
+}
+
+.footer-link {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+  opacity: 0.9;
+  cursor: pointer;
+
+  &:hover {
+    color: white;
+    opacity: 1;
+  }
+}
+
+.placeholder-main::placeholder {
+  color: rgba($color-text-main, 0.6);
+}
+
+.focus-ring-primary:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px $color-primary;
+}
+
+.newsletter-input {
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  border: none;
+  outline: none;
+  background-color: $color-bg-alt;
+  color: $color-text-main;
+
+  &::placeholder {
+    color: rgba($color-text-main, 0.6);
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 2px $color-primary;
+  }
+}

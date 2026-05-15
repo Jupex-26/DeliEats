@@ -15,13 +15,9 @@ public interface UserService {
 
     User findByEmail(String email);
 
-    User findByUsername(String username);
-
     User update(Long id, User user);
 
     void deleteById(Long id);
-
-    boolean existsByEmail(String email);
 
     void updatePassword(Long id, String newPassword);
 

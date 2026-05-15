@@ -1,7 +1,6 @@
 package org.example.ordersservice.services.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.example.ordersservice.exception.custom.ConflictException;
 import org.example.ordersservice.exception.custom.EmailExistsException;
 import org.example.ordersservice.exception.custom.NotFoundException;
 import org.example.ordersservice.models.User;
@@ -58,12 +57,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByUsername(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("Usuario no encontrado con: " + email));
-    }
-
-    @Override
     public User update(Long id, User user) {
         User existingUser = findById(id);
         
@@ -87,11 +80,6 @@ public class UserServiceImpl implements UserService {
             throw new NotFoundException("Usuario no encontrado con ID: " + id);
         }
         userRepository.deleteById(id);
-    }
-
-    @Override
-    public boolean existsByEmail(String email) {
-        return userRepository.existsByEmail(email);
     }
 
     @Override

@@ -19,8 +19,6 @@ public interface ProductoService {
     
     Page<Producto> findByEmpresaId(Long empresaId, Pageable pageable);
 
-    Page<Producto> findByNombreContaining(String nombre, Pageable pageable);
-
     Producto update(Long id, Producto producto);
     
     Producto updateWithFoto(Long id, Producto producto, MultipartFile file);
@@ -29,5 +27,4 @@ public interface ProductoService {
 
     void updateStock(Long id, Integer cantidad);
 
-    boolean existsById(Long id);
 }
