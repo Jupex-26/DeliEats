@@ -66,7 +66,11 @@ public class Pedido {
 
         return this.detalles.stream()
                 .filter(Objects::nonNull)
-                .map(d -> d.getPrecioUnitario().multiply(BigDecimal.valueOf(d.getCantidad())))
+                .map(d -> {
+                    BigDecimal unitPrice = d.getPrecioUnitario() != null ? d.getPrecioUnitario() : BigDecimal.ZERO;
+                    Integer quantity = d.getCantidad() != null ? d.getCantidad() : 0;
+                    return unitPrice.multiply(BigDecimal.valueOf(quantity));
+                })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 

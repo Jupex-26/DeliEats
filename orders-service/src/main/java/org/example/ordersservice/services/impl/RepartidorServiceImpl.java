@@ -1,10 +1,12 @@
 package org.example.ordersservice.services.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.example.ordersservice.exception.custom.EmailExistsException;
 import org.example.ordersservice.exception.custom.NotFoundException;
 import org.example.ordersservice.models.Cliente;
 import org.example.ordersservice.models.Repartidor;
 import org.example.ordersservice.repositories.RepartidorRepository;
+import org.example.ordersservice.repositories.UserRepository;
 import org.example.ordersservice.services.RepartidorService;
 import org.example.ordersservice.services.RolService;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -22,6 +24,7 @@ import java.util.regex.Pattern;
 public class RepartidorServiceImpl implements RepartidorService {
 
     private final RepartidorRepository repartidorRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JdbcTemplate jdbcTemplate;
 
@@ -31,6 +34,10 @@ public class RepartidorServiceImpl implements RepartidorService {
 
     @Override
     public Repartidor save(Repartidor repartidor) {
+        if (userRepository.existsByEmail(repartidor.getEmail())) {
+            throw new EmailExistsException("El email " + repartidor.getEmail() + " ya está registrado.");
+        }
+
         String rawPassword = repartidor.getPassword();
 
         if (Objects.isNull(rawPassword) || rawPassword.isEmpty()) {
@@ -71,6 +78,11 @@ public class RepartidorServiceImpl implements RepartidorService {
     @Override
     public Repartidor update(Long id, Repartidor repartidor) {
         Repartidor existingRepartidor = findById(id);
+
+        if (!existingRepartidor.getEmail().equalsIgnoreCase(repartidor.getEmail()) && userRepository.existsByEmail(repartidor.getEmail())) {
+            throw new EmailExistsException("El email " + repartidor.getEmail() + " ya está en uso por otro usuario.");
+        }
+
         repartidor.setId(existingRepartidor.getId());
 
         repartidor.setAprobado(existingRepartidor.getAprobado());

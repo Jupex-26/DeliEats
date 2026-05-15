@@ -54,6 +54,15 @@ export class PedidoService {
     return this.http.get<any>(`${this.urlApi}/empresa/${empresaId}/mes-actual`, { params });
   }
 
+  listarPorEmpresaYMes(empresaId: number, mes: number, anio: number, page: number = 0, size: number = 10): Observable<any> {
+    let params = new HttpParams()
+      .set('page', page)
+      .set('size', size)
+      .set('mes', mes)
+      .set('anio', anio);
+    return this.http.get<any>(`${this.urlApi}/empresa/${empresaId}/mes`, { params });
+  }
+
   actualizarEstado(id: number, estadoId: number): Observable<PedidoOutputDto> {
     return this.http.patch<PedidoOutputDto>(`${this.urlApi}/${id}/estado/${estadoId}`, {});
   }

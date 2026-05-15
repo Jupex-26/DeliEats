@@ -42,6 +42,53 @@
   margin: 0;
 }
 
+.mes-selector-container {
+  display: flex;
+  gap: 12px;
+  background: rgba($color-bg-alt, 0.4);
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid rgba($color-bg-alt, 0.7);
+  margin-top: -8px;
+
+  .select-wrapper {
+    flex: 1;
+    position: relative;
+  }
+
+  .custom-select {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba($color-bg-alt, 0.9);
+    background: white;
+    color: $color-text-main;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    appearance: none;
+    transition: all 0.2s ease;
+
+    &:focus {
+      border-color: $color-primary;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
+    }
+  }
+
+  // Arrow for custom select
+  .select-wrapper::after {
+    content: '▼';
+    font-size: 10px;
+    color: rgba($color-text-main, 0.4);
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+}
+
 .loading-state {
   display: flex; flex-direction: column; align-items: center; gap: 14px;
   padding: 60px 24px; color: rgba($color-text-main, 0.5);

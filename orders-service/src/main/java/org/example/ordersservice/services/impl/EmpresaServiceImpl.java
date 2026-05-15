@@ -1,10 +1,12 @@
 package org.example.ordersservice.services.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.example.ordersservice.exception.custom.EmailExistsException;
 import org.example.ordersservice.exception.custom.NotFoundException;
 import org.example.ordersservice.models.Apertura;
 import org.example.ordersservice.models.Empresa;
 import org.example.ordersservice.repositories.EmpresaRepository;
+import org.example.ordersservice.repositories.UserRepository;
 import org.example.ordersservice.services.EmpresaService;
 import org.example.ordersservice.services.RolService;
 import org.springframework.data.domain.Page;
@@ -23,12 +25,17 @@ import java.util.regex.Pattern;
 public class EmpresaServiceImpl implements EmpresaService {
 
     private final EmpresaRepository empresaRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RolService rolService;
     private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$");
 
     @Override
     public Empresa save(Empresa empresa) {
+        if (userRepository.existsByEmail(empresa.getEmail())) {
+            throw new EmailExistsException("El email " + empresa.getEmail() + " ya está registrado.");
+        }
+
         String rawPassword = empresa.getPassword();
 
         if (Objects.isNull(rawPassword) || rawPassword.isEmpty()) {
@@ -64,6 +71,11 @@ public class EmpresaServiceImpl implements EmpresaService {
     @Override
     public Empresa update(Long id, Empresa empresa) {
         Empresa existingEmpresa = findById(id);
+
+        if (!existingEmpresa.getEmail().equalsIgnoreCase(empresa.getEmail()) && userRepository.existsByEmail(empresa.getEmail())) {
+            throw new EmailExistsException("El email " + empresa.getEmail() + " ya está en uso por otro usuario.");
+        }
+
         empresa.setId(existingEmpresa.getId());
         empresa.setFoto(existingEmpresa.getFoto());
 

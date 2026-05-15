@@ -18,16 +18,15 @@ public abstract class PedidoMapper {
     @Mapping(target = "nombreRepartidor", source = "repartidor.nombre")
     @Mapping(target = "empresaId", source = "empresa.id")
     @Mapping(target = "nombreEmpresa", source = "empresa.nombre")
-    // El campo 'precioTotal' se setea en el Service tras calcular la suma de los detalles
     public abstract PedidoOutputDto toDto(Pedido pedido);
 
     @Mapping(target = "precio", ignore = true)
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "fechaCompra", ignore = true) // Se asigna en el Service: LocalDateTime.now()
+    @Mapping(target = "fechaCompra", ignore = true)
     @Mapping(target = "cliente.id", source = "clienteId")
     @Mapping(target = "repartidor.id", source = "idRepartidor")
-    @Mapping(target = "estado.id", source = "idEstado")      // Se asigna el estado inicial "PENDIENTE"
-    @Mapping(target = "detalles", source = "detalles")    // Se procesan los detalles uno a uno en el Service
+    @Mapping(target = "estado.id", source = "idEstado")
+    @Mapping(target = "detalles", source = "detalles")
     @Mapping(target = "empresa.id", source = "empresaId")
     public abstract Pedido toEntity(PedidoInputDto dto);
 }

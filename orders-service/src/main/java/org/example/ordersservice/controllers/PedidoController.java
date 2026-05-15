@@ -9,6 +9,7 @@ import org.example.ordersservice.mappers.PedidoMapper;
 import org.example.ordersservice.services.PedidoService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,8 +51,30 @@ public class PedidoController {
     }
 
     @GetMapping("/empresa/{empresaId}")
-    public ResponseEntity<Page<PedidoOutputDto>> findByEmpresaId(@PathVariable Long empresaId, @PageableDefault Pageable pageable) {
+    public ResponseEntity<Page<PedidoOutputDto>> findByEmpresaId(
+            @PathVariable Long empresaId, 
+            @PageableDefault(sort = "fechaCompra", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<PedidoOutputDto> dtos = pedidoService.findByEmpresaId(empresaId, pageable)
+                .map(pedidoMapper::toDto);
+        return ResponseEntity.ok(dtos);
+    }
+
+    @GetMapping("/empresa/{empresaId}/mes-actual")
+    public ResponseEntity<Page<PedidoOutputDto>> findByEmpresaIdMesActual(
+            @PathVariable Long empresaId, 
+            @PageableDefault(sort = "fechaCompra", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<PedidoOutputDto> dtos = pedidoService.findByEmpresaIdMesActual(empresaId, pageable)
+                .map(pedidoMapper::toDto);
+        return ResponseEntity.ok(dtos);
+    }
+
+    @GetMapping("/empresa/{empresaId}/mes")
+    public ResponseEntity<Page<PedidoOutputDto>> findByEmpresaIdAndMes(
+            @PathVariable Long empresaId, 
+            @RequestParam int mes,
+            @RequestParam int anio,
+            @PageableDefault(sort = "fechaCompra", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<PedidoOutputDto> dtos = pedidoService.findByEmpresaIdAndMesAndAnio(empresaId, mes, anio, pageable)
                 .map(pedidoMapper::toDto);
         return ResponseEntity.ok(dtos);
     }

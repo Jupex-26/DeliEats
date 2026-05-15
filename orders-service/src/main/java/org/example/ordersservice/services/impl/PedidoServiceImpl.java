@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.Objects;
 
 @Service
@@ -65,8 +66,35 @@ public class PedidoServiceImpl implements PedidoService {
     }
 
     @Override
+    public Page<Pedido> findByEmpresaIdMesActual(Long empresaId, Pageable pageable) {
+        Empresa empresa = empresaService.findById(empresaId);
+
+        LocalDateTime inicioMes = YearMonth.now().atDay(1).atStartOfDay();
+        LocalDateTime finMes = YearMonth.now().atEndOfMonth().atTime(23, 59, 59, 999999999);
+
+        return pedidoRepository.findAllByEmpresaIdAndFechaCompraBetween(empresa.getId(), inicioMes, finMes, pageable);
+    }
+
+    @Override
+    public Page<Pedido> findByEmpresaIdAndMesAndAnio(Long empresaId, int mes, int anio, Pageable pageable) {
+        Empresa empresa = empresaService.findById(empresaId);
+
+        YearMonth yearMonth = YearMonth.of(anio, mes);
+        LocalDateTime inicioMes = yearMonth.atDay(1).atStartOfDay();
+        LocalDateTime finMes = yearMonth.atEndOfMonth().atTime(23, 59, 59, 999999999);
+
+        return pedidoRepository.findAllByEmpresaIdAndFechaCompraBetween(empresa.getId(), inicioMes, finMes, pageable);
+    }
+
+    @Override
     public void deleteById(Long id) {
         pedidoRepository.deleteById(id);
+    }
+
+    @Override
+    public BigDecimal calculateTotal(Long id) {
+        Pedido pedido = findById(id);
+        return pedido.calcularTotal();
     }
 
     @Override

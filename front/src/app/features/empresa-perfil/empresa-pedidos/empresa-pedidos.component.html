@@ -7,13 +7,32 @@
     </button>
     <button class="filtro-btn" [class.active]="filtroActivo() === 'mes'" (click)="setFiltro('mes')">
       <ion-icon name="calendar-outline"></ion-icon>
-      Este mes
+      Por mes
     </button>
     <button class="filtro-btn" [class.active]="filtroActivo() === 'mayor-importe'" (click)="setFiltro('mayor-importe')">
       <ion-icon name="cash-outline"></ion-icon>
       Mayor importe
     </button>
   </div>
+
+  @if (filtroActivo() === 'mes') {
+    <div class="mes-selector-container">
+      <div class="select-wrapper">
+        <select (change)="cambiarMes($event)" [value]="mesSeleccionado()" class="custom-select">
+          @for (m of meses; track m.id) {
+            <option [value]="m.id">{{ m.nombre }}</option>
+          }
+        </select>
+      </div>
+      <div class="select-wrapper">
+        <select (change)="cambiarAnio($event)" [value]="anioSeleccionado()" class="custom-select">
+          @for (a of anios; track a) {
+            <option [value]="a">{{ a }}</option>
+          }
+        </select>
+      </div>
+    </div>
+  }
 
   @if (!loading()) {
   <p class="resultado-count">

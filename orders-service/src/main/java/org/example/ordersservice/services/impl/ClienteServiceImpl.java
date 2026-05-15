@@ -2,10 +2,12 @@ package org.example.ordersservice.services.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.example.ordersservice.exception.custom.EmailExistsException;
 import org.example.ordersservice.exception.custom.NotFoundException;
 import org.example.ordersservice.exception.custom.RepartidorExistsException;
 import org.example.ordersservice.models.Cliente;
 import org.example.ordersservice.repositories.ClienteRepository;
+import org.example.ordersservice.repositories.UserRepository;
 import org.example.ordersservice.services.ClienteService;
 import org.example.ordersservice.services.RepartidorService;
 import org.example.ordersservice.services.RolService;
@@ -22,6 +24,7 @@ import java.util.regex.Pattern;
 public class ClienteServiceImpl implements ClienteService {
 
     private final ClienteRepository clienteRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RolService rolService;
     private final RepartidorService repartidorService;
@@ -29,6 +32,10 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     public Cliente save(Cliente cliente) {
+        if (userRepository.existsByEmail(cliente.getEmail())) {
+            throw new EmailExistsException("El email " + cliente.getEmail() + " ya está registrado.");
+        }
+
         String rawPassword = cliente.getPassword();
 
         if (Objects.isNull(rawPassword) || rawPassword.isEmpty()) {
@@ -60,6 +67,10 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     public Cliente update(Long id, Cliente cliente) {
         Cliente existente = findById(id);
+
+        if (!existente.getEmail().equalsIgnoreCase(cliente.getEmail()) && userRepository.existsByEmail(cliente.getEmail())) {
+            throw new EmailExistsException("El email " + cliente.getEmail() + " ya está en uso por otro usuario.");
+        }
 
         cliente.setId(existente.getId());
 

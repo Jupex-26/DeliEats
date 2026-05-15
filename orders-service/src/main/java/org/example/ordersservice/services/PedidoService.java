@@ -20,6 +20,10 @@ public interface PedidoService {
 
     Page<Pedido> findByEmpresaId(Long empresaId, Pageable pageable);
 
+    Page<Pedido> findByEmpresaIdMesActual(Long empresaId, Pageable pageable);
+
+    Page<Pedido> findByEmpresaIdAndMesAndAnio(Long empresaId, int mes, int anio, Pageable pageable);
+
     Pedido update(Long id, Pedido pedido);
 
     Pedido updateEstado(Long id, Long estadoId);
@@ -27,5 +31,7 @@ public interface PedidoService {
     Pedido cancelarPedido(Long id);
 
     void deleteById(Long id);
+
+    BigDecimal calculateTotal(Long id);
 
 }
