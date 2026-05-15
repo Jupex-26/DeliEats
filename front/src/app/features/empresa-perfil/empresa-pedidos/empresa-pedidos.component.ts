@@ -46,7 +46,6 @@ export class EmpresaPedidosComponent implements OnInit {
   filtroActivo = signal<PedidoFiltro>('recientes');
   pedidoDetalle = signal<PedidoOutputDto | null>(null);
 
-  // --- Estados de Pedidos ---
   estadosList = signal<EstadoOutputDto[]>([]);
   actualizandoEstadoId = signal<number | null>(null);
 
@@ -69,11 +68,10 @@ export class EmpresaPedidosComponent implements OnInit {
     });
   }
 
-  // Mapea el filtro visual al parámetro `sort` de Pageable
   private getSortParam(): string {
     switch (this.filtroActivo()) {
       case 'recientes':     return 'fechaCompra,desc';
-      case 'mes':           return 'fechaCompra,desc';   // filtrado por mes → endpoint específico
+      case 'mes':           return 'fechaCompra,desc';   
       case 'mayor-importe': return 'precioTotal,desc';
       default:              return 'fechaCompra,desc';
     }
@@ -150,4 +148,3 @@ export class EmpresaPedidosComponent implements OnInit {
     return '';
   }
 }
-

@@ -12,7 +12,6 @@ ion-content {
   color: $color-text-main;
 }
 
-// ─── Header / Hero ────────────────────────────────────────────────────────────
 .empresa-header {
   background: linear-gradient(135deg, $color-primary, color.adjust($color-primary, $lightness: 14%));
   padding: 32px 28px 52px;
@@ -102,7 +101,6 @@ ion-content {
   }
 }
 
-// ─── Tabs ─────────────────────────────────────────────────────────────────────
 .tabs-nav {
   display: flex;
   gap: 4px;
@@ -146,7 +144,6 @@ ion-content {
   }
 }
 
-// ─── Tab Content ──────────────────────────────────────────────────────────────
 .tab-content {
   background: white;
   border: 1px solid rgba($color-bg-alt, 0.8);
@@ -161,7 +158,6 @@ ion-content {
   }
 }
 
-// ─── Loading ──────────────────────────────────────────────────────────────────
 .loading-state {
   display: flex;
   justify-content: center;

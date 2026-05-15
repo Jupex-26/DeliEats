@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, effect, untracked } from '@angular/core';
+import { Component, inject, signal, OnInit, OnDestroy, effect, untracked } from '@angular/core';
 import { CommonModule, DatePipe, CurrencyPipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { IonContent, IonIcon, IonToggle } from '@ionic/angular/standalone';
@@ -19,6 +19,7 @@ import { ClienteService } from '../../services/cliente/cliente-service';
 import { RepartidorService } from '../../services/repartidor/repartidor-service';
 import { PedidoService } from '../../services/pedido/pedido-service';
 import { EstadoService } from '../../services/estado/estado-service';
+import { TrackingService } from '../../services/tracking/tracking-service';
 import { ClienteOutputDto, RepartidorOutputDto, PedidoOutputDto, EstadoOutputDto } from '../../types';
 import { PerfilEdicionComponent } from './perfil-edicion/perfil-edicion.component';
 import { MisPedidosComponent } from './mis-pedidos/mis-pedidos.component';
@@ -47,13 +48,14 @@ import { ChatModalComponent } from '../../shared/chat-modal/chat-modal.component
   templateUrl: './perfil.component.html',
   styleUrls: ['./perfil.component.scss']
 })
-export class PerfilComponent implements OnInit {
+export class PerfilComponent implements OnInit, OnDestroy {
   protected environment = environment;
   private authService = inject(AuthService);
   private clienteService = inject(ClienteService);
   private repartidorService = inject(RepartidorService);
   private pedidoService = inject(PedidoService);
   private estadoService = inject(EstadoService);
+  private trackingService = inject(TrackingService);
   private router = inject(Router);
 
   activeTab = signal<Tab>('perfil');
@@ -62,7 +64,8 @@ export class PerfilComponent implements OnInit {
   loading = signal(true);
   loadingRepartidor = signal(false);
 
-  // --- Pedidos Repartidor ---
+  trackingPedidoId = signal<number | null>(null);
+
   pedidosDisponibles = signal<PedidoOutputDto[]>([]);
   estadosList = signal<EstadoOutputDto[]>([]);
   loadingPedidos = signal(false);
@@ -71,7 +74,6 @@ export class PerfilComponent implements OnInit {
   isSuccessModalOpen = signal(false);
   successModalMessage = signal('');
 
-  // --- Chat ---
   isChatOpen = signal(false);
   chatPedidoId = signal<number | null>(null);
   chatReceptorId = signal<number | null>(null);
@@ -90,7 +92,6 @@ export class PerfilComponent implements OnInit {
       locationOutline
     });
 
-    // effect() reacciona de forma garantizada y automática cada vez que cambia el usuario actual en el AuthService
     effect(() => {
       const user = this.authService.currentUser();
       untracked(() => {
@@ -99,16 +100,20 @@ export class PerfilComponent implements OnInit {
           const id = user.userOutputDto.id;
           if (rol === 'ROLE_CLIENTE' || rol === 'ROLE_REPARTIDOR') {
             this.loading.set(true);
-            this.cliente.set(null); // fuerza la destrucción de subcomponentes para evitar retención de estado local
+            this.cliente.set(null); 
             this.clienteService.obtenerPorId(id).subscribe({
               next: (c) => {
+                console.log('[Perfil] Cliente cargado:', c);
                 this.cliente.set(c);
                 this.loading.set(false);
                 if (this.activeTab() === 'repartidor') {
                   this.cargarRepartidor();
                 }
               },
-              error: () => this.loading.set(false)
+              error: (err) => {
+                console.error('[Perfil] Error al cargar cliente:', err);
+                this.loading.set(false);
+              }
             });
           } else {
             this.loading.set(false);
@@ -125,12 +130,11 @@ export class PerfilComponent implements OnInit {
   }
 
   ngOnInit() {
-    /* Comentado temporalmente para depuración
-    const user = this.authService.currentUser();
-    if (!user?.userOutputDto) {
-      this.router.navigate(['/login']);
-    }
-    */
+    
+  }
+
+  ngOnDestroy() {
+    this.trackingService.desconectar();
   }
 
   get rol(): string {
@@ -139,6 +143,19 @@ export class PerfilComponent implements OnInit {
 
   get usuario() {
     return this.authService.currentUser()?.userOutputDto ?? null;
+  }
+
+  getFotoUrl(): string | null {
+    const foto = this.cliente()?.foto || this.usuario?.foto;
+    if (!foto) return null;
+    
+    if (foto.startsWith('http')) return foto;
+    return `${this.environment.storageUrl}/${foto}`;
+  }
+
+  onAvatarError(event: any) {
+    console.error('[Perfil] Error al cargar la foto:', event);
+    
   }
 
   setTab(tab: Tab) {
@@ -186,10 +203,6 @@ export class PerfilComponent implements OnInit {
       next: (res) => {
         const todos: PedidoOutputDto[] = res.content || [];
 
-        // Filtrado estricto:
-        // 1. Excluir pedidos propios (clienteId === currentUserId)
-        // 2. Mostrar pedidos sin asignar (repartidorId nulo) o asignados a este repartidor
-        // 3. Omitir pedidos ya terminados (Entregado/Cancelado)
         const filtrados = todos.filter(p => {
           if (p.clienteId === currentUserId) return false;
 
@@ -201,7 +214,6 @@ export class PerfilComponent implements OnInit {
 
           if (isTerminado) return false;
 
-          // Si el pedido no está asignado, solo se permite asignarse si el restaurante lo está PREPARANDO
           if (isSinAsignar && !estadoLower.includes('preparando')) {
             return false;
           }
@@ -240,7 +252,7 @@ export class PerfilComponent implements OnInit {
 
         this.pedidoService.actualizar(pedido.id, payload).subscribe({
           next: () => {
-            // Tras asignarse exitosamente, transicionar automáticamente el estado a "EN CAMINO"
+            
             const estadoEnCamino = this.estadosList().find(e => e.nombre?.toLowerCase().includes('camino'));
             if (estadoEnCamino) {
               this.pedidoService.actualizarEstado(pedido.id, estadoEnCamino.id).subscribe({
@@ -280,6 +292,11 @@ export class PerfilComponent implements OnInit {
     this.pedidoService.actualizarEstado(pedidoId, estadoEntregado.id).subscribe({
       next: () => {
         this.actualizandoEstadoPedidoId.set(null);
+        
+        if (this.trackingPedidoId() === pedidoId) {
+          this.trackingService.desconectar();
+          this.trackingPedidoId.set(null);
+        }
         this.successModalMessage.set('Usted ha entregado el pedido con exito');
         this.isSuccessModalOpen.set(true);
         this.cargarPedidosRepartidor();
@@ -306,7 +323,7 @@ export class PerfilComponent implements OnInit {
         }
       },
       error: () => {
-        // revert local state on error
+        
         this.repartidor.set({ ...rep });
       }
     });
@@ -336,15 +353,27 @@ export class PerfilComponent implements OnInit {
   }
 
   enviarUbicacionLive(pedido: PedidoOutputDto) {
-    // Placeholder para inicializar la transmisión por Sockets de coordenadas GPS
-    console.log('Emitiendo ubicación en vivo por socket para el pedido:', pedido.id);
-    alert('Transmitiendo tu ubicación en tiempo real al cliente mediante WebSockets.');
+    const repId = this.repartidor()?.id;
+    if (!repId) return;
+
+    if (this.trackingPedidoId() === pedido.id) {
+      
+      this.trackingService.desconectar();
+      this.trackingPedidoId.set(null);
+      console.log('Rastreo detenido para el pedido:', pedido.id);
+    } else {
+      
+      if (this.trackingPedidoId() !== null) {
+        this.trackingService.desconectar();
+      }
+
+      this.trackingService.iniciarRastreo(repId, pedido.clienteId, pedido.id);
+      this.trackingPedidoId.set(pedido.id);
+      console.log('Emitiendo ubicación en vivo por socket para el pedido:', pedido.id);
+    }
   }
 
   volver() {
     this.router.navigate(['/restaurantes']);
   }
 }
-
-
-

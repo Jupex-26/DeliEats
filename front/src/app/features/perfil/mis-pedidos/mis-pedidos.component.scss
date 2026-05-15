@@ -1,7 +1,6 @@
 @use 'sass:color';
 @use '../../../../styles/variables' as *;
 
-// Estado colors map
 $estado-colors: (
   'PENDIENTE': #f0a500,
   'PREPARANDO': #3498db,
@@ -14,7 +13,6 @@ $estado-colors: (
   font-family: 'Lora', 'Verdana', serif;
 }
 
-// ─── States ───────────────────────────────────────────────────────────────────
 .loading-state, .empty-state, .error-state {
   display: flex;
   flex-direction: column;
@@ -65,7 +63,6 @@ $estado-colors: (
   &:hover { background: rgba($color-primary, 0.06); }
 }
 
-// ─── Pedidos list ─────────────────────────────────────────────────────────────
 .pedidos-list {
   list-style: none;
   margin: 0;
@@ -107,7 +104,6 @@ $estado-colors: (
   }
 }
 
-// Estado badge
 .pedido-estado {
   display: flex;
   align-items: center;
@@ -131,7 +127,6 @@ $estado-colors: (
   ion-icon { font-size: 14px; }
 }
 
-// Info block
 .pedido-info {
   display: flex;
   flex-direction: column;
@@ -157,7 +152,6 @@ $estado-colors: (
   }
 }
 
-// Productos preview
 .productos-preview {
   grid-column: 1 / -1;
   list-style: none;
@@ -180,7 +174,6 @@ $estado-colors: (
   }
 }
 
-// Acciones
 .pedido-acciones {
   display: flex;
   align-items: center;

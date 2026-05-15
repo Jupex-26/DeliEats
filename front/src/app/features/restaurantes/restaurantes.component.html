@@ -1,7 +1,6 @@
 <ion-content>
   <div class="max-w-7xl mx-auto px-6 py-8">
 
-    <!-- Buscador y Categorías (Se mantienen igual) -->
     <div class="flex flex-wrap items-center gap-6 mb-12">
       <div class="search-container relative flex-1 min-w-[300px]">
         <span class="search-icon">
@@ -36,7 +35,6 @@
       </div>
     </div>
 
-    <!-- Grid de Restaurantes -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
       @for (res of filteredRestaurants(); track res.id) {
         @let abierto = estaAbierto(res);
@@ -81,7 +79,7 @@
           </div>
         </div>
       } @empty {
-        <!-- Mensaje de No Resultados (Estilo DeliEats) -->
+        
         <div class="col-span-full py-20 text-center animate-in fade-in duration-500">
           <div class="text-6xl mb-4 text-primary opacity-20">
             <ion-icon name="restaurant-outline"></ion-icon>

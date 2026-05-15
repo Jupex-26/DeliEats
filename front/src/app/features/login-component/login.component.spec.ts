@@ -14,7 +14,7 @@ describe('LoginComponent', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        provideRouter([]) // Provee un enrutador mock para solucionar errores con RouterModule
+        provideRouter([]) 
       ]
     }).compileComponents();
 

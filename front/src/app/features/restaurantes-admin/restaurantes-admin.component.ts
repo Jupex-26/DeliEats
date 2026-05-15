@@ -70,7 +70,6 @@ export class RestaurantesAdminComponent implements OnInit {
   private tipoCocinaService = inject(TipoCocinaService);
   private pollSubscription?: Subscription;
 
-  // --- Estado de Restaurantes ---
   empresas = signal<EmpresaOutputDto[]>([]);
   currentPage = signal(0);
   pageSize = signal(10);
@@ -89,7 +88,6 @@ export class RestaurantesAdminComponent implements OnInit {
   empresaForm: EmpresaInputDto = this.getEmptyEmpresaForm();
   tiposCocina = signal<TipoCocinaOutputDto[]>([]);
 
-  // --- Estado de Productos ---
   isProductsModalOpen = signal(false);
   isProductFormModalOpen = signal(false);
   isProductConfirmModalOpen = signal(false);
@@ -103,7 +101,6 @@ export class RestaurantesAdminComponent implements OnInit {
   productFotoFile = signal<File | null>(null);
   productFotoPreview = signal<string | null>(null);
 
-  // Modal Info
   isInfoModalOpen = signal(false);
   modalTitle = signal('');
   modalMessage = signal('');
@@ -140,7 +137,7 @@ export class RestaurantesAdminComponent implements OnInit {
 
   ngOnInit() {
     this.cargarTiposCocina();
-    // Polling cada 15 segundos para administración en "tiempo real"
+    
     this.pollSubscription = timer(0, 15000).pipe(
       switchMap(() => this.empresaService.listar(this.currentPage(), this.pageSize()))
     ).subscribe({
@@ -156,10 +153,6 @@ export class RestaurantesAdminComponent implements OnInit {
   ngOnDestroy() {
     this.pollSubscription?.unsubscribe();
   }
-
-  // ==========================================
-  // GESTIÓN DE RESTAURANTES (EMPRESAS)
-  // ==========================================
 
   cargarTiposCocina() {
     this.tipoCocinaService.listar(0, 100).subscribe({
@@ -244,17 +237,13 @@ export class RestaurantesAdminComponent implements OnInit {
       telefono: undefined,
       direccion: '',
       foto: '',
-      rolId: 3, // Rol Empresa
+      rolId: 3, 
       descripcion: '',
       correoContacto: '',
       telefonoContacto: '',
       tipoCocinaId: 0,
     };
   }
-
-  // ==========================================
-  // GESTIÓN DE PRODUCTOS
-  // ==========================================
 
   abrirModalProductos(empresa: EmpresaOutputDto) {
     this.selectedEmpresaForProducts.set(empresa);

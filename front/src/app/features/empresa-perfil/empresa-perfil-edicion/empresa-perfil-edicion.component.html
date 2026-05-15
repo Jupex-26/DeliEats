@@ -1,6 +1,5 @@
 <form [formGroup]="perfilForm" (ngSubmit)="guardarPerfil()" class="edicion-form">
 
-  <!-- Foto -->
   <div class="foto-section">
     <div class="foto-preview-wrapper">
       @if (fotoPreview()) {
@@ -33,7 +32,6 @@
 
   <div class="form-grid">
 
-    <!-- Nombre -->
     <div class="form-group">
       <ion-item lines="none" class="custom-input">
         <ion-input formControlName="nombre" label="Nombre del restaurante" labelPlacement="stacked"
@@ -50,7 +48,6 @@
       }
     </div>
 
-    <!-- Email -->
     <div class="form-group">
       <ion-item lines="none" class="custom-input">
         <ion-input formControlName="email" label="Email de la cuenta" labelPlacement="stacked"
@@ -67,18 +64,24 @@
       }
     </div>
 
-    <!-- Dirección -->
     <div class="form-group">
-      <ion-item lines="none" class="custom-input">
-        <ion-input formControlName="direccion" label="Dirección" labelPlacement="stacked" placeholder="Calle, número..."
+      <ion-item lines="none" class="custom-input" [class.border-red-500]="errorDireccion()">
+        <ion-input formControlName="direccion" label="Dirección" labelPlacement="stacked" placeholder="Calle, número, ciudad..."
           type="text"></ion-input>
       </ion-item>
       @if (perfilForm.get('direccion')?.touched && perfilForm.get('direccion')?.invalid) {
-      <span class="field-error">La dirección es obligatoria</span>
+        <span class="field-error">La dirección es obligatoria</span>
+      }
+      @if (errorDireccion()) {
+        <span class="field-error flex items-center gap-1 mt-1">
+          ⚠️ Dirección no encontrada. Asegúrate de incluir calle, número y ciudad.
+        </span>
+      }
+      @if (validandoDireccion()) {
+        <span class="text-xs text-primary animate-pulse mt-1 block">🔍 Verificando dirección...</span>
       }
     </div>
 
-    <!-- Teléfono (Principal) -->
     <div class="form-group">
       <ion-item lines="none" class="custom-input">
         <ion-input formControlName="telefono" label="Teléfono principal" labelPlacement="stacked"
@@ -89,7 +92,6 @@
       }
     </div>
 
-    <!-- Correo contacto -->
     <div class="form-group">
       <ion-item lines="none" class="custom-input">
         <ion-input formControlName="correoContacto" label="Correo de contacto público" labelPlacement="stacked"
@@ -106,7 +108,6 @@
       }
     </div>
 
-    <!-- Teléfono contacto -->
     <div class="form-group">
       <ion-item lines="none" class="custom-input">
         <ion-input formControlName="telefonoContacto" label="Teléfono de contacto" labelPlacement="stacked"
@@ -117,7 +118,6 @@
       }
     </div>
 
-    <!-- Tipo de Cocina -->
     <div class="form-group">
       <div class="custom-input-like"
         [class.is-valid]="perfilForm.get('tipoCocinaId')?.valid && perfilForm.get('tipoCocinaId')?.touched"
@@ -137,7 +137,6 @@
       }
     </div>
 
-    <!-- Descripción (full width) -->
     <div class="form-group form-group--full">
       <ion-item lines="none" class="custom-input custom-input--textarea">
         <ion-textarea formControlName="descripcion" label="Descripción" labelPlacement="stacked"
@@ -150,7 +149,6 @@
 
   </div>
 
-  <!-- Horarios de Apertura -->
   <div class="aperturas-section">
     <div class="section-header">
       <h3 class="section-title">
@@ -214,16 +212,15 @@
     @if (exitoPerfil()) {
     <span class="success-inline"><ion-icon name="checkmark-circle-outline"></ion-icon> Cambios guardados</span>
     }
-    <button type="submit" class="btn-guardar" [disabled]="perfilForm.invalid || perfilForm.pristine || guardando()">
-      @if (guardando()) { <div class="spinner-sm spinner-sm--white"></div> } @else {
+    <button type="submit" class="btn-guardar" [disabled]="perfilForm.invalid || perfilForm.pristine || guardando() || validandoDireccion()">
+      @if (guardando() || validandoDireccion()) { <div class="spinner-sm spinner-sm--white"></div> } @else {
       <ion-icon name="save-outline"></ion-icon>
       }
-      {{ guardando() ? 'Guardando...' : 'Guardar cambios' }}
+      {{ validandoDireccion() ? 'Verificando...' : (guardando() ? 'Guardando...' : 'Guardar cambios') }}
     </button>
   </div>
 </form>
 
-<!-- Cambio de contraseña -->
 <div class="password-section">
   <h3 class="section-title">
     <ion-icon name="lock-closed-outline"></ion-icon>

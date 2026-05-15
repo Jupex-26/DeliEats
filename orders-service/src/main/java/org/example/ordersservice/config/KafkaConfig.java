@@ -24,10 +24,19 @@ import java.util.Map;
 public class KafkaConfig {
 
     public static final String CHAT_TOPIC = "chat-mensajes";
+    public static final String LOCATION_TOPIC = "location-updates";
 
     @Bean
     public NewTopic chatTopic() {
         return TopicBuilder.name(CHAT_TOPIC)
+                .partitions(1)
+                .replicas(1)
+                .build();
+    }
+    
+    @Bean
+    public NewTopic locationTopic() {
+        return TopicBuilder.name(LOCATION_TOPIC)
                 .partitions(1)
                 .replicas(1)
                 .build();

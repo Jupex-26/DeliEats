@@ -1,24 +1,18 @@
-// ==========================================
-// DeliEats - Componentes de Botones
-// ==========================================
 @use "variables" as *;
 
 @layer components {
 
-  // Clase base para botones (Standard)
   .btn {
-    border-radius: 8px; //
+    border-radius: 8px; 
     padding: 12px 24px;
-    font-size: 14px; //
+    font-size: 14px; 
     transition: all 0.3s ease-in-out;
     border: 2px solid transparent;
 
-    // Micro-interacción táctil (Escala)
     &:active {
-      transform: scale(0.98); //
+      transform: scale(0.98); 
     }
 
-    // Estilo para iconos dentro de botones
     i,
     mat-icon,
     .icon {
@@ -27,7 +21,6 @@
       align-items: center;
     }
 
-    // Estado Deshabilitado
     &:disabled,
     &.btn-disabled {
       opacity: 0.5;
@@ -37,21 +30,19 @@
     }
   }
 
-  // 1. Botón Primario (Acción Principal)
   .btn-primary {
     @extend .btn;
-    background-color: $color-primary; // Pine Teal
-    color: $color-bg-base; // Floral White (Contraste AAA)
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); //
+    background-color: $color-primary; 
+    color: $color-bg-base; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
 
     &:hover {
-      background-color: #A6C44A; // Color Lima complementario
-      color: $color-text-main; // Cambio a carbón para mantener AAA
-      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); //
+      background-color: #A6C44A; 
+      color: $color-text-main; 
+      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); 
     }
   }
 
-  // 2. Botón Secundario (Outline)
   .btn-secondary {
     @extend .btn;
     background-color: transparent;
@@ -64,32 +55,29 @@
     }
   }
 
-  // 3. Botón de Peligro (Acciones Críticas)
   .btn-danger {
     @extend .btn;
-    background-color: $color-secondary; // Dark Wine
-    color: $color-bg-base; //
+    background-color: $color-secondary; 
+    color: $color-bg-base; 
 
     &:hover {
-      filter: brightness(1.1); // Aumenta sutilmente para feedback
+      filter: brightness(1.1); 
       box-shadow: 0 6px 10px rgba(126, 30, 21, 0.2);
     }
   }
 
-  // 4. Botón de Enlace (Navegación sutil)
   .btn-link {
     @extend .btn;
     background-color: transparent;
-    color: $color-secondary; //
+    color: $color-secondary; 
     padding: 8px 12px;
 
     &:hover {
-      text-decoration: underline; //
+      text-decoration: underline; 
     }
   }
 }
 
-// Sobrescritura para compatibilidad con componentes de Ionic (Shadow DOM)
 ion-button.deli-button {
   --border-radius: 8px;
   --transition: 300ms ease-in-out;

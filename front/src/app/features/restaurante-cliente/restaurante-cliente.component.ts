@@ -59,26 +59,22 @@ export class RestauranteClienteComponent implements OnInit {
   showAllHorarios = signal(false);
   showExitWarningModal = signal(false);
 
-  /** Nombre del día actual en MAYÚSCULAS y SIN ACENTOS (formato back) */
   readonly diaHoy = (() => {
     const dias = ['DOMINGO', 'LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO'];
     return dias[new Date().getDay()];
   })();
 
-  /** Lista ordenada de días para mostrar en el horario completo */
   readonly diasSemanaList = ['LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO', 'DOMINGO'];
 
   getAperturaPorDia(dia: string) {
     return this.empresa()?.aperturas.find(a => a.dia === dia);
   }
 
-  /** Cálculo reactivo del total de productos en el carrito */
   totalProductosCarrito = computed(() => {
     const detalles = this.carrito()?.detalles || [];
     return detalles.reduce((sum, d) => sum + d.cantidad, 0);
   });
 
-  /** Mapa reactivo de ID de producto -> Cantidad en el carrito */
   cantidadesEnCarrito = computed(() => {
     const mapa = new Map<number, number>();
     this.carrito()?.detalles.forEach(d => {
@@ -87,7 +83,6 @@ export class RestauranteClienteComponent implements OnInit {
     return mapa;
   });
 
-  /** Señal computada para saber si el restaurante está abierto actualmente */
   estaAbierto = computed(() => {
     const e = this.empresa();
     if (!e?.aperturas || e.aperturas.length === 0) return false;
@@ -154,7 +149,6 @@ export class RestauranteClienteComponent implements OnInit {
     });
   }
 
-
   private cargarCarritoUsuario() {
     const user = this.authService.currentUser();
     if (!user?.userOutputDto?.id) return;
@@ -170,7 +164,7 @@ export class RestauranteClienteComponent implements OnInit {
         }
       },
       error: () => {
-        // No tiene carrito activo, es normal
+        
       }
     });
   }
@@ -187,20 +181,18 @@ export class RestauranteClienteComponent implements OnInit {
     this.loadingCarrito.set(true);
     this.addingProductId.set(producto.id);
 
-    // Si ya conocemos el carrito, vamos directo a actualizar
     if (this.carritoId()) {
       this.ejecutarActualizacion(this.carritoId()!, producto);
       return;
     }
 
-    // Si no, intentamos obtenerlo o crearlo
     this.carritoService.obtenerPorUsuario(clienteId).subscribe({
       next: (c) => {
         this.carritoId.set(c.id);
         this.ejecutarActualizacion(c.id, producto);
       },
       error: () => {
-        // Si falla (probablemente porque no existe), creamos uno nuevo
+        
         this.carritoService.crear({
           clienteId,
           empresaId: this.empresa()!.id!,
@@ -223,7 +215,7 @@ export class RestauranteClienteComponent implements OnInit {
     if (nuevaCantidad > producto.cantidad) {
       this.loadingCarrito.set(false);
       this.addingProductId.set(null);
-      // Opcional: mostrar un mensaje de error
+      
       alert(`No hay más stock disponible de ${producto.nombre}`);
       return;
     }
@@ -244,8 +236,6 @@ export class RestauranteClienteComponent implements OnInit {
     this.addedProductId.set(productoId);
     setTimeout(() => this.addedProductId.set(null), 1500);
   }
-
-
 
   openCart() {
     this.cartOpen.set(true);

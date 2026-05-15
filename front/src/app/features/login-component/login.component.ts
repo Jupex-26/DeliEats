@@ -23,7 +23,7 @@ import { Validador } from '../../validadores/validador';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
   host: {
-    class: 'ion-page', // ESTO ES VITAL
+    class: 'ion-page', 
   },
 })
 export class LoginComponent {
@@ -39,7 +39,6 @@ export class LoginComponent {
 
   isLoading = false;
 
-  // Modal state
   isModalOpen = false;
   modalTitle = '';
   modalMessage = '';
@@ -61,12 +60,11 @@ export class LoginComponent {
     this.authService
       .login(credentials)
       .pipe(
-        finalize(() => (this.isLoading = false)), // Asegura que isLoading siempre se ponga en false al finalizar
+        finalize(() => (this.isLoading = false)), 
       )
       .subscribe({
         next: (res) => {
 
-          // Navigation on success
           if (res.userOutputDto.nombreRol == 'ROLE_ADMIN') {
             this.router.navigate(['/admin/clientes']);
           } else {
@@ -76,21 +74,18 @@ export class LoginComponent {
           this.cdr.detectChanges();
         },
         error: (err) => {
-          // isLoading ya se maneja con finalize, así que lo quitamos de aquí
-          // this.isLoading = false;
-
-          // Show error modal
+          
           this.modalTitle = 'Error de Autenticación';
           this.modalType = 'error';
 
           if (err.error && err.error.message) {
             console.log(err.error);
-            // Si es un CustomError que viene del backend
+            
             this.errorData = err.error as CustomError;
             this.modalMessage = this.errorData.message;
             console.log(this.modalMessage);
           } else {
-            // Error genérico o de red
+            
             this.errorData = null;
             if (err.status === 401 || err.status === 403) {
               this.modalMessage = 'Correo o contraseña incorrectos.';

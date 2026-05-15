@@ -1,12 +1,11 @@
 <ion-modal [isOpen]="isOpen" (didDismiss)="onCancel()" class="custom-modal" [backdropDismiss]="false">
   <ng-template>
     <div class="modal-wrapper flex flex-col w-full h-full">
-      <!-- Header -->
+      
       <div class="modal-header py-4 px-6 text-center font-bold tracking-wide text-lg">
         {{ title }}
       </div>
 
-      <!-- Body -->
       <div class="modal-body p-8 flex flex-col items-center">
         <div class="main-message text-center text-lg mb-8">
           {{ message }}

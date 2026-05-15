@@ -28,7 +28,6 @@ import { PedidoOutputDto } from '../../../types';
 import { EuroPipe } from '../../../pipe/euro.pipe';
 import { ChatModalComponent } from '../../../shared/chat-modal/chat-modal.component';
 
-// Fix Leaflet default icon paths for Angular bundling
 const iconDefault = L.icon({
   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
   iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
@@ -37,12 +36,26 @@ const iconDefault = L.icon({
   iconAnchor: [12, 41],
 });
 
-const repartidorIcon = L.icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
+const repartidorIcon = L.divIcon({
+  className: 'custom-repartidor-icon',
+  html: `
+    <div class="moto-marker-pulse">
+      <div class="moto-icon">🛵</div>
+    </div>
+  `,
+  iconSize: [40, 40],
+  iconAnchor: [20, 20]
+});
+
+const clienteIcon = L.divIcon({
+  className: 'custom-cliente-icon',
+  html: `
+    <div class="house-marker">
+      <div class="house-icon">🏠</div>
+    </div>
+  `,
+  iconSize: [40, 40],
+  iconAnchor: [20, 20]
 });
 
 @Component({
@@ -67,14 +80,15 @@ export class DetallePedidoClienteComponent implements OnInit, AfterViewInit, OnD
   errorCancelar = signal<string | null>(null);
   exitoCancelar = signal(false);
 
-  // --- Chat ---
   isChatOpen = signal(false);
   chatReceptorId = signal<number | null>(null);
   chatReceptorNombre = signal<string>('');
 
   private map?: L.Map;
   private repartidorMarker?: L.Marker;
+  private clienteMarker?: L.Marker;
   private trackingSub?: Subscription;
+  private ultimaUbicacionRecibida?: { lat: number, lng: number };
 
   constructor() {
     addIcons({
@@ -94,8 +108,8 @@ export class DetallePedidoClienteComponent implements OnInit, AfterViewInit, OnD
         this.pedido.set(p);
         this.loading.set(false);
         if (p.estadoNombre === 'EN CAMINO') {
-          this.trackingService.conectar(id);
-          // Wait one tick for the @if block to render the #mapContainer in the DOM
+          this.trackingService.conectar(p.clienteId);
+          
           setTimeout(() => this.initMap(), 100);
         }
       },
@@ -107,7 +121,7 @@ export class DetallePedidoClienteComponent implements OnInit, AfterViewInit, OnD
   }
 
   ngAfterViewInit() {
-    // Map init is triggered from ngOnInit via setTimeout after data loads
+    
   }
 
   private initMap(lat = 40.4168, lng = -3.7038) {
@@ -120,18 +134,65 @@ export class DetallePedidoClienteComponent implements OnInit, AfterViewInit, OnD
       maxZoom: 19
     }).addTo(this.map);
 
-    // Suscribirse a actualizaciones de ubicación del repartidor
+    const direccion = this.pedido()?.direccionEntrega;
+    if (direccion) {
+      this.geocodificarDireccion(direccion);
+    }
+
+    if (this.ultimaUbicacionRecibida) {
+      this.actualizarMarcador(this.ultimaUbicacionRecibida.lat, this.ultimaUbicacionRecibida.lng);
+    }
+
     this.trackingSub = this.trackingService.ubicacion$.subscribe(({ lat, lng }) => {
-      if (!this.map) return;
-      if (this.repartidorMarker) {
-        this.repartidorMarker.setLatLng([lat, lng]);
+      console.log(`[DetallePedidoCliente] Recibida posición: ${lat}, ${lng}`);
+      this.ultimaUbicacionRecibida = { lat, lng };
+      
+      if (this.map) {
+        this.actualizarMarcador(lat, lng);
       } else {
-        this.repartidorMarker = L.marker([lat, lng], { icon: repartidorIcon })
-          .addTo(this.map!)
-          .bindPopup('🛵 Repartidor en camino');
+        console.warn('[DetallePedidoCliente] El mapa no está inicializado todavía. Guardando ubicación...');
       }
-      this.map.setView([lat, lng], 15);
     });
+  }
+
+  private actualizarMarcador(lat: number, lng: number) {
+    if (!this.map) return;
+
+    if (this.repartidorMarker) {
+      this.repartidorMarker.setLatLng([lat, lng]);
+    } else {
+      console.log('[DetallePedidoCliente] Creando nuevo marcador para el repartidor');
+      this.repartidorMarker = L.marker([lat, lng], { icon: repartidorIcon })
+        .addTo(this.map)
+        .bindPopup('🛵 Repartidor en camino');
+    }
+    
+    this.map.setView([lat, lng], 16);
+  }
+
+  private geocodificarDireccion(direccion: string) {
+    
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(direccion)}&limit=1`;
+    
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.length > 0) {
+          const lat = parseFloat(data[0].lat);
+          const lon = parseFloat(data[0].lon);
+          
+          if (this.map) {
+            this.clienteMarker = L.marker([lat, lon], { icon: clienteIcon })
+              .addTo(this.map)
+              .bindPopup(`🏠 Destino: ${direccion}`);
+            
+            if (!this.repartidorMarker) {
+              this.map.setView([lat, lon], 15);
+            }
+          }
+        }
+      })
+      .catch(err => console.error('Error al geocodificar dirección:', err));
   }
 
   ngOnDestroy() {

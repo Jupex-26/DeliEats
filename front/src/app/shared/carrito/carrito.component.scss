@@ -37,7 +37,6 @@
   to { transform: translateX(0); }
 }
 
-// Header
 .carrito-header {
   background-color: $color-primary;
   color: white;
@@ -69,7 +68,6 @@
   }
 }
 
-// Cart items
 .cart-item {
   background: white;
   border: 1px solid rgba($color-bg-alt, 0.7);
@@ -89,7 +87,6 @@
   color: rgba($color-text-main, 0.55);
 }
 
-// Qty controls
 .qty-controls {
   .qty-btn {
     background: rgba($color-primary, 0.1);
@@ -159,7 +156,6 @@
   }
 }
 
-// Footer
 .cart-footer {
   border-top-color: rgba($color-bg-alt, 0.6);
   background: white;
@@ -222,7 +218,6 @@
   }
 }
 
-// Empty state
 .empty-cart {
   ion-icon {
     color: $color-primary;
@@ -232,7 +227,6 @@
   }
 }
 
-// Spinner
 .spinner {
   width: 32px;
   height: 32px;

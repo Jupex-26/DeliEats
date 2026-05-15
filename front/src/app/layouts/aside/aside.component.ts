@@ -11,7 +11,7 @@ import { AuthService } from '../../services/auth/auth-service';
   imports: [IonicModule, RouterModule],
 })
 export class AsideComponent implements OnInit{
-  isCollapsed = false; // Por defecto mostrado
+  isCollapsed = false; 
 
   ngOnInit() {
     if (window.innerWidth <= 768) {

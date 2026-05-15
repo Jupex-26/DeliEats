@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, inject, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, inject, signal, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonIcon, IonItem, IonInput, IonTextarea, IonButton } from '@ionic/angular/standalone';
@@ -20,6 +20,7 @@ import { AuthService } from '../../../services/auth/auth-service';
 import { TipoCocinaService } from '../../../services/tipococina/tipococina-service';
 import { EmpresaOutputDto, EmpresaInputDto, TipoCocinaOutputDto } from '../../../types';
 import { Validador } from '../../../validadores/validador';
+import { GeocodingService } from '../../../services/geocoding/geocoding-service';
 import { InfoModalComponent } from '../../../shared/info-modal/info-modal.component';
 import { environment } from '../../../../environments/environment';
 
@@ -30,7 +31,7 @@ import { environment } from '../../../../environments/environment';
   templateUrl: './empresa-perfil-edicion.component.html',
   styleUrls: ['./empresa-perfil-edicion.component.scss']
 })
-export class EmpresaPerfilEdicionComponent implements OnInit {
+export class EmpresaPerfilEdicionComponent implements OnInit, OnChanges {
   @Input({ required: true }) empresa!: EmpresaOutputDto;
   @Output() empresaActualizada = new EventEmitter<EmpresaOutputDto>();
 
@@ -40,6 +41,7 @@ export class EmpresaPerfilEdicionComponent implements OnInit {
   private userService = inject(UserService);
   private authService = inject(AuthService);
   private tipoCocinaService = inject(TipoCocinaService);
+  private geocodingService = inject(GeocodingService);
 
   tiposCocina = signal<TipoCocinaOutputDto[]>([]);
   guardando = signal(false);
@@ -52,6 +54,8 @@ export class EmpresaPerfilEdicionComponent implements OnInit {
   mostrarConfirm = signal(false);
   fotoPreview = signal<string | null>(null);
   fotoFile = signal<File | null>(null);
+  validandoDireccion = signal(false);
+  errorDireccion = signal(false);
 
   isModalOpen = false;
   modalTitle = '';
@@ -98,6 +102,18 @@ export class EmpresaPerfilEdicionComponent implements OnInit {
       next: (res) => this.tiposCocina.set(res.content)
     });
 
+    this.patchForm();
+    this.syncFoto();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['empresa'] && this.empresa) {
+      this.patchForm();
+      this.syncFoto();
+    }
+  }
+
+  private patchForm() {
     this.perfilForm.patchValue({
       nombre: this.empresa.nombre,
       email: this.empresa.email,
@@ -109,7 +125,6 @@ export class EmpresaPerfilEdicionComponent implements OnInit {
       tipoCocinaId: String(this.empresa.tipoCocina?.id ?? '')
     });
 
-    // Cargar aperturas
     this.aperturas.clear();
     if (this.empresa.aperturas && this.empresa.aperturas.length > 0) {
       this.empresa.aperturas.forEach(a => {
@@ -120,9 +135,13 @@ export class EmpresaPerfilEdicionComponent implements OnInit {
         }));
       });
     }
+  }
 
-    if (this.empresa.foto) {
+  private syncFoto() {
+    if (this.empresa?.foto) {
       this.fotoPreview.set(environment.storageUrl + '/' + this.empresa.foto);
+    } else {
+      this.fotoPreview.set(null);
     }
   }
 
@@ -193,30 +212,45 @@ export class EmpresaPerfilEdicionComponent implements OnInit {
     this.guardando.set(true);
 
     const v = this.perfilForm.getRawValue();
-    const payload: EmpresaInputDto = {
-      nombre: v.nombre!,
-      email: v.email!,
-      password: '',
-      telefono: v.telefono ? Number(v.telefono) : undefined,
-      direccion: v.direccion!,
-      descripcion: v.descripcion!,
-      correoContacto: v.correoContacto!,
-      telefonoContacto: v.telefonoContacto ?? '',
-      tipoCocinaId: Number(v.tipoCocinaId),
-      aperturas: v.aperturas as any[],
-      rolId: 3
-    };
+    const direccion = v.direccion!;
 
-    this.empresaService.actualizar(this.empresa.id!, payload).subscribe({
-      next: (updated) => {
+    this.validandoDireccion.set(true);
+    this.errorDireccion.set(false);
+
+    this.geocodingService.verificarDireccion(direccion).subscribe(isValid => {
+      this.validandoDireccion.set(false);
+      
+      if (!isValid) {
+        this.errorDireccion.set(true);
         this.guardando.set(false);
-        this.exitoPerfil.set(true);
-        this.authService.updateUser({ nombre: updated.nombre, email: updated.email });
-        this.empresaActualizada.emit(updated);
-        this.perfilForm.markAsPristine();
-        setTimeout(() => this.exitoPerfil.set(false), 3000);
-      },
-      error: (err) => { this.guardando.set(false); this.showError('Error al actualizar perfil', err); }
+        return;
+      }
+
+      const payload: EmpresaInputDto = {
+        nombre: v.nombre!,
+        email: v.email!,
+        password: '',
+        telefono: v.telefono ? Number(v.telefono) : undefined,
+        direccion: direccion,
+        descripcion: v.descripcion!,
+        correoContacto: v.correoContacto!,
+        telefonoContacto: v.telefonoContacto ?? '',
+        tipoCocinaId: Number(v.tipoCocinaId),
+        aperturas: v.aperturas as any[],
+        rolId: 3
+      };
+
+      this.empresaService.actualizar(this.empresa.id!, payload).subscribe({
+        next: (updated) => {
+          this.guardando.set(false);
+          this.exitoPerfil.set(true);
+          this.authService.updateUser({ nombre: updated.nombre, email: updated.email });
+          this.empresaActualizada.emit(updated);
+          this.perfilForm.markAsPristine();
+          setTimeout(() => this.exitoPerfil.set(false), 3000);
+        },
+        error: (err) => { this.guardando.set(false); this.showError('Error al actualizar perfil', err); }
+      });
     });
   }
 

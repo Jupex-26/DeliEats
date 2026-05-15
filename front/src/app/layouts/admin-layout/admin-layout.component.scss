@@ -1,8 +1,6 @@
 @use '../../../styles/variables' as *;
 
 $header-height: 72px;
-// Eliminamos el ancho fijo de aquí para que lo maneje el componente interno
-// o lo tratamos como un elemento que no empuja el contenido en móvil.
 
 .admin-layout {
   display: flex;
@@ -26,7 +24,7 @@ $header-height: 72px;
 }
 
 app-aside {
-  // En escritorio, el aside ocupa su espacio normal
+  
   width: auto;
   height: 100%;
   z-index: 1000;

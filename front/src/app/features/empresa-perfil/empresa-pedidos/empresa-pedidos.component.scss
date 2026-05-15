@@ -3,7 +3,6 @@
 
 .empresa-pedidos { display: flex; flex-direction: column; gap: 20px; }
 
-// ─── Filtros ──────────────────────────────────────────────────────────────────
 .filtros-bar {
   display: flex;
   gap: 8px;
@@ -43,7 +42,6 @@
   margin: 0;
 }
 
-// ─── Loading / Empty ──────────────────────────────────────────────────────────
 .loading-state {
   display: flex; flex-direction: column; align-items: center; gap: 14px;
   padding: 60px 24px; color: rgba($color-text-main, 0.5);
@@ -65,7 +63,6 @@
   p { margin: 0; font-size: 0.88rem; color: rgba($color-text-main, 0.5); }
 }
 
-// ─── Pedidos list ─────────────────────────────────────────────────────────────
 .pedidos-list {
   list-style: none; margin: 0; padding: 0;
   display: flex; flex-direction: column; gap: 12px;
@@ -92,7 +89,6 @@
   .pedido-fecha { font-size: 0.78rem; color: rgba($color-text-main, 0.5); }
 }
 
-// Estado badges
 .estado-badge {
   padding: 4px 12px; border-radius: 20px;
   font-size: 0.72rem; font-weight: 800;
@@ -132,7 +128,6 @@
   &:hover { background: $color-primary; color: white; }
 }
 
-// ─── Paginación ───────────────────────────────────────────────────────────────
 .paginacion {
   display: flex; align-items: center; justify-content: center; gap: 14px;
   padding-top: 8px;
@@ -150,7 +145,6 @@
   ion-icon { font-size: 16px; }
 }
 
-// ─── Modal ────────────────────────────────────────────────────────────────────
 .modal-overlay {
   position: fixed; inset: 0; z-index: 200;
   background: rgba(0,0,0,0.5);
@@ -235,7 +229,6 @@
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideUp { from { transform: translateY(24px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-// ─── Edición de Estado en Tarjeta ─────────────────────────────────────────────
 .pedido-estado-edit {
   display: flex;
   align-items: center;

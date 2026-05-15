@@ -11,7 +11,6 @@ export class CarritoService {
   private readonly http = inject(HttpClient);
   private readonly urlApi = `${environment.apiUrl}/carritos`;
 
-  // Estado reactivo compartido
   private carritoState = signal<CarritoOutputDto | null>(null);
   carrito = this.carritoState.asReadonly();
 
@@ -69,13 +68,12 @@ export class CarritoService {
   eliminarProducto(id: number, productoId: number): Observable<void> {
     return this.http.delete<void>(`${this.urlApi}/${id}/productos/${productoId}`).pipe(
       tap(() => {
-        // Podríamos volver a cargar el carrito completo o filtrar localmente
+        
         this.obtenerPorId(id).subscribe();
       })
     );
   }
 
-  // Método para limpiar el estado local (ej. tras checkout)
   limpiarEstadoLocal() {
     this.carritoState.set(null);
   }

@@ -1,7 +1,6 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()" class="modern-form flex flex-col gap-5 w-full">
   <div class="form-grid grid grid-cols-1 md:grid-cols-2 gap-5">
 
-    <!-- NOMBRE (UserInputDto) -->
     <div class="form-group md:col-span-2">
       <ion-item lines="none" class="custom-input rounded-xl shadow-sm border">
         <ion-input formControlName="nombre" type="text" label="Nombre de la Empresa" labelPlacement="stacked"
@@ -15,7 +14,6 @@
       }
     </div>
 
-    <!-- EMAIL (UserInputDto) -->
     <div class="form-group">
       <ion-item lines="none" class="custom-input rounded-xl shadow-sm border">
         <ion-input formControlName="email" type="email" label="Correo Electrónico de Acceso" labelPlacement="stacked"
@@ -29,7 +27,6 @@
       }
     </div>
 
-    <!-- PASSWORD (UserInputDto) -->
     <div class="form-group">
       <ion-item lines="none" class="custom-input rounded-xl shadow-sm border">
         <ion-input formControlName="password" type="password" label="Contraseña" labelPlacement="stacked"
@@ -44,7 +41,6 @@
       }
     </div>
 
-    <!-- TELÉFONO DE CUENTA (UserInputDto) -->
     <div class="form-group">
       <ion-item lines="none" class="custom-input rounded-xl shadow-sm border">
         <ion-input formControlName="telefono" type="tel" label="Teléfono (Administrador)" labelPlacement="stacked"
@@ -62,18 +58,6 @@
       <h2 class="section-title text-lg font-bold tracking-wide border-b pb-2">Datos del Restaurante</h2>
     </div>
 
-    <!-- DIRECCIÓN (UserInputDto) -->
-    <div class="form-group md:col-span-2">
-      <ion-item lines="none" class="custom-input rounded-xl shadow-sm border">
-        <ion-input formControlName="direccion" type="text" label="Dirección Física" labelPlacement="stacked"
-          placeholder="Calle, número, ciudad..." class="font-medium"></ion-input>
-      </ion-item>
-      @if (form.get('direccion')?.touched && form.get('direccion')?.hasError('required')) {
-      <div class="error-text text-xs mt-1 ml-2 font-medium">La dirección es obligatoria.</div>
-      }
-    </div>
-
-    <!-- TELÉFONO DE CONTACTO (EmpresaInputDto) -->
     <div class="form-group">
       <ion-item lines="none" class="custom-input rounded-xl shadow-sm border">
         <ion-input formControlName="telefonoContacto" type="tel" label="Teléfono Público" labelPlacement="stacked"
@@ -84,7 +68,6 @@
       }
     </div>
 
-    <!-- CORREO DE CONTACTO (EmpresaInputDto) -->
     <div class="form-group">
       <ion-item lines="none" class="custom-input rounded-xl shadow-sm border">
         <ion-input formControlName="correoContacto" type="email" label="Email Público" labelPlacement="stacked"
@@ -96,7 +79,6 @@
       }
     </div>
 
-    <!-- TIPO DE COCINA (EmpresaInputDto) -->
     <div class="form-group md:col-span-2">
       <label class="form-label text-xs font-bold uppercase mb-2 block opacity-70">Categoría de Cocina</label>
       <div class="custom-input rounded-xl shadow-sm border bg-white overflow-hidden p-1">
@@ -113,7 +95,24 @@
       }
     </div>
 
-    <!-- DESCRIPCIÓN (EmpresaInputDto) -->
+    <div class="form-group md:col-span-2">
+      <ion-item lines="none" class="custom-input rounded-xl shadow-sm border" [class.border-red-500]="errorDireccion()">
+        <ion-input formControlName="direccion" type="text" label="Dirección Física" labelPlacement="stacked"
+          placeholder="Calle, número, ciudad..." class="font-medium"></ion-input>
+      </ion-item>
+      @if (form.get('direccion')?.touched && form.get('direccion')?.hasError('required')) {
+        <div class="error-text text-xs mt-1 ml-2 font-medium">La dirección es obligatoria.</div>
+      }
+      @if (errorDireccion()) {
+        <div class="error-text text-xs mt-1 ml-2 font-medium">
+          ⚠️ No se ha encontrado esta dirección. Por favor, asegúrate de que sea correcta.
+        </div>
+      }
+      @if (validandoDireccion()) {
+        <div class="text-xs mt-1 ml-2 font-medium text-primary animate-pulse">🔍 Verificando dirección...</div>
+      }
+    </div>
+
     <div class="form-group md:col-span-2">
       <ion-item lines="none" class="custom-input rounded-xl shadow-sm border pt-2">
         <ion-textarea formControlName="descripcion" label="Descripción del Restaurante" labelPlacement="stacked"
@@ -128,7 +127,11 @@
 
   <button type="submit"
     class="btn-submit w-full mt-4 font-bold py-3.5 px-4 rounded-xl shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-    [disabled]="form.invalid">
-    COMPLETAR REGISTRO
+    [disabled]="form.invalid || validandoDireccion()">
+    @if (validandoDireccion()) {
+      VERIFICANDO...
+    } @else {
+      COMPLETAR REGISTRO
+    }
   </button>
 </form>

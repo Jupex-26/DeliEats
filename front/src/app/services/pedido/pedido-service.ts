@@ -44,13 +44,11 @@ export class PedidoService {
     return this.http.get<any>(`${this.urlApi}/cliente/${clienteId}`, { params });
   }
 
-  /** GET /api/pedidos/empresa/:id?page=&size=&sort=  */
   listarPorEmpresa(empresaId: number, page: number = 0, size: number = 10, sort: string = 'fechaCompra,desc'): Observable<any> {
     let params = new HttpParams().set('page', page).set('size', size).set('sort', sort);
     return this.http.get<any>(`${this.urlApi}/empresa/${empresaId}`, { params });
   }
 
-  /** GET /api/pedidos/empresa/:id/mes-actual?page=&size=  */
   listarPorEmpresaMesActual(empresaId: number, page: number = 0, size: number = 10): Observable<any> {
     let params = new HttpParams().set('page', page).set('size', size);
     return this.http.get<any>(`${this.urlApi}/empresa/${empresaId}/mes-actual`, { params });
@@ -60,14 +58,12 @@ export class PedidoService {
     return this.http.patch<PedidoOutputDto>(`${this.urlApi}/${id}/estado/${estadoId}`, {});
   }
 
-
   cancelar(id: number): Observable<PedidoOutputDto> {
     return this.http.patch<PedidoOutputDto>(`${this.urlApi}/${id}/cancelar`, {}).pipe(
       tap(() => this.notificarCambio())
     );
   }
 
-  // TODO: Endpoint por definir — GET /api/pedidos/{id}/factura (devuelve PDF como Blob)
   descargarFactura(id: number): Observable<Blob> {
     return this.http.get(`${this.urlApi}/${id}/factura`, { responseType: 'blob' });
   }

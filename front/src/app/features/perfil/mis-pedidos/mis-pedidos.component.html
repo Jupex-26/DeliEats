@@ -1,6 +1,5 @@
 <div class="mis-pedidos">
 
-  <!-- Loading -->
   @if (loading()) {
     <div class="loading-state">
       <div class="spinner"></div>
@@ -8,7 +7,6 @@
     </div>
   }
 
-  <!-- Error -->
   @if (!loading() && error()) {
     <div class="error-state">
       <ion-icon name="close-circle-outline"></ion-icon>
@@ -19,7 +17,6 @@
     </div>
   }
 
-  <!-- Empty -->
   @if (!loading() && !error() && pedidos().length === 0) {
     <div class="empty-state">
       <ion-icon name="receipt-outline"></ion-icon>
@@ -28,7 +25,6 @@
     </div>
   }
 
-  <!-- Lista de pedidos -->
   @if (!loading() && pedidos().length > 0) {
     <ul class="pedidos-list">
       @for (pedido of pedidos(); track pedido.id) {
@@ -38,13 +34,11 @@
             [class.entregado]="pedido.estadoNombre === 'ENTREGADO'"
             (click)="esClickable(pedido.estadoNombre) && verDetalle(pedido)">
 
-          <!-- Estado badge -->
           <div class="pedido-estado" [attr.data-estado]="pedido.estadoNombre">
             <ion-icon [name]="getEstadoIcono(pedido.estadoNombre)"></ion-icon>
             <span>{{ pedido.estadoNombre }}</span>
           </div>
 
-          <!-- Info -->
           <div class="pedido-info">
             <h4 class="pedido-restaurante text-primary font-bold">{{ pedido.nombreEmpresa }}</h4>
             <p class="pedido-fecha">{{ formatFecha(pedido.fechaCompra) }}</p>
@@ -54,7 +48,6 @@
             <p class="pedido-total">{{ pedido.precioTotal | euro }}</p>
           </div>
 
-          <!-- Productos preview -->
           <ul class="productos-preview">
             @for (detalle of pedido.detalles.slice(0, 3); track detalle.id) {
               <li>{{ detalle.nombreProducto }} × {{ detalle.cantidad }}</li>
@@ -64,7 +57,6 @@
             }
           </ul>
 
-          <!-- Acciones -->
           <div class="pedido-acciones">
             @if (pedido.estadoNombre === 'ENTREGADO') {
               <button class="btn-factura"

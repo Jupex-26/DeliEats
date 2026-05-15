@@ -59,7 +59,6 @@ export class PedidosAdminComponent implements OnInit {
   private estadoService = inject(EstadoService);
   private repartidorService = inject(RepartidorService);
 
-  // --- Estado ---
   pedidos = signal<PedidoOutputDto[]>([]);
   currentPage = signal(0);
   pageSize = signal(10);
@@ -81,12 +80,10 @@ export class PedidosAdminComponent implements OnInit {
   estadosList = signal<EstadoOutputDto[]>([]);
   repartidoresList = signal<RepartidorOutputDto[]>([]);
 
-  // Campos temporales para añadir producto
   tempEmpresaId: number | null = null;
   tempProductoId: number | null = null;
   tempCantidad: number = 1;
 
-  // PedidoInputDto (básico para creación/edición superficial)
   pedidoForm: PedidoInputDto = this.getEmptyPedidoForm();
 
   private debouncer = new Subject<string>();
@@ -160,7 +157,7 @@ export class PedidosAdminComponent implements OnInit {
 
   cargarPedidos() {
     if (this.terminoBusqueda() && !isNaN(Number(this.terminoBusqueda()))) {
-      // Buscar por clienteId si es un número válido
+      
       this.pedidoService
         .listarPorCliente(Number(this.terminoBusqueda()), this.currentPage(), this.pageSize())
         .subscribe({
@@ -171,7 +168,7 @@ export class PedidosAdminComponent implements OnInit {
           },
         });
     } else {
-      // Listado normal
+      
       this.pedidoService
         .listar(this.currentPage(), this.pageSize())
         .subscribe({
@@ -203,7 +200,6 @@ export class PedidosAdminComponent implements OnInit {
     this.isModalOpen.set(true);
   }
 
-  // Estado temporal para actualización de estado
   nuevoEstadoId: number | null = null;
 
   getProductosFiltrados(): ProductoOutputDto[] {
@@ -212,7 +208,7 @@ export class PedidosAdminComponent implements OnInit {
   }
 
   onEmpresaChange() {
-    this.tempProductoId = null; // Resetear producto al cambiar de empresa
+    this.tempProductoId = null; 
   }
 
   agregarDetalle() {
@@ -221,19 +217,17 @@ export class PedidosAdminComponent implements OnInit {
     const productoEncontrado = this.productosList().find(p => p.id == this.tempProductoId);
     if (!productoEncontrado) return;
 
-    // Si es el primer producto, asignamos la empresa al pedido
     if (this.pedidoForm.detalles.length === 0) {
       this.pedidoForm.empresaId = this.tempEmpresaId;
     }
 
     const nuevoDetalle: DetallePedidoInputDto = {
-      pedidoId: 0, // se asignará en el backend
+      pedidoId: 0, 
       productoId: productoEncontrado.id,
       cantidad: this.tempCantidad,
       precioUnitario: productoEncontrado.precio
     };
 
-    // Si ya existe en la lista, sumar cantidad
     const detallesActuales = this.pedidoForm.detalles;
     const existe = detallesActuales.findIndex(d => d.productoId === productoEncontrado.id);
     if (existe !== -1) {
@@ -242,7 +236,6 @@ export class PedidosAdminComponent implements OnInit {
       detallesActuales.push(nuevoDetalle);
     }
 
-    // Resetear formulario temp
     this.tempProductoId = null;
     this.tempCantidad = 1;
   }
@@ -260,7 +253,6 @@ export class PedidosAdminComponent implements OnInit {
       next: (pedidoCompleto) => {
         this.editingPedido.set(pedidoCompleto);
         
-        // Preparar el formulario para el PUT (necesitamos clienteId y detalles)
         this.pedidoForm = {
           clienteId: pedidoCompleto.clienteId,
           empresaId: pedidoCompleto.empresaId,
@@ -273,7 +265,6 @@ export class PedidosAdminComponent implements OnInit {
           }))
         };
 
-        // Pre-poblar el estado actual buscando por nombre en la lista de estados
         const estadoActual = this.estadosList().find(e => e.nombre === pedidoCompleto.estadoNombre);
         this.nuevoEstadoId = estadoActual ? estadoActual.id : null;
 
@@ -311,10 +302,8 @@ export class PedidosAdminComponent implements OnInit {
     if (editId) {
       const peticiones = [];
       
-      // El PUT actualizará el cliente, detalles y el ID del repartidor
       peticiones.push(this.pedidoService.actualizar(editId, this.pedidoForm));
       
-      // Si seleccionaron un nuevo estado, añadimos la petición PATCH
       if (this.nuevoEstadoId) {
         peticiones.push(this.pedidoService.actualizarEstado(editId, this.nuevoEstadoId));
       }
@@ -324,7 +313,7 @@ export class PedidosAdminComponent implements OnInit {
         this.cargarPedidos();
       });
     } else {
-      // Creación
+      
       this.pedidoService.crear(this.pedidoForm).subscribe(() => {
         this.isModalOpen.set(false);
         this.cargarPedidos();
@@ -340,7 +329,6 @@ export class PedidosAdminComponent implements OnInit {
     };
   }
 
-  // Utilidad para color de estado
   getEstadoColor(estado: string): string {
     const estadoLower = estado?.toLowerCase() || '';
     if (estadoLower.includes('pendiente')) return 'bg-yellow-100 text-yellow-800 border-yellow-200';

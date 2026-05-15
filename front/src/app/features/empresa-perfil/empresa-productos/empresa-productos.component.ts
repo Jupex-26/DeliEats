@@ -63,7 +63,6 @@ export class EmpresaProductosComponent implements OnInit {
   fotoFile = signal<File | null>(null);
   fotoPreview = signal<string | null>(null);
 
-  // Modal Info
   isInfoModalOpen = signal(false);
   modalTitle = signal('');
   modalMessage = signal('');

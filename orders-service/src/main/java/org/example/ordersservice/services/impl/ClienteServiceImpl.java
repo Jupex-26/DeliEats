@@ -77,6 +77,7 @@ public class ClienteServiceImpl implements ClienteService {
         }
 
         cliente.setRol(rolService.findByNombre("ROLE_CLIENTE"));
+        cliente.setFoto(existente.getFoto());
 
         return clienteRepository.save(cliente);
     }

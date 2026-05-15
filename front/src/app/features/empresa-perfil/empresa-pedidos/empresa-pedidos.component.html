@@ -1,6 +1,5 @@
 <div class="empresa-pedidos">
 
-  <!-- Filtros -->
   <div class="filtros-bar">
     <button class="filtro-btn" [class.active]="filtroActivo() === 'recientes'" (click)="setFiltro('recientes')">
       <ion-icon name="time-outline"></ion-icon>
@@ -16,14 +15,12 @@
     </button>
   </div>
 
-  <!-- Contador -->
   @if (!loading()) {
   <p class="resultado-count">
     {{ totalElem() }} {{ totalElem() === 1 ? 'pedido encontrado' : 'pedidos encontrados' }}
   </p>
   }
 
-  <!-- Loading -->
   @if (loading()) {
   <div class="loading-state">
     <div class="spinner"></div>
@@ -31,7 +28,6 @@
   </div>
   }
 
-  <!-- Empty -->
   @if (!loading() && pedidos().length === 0) {
   <div class="empty-state">
     <ion-icon name="receipt-outline"></ion-icon>
@@ -40,7 +36,6 @@
   </div>
   }
 
-  <!-- Lista -->
   @if (!loading() && pedidos().length > 0) {
   <ul class="pedidos-list">
     @for (pedido of pedidos(); track pedido.id) {
@@ -70,7 +65,6 @@
         </div>
       </div>
 
-      <!-- Sección de Estado Editable para Empresa -->
       <div class="pedido-estado-edit">
         <span class="label-est">Estado:</span>
         @if (!isPedidoFinalizado(pedido.estadoNombre)) {
@@ -102,7 +96,6 @@
     }
   </ul>
 
-  <!-- Paginación -->
   <div class="paginacion">
     <button class="btn-pag" [disabled]="currentPage() === 0" (click)="cambiarPagina(-1)">
       <ion-icon name="chevron-back-outline"></ion-icon>
@@ -118,7 +111,6 @@
 
 </div>
 
-<!-- Modal Detalle Pedido -->
 @if (pedidoDetalle()) {
 <div class="modal-overlay" (click)="cerrarDetalle()">
   <div class="modal-detalle" (click)="$event.stopPropagation()">

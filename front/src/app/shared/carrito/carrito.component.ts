@@ -105,7 +105,7 @@ export class CarritoComponent implements OnInit {
     if (!this.carritoId) return;
     this.carritoService.limpiar(this.carritoId).subscribe({
       next: () => {
-        // El servicio ya se encarga de limpiar el estado local mediante tap()
+        
       }
     });
   }

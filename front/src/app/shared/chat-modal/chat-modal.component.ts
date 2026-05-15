@@ -54,17 +54,15 @@ export class ChatModalComponent implements OnInit, OnDestroy, AfterViewChecked {
       this.miUsuarioId = user.userOutputDto.id;
       this.webSocketService.conectar(this.miUsuarioId);
 
-      // Vincular con el store persistente del servicio
       this.mensajes = this.webSocketService.getMensajesPedido(this.pedidoId);
 
-      // Cargar historial desde el servidor
       this.cargarHistorial();
 
       this.subscription = this.webSocketService.mensajeObservable.subscribe((msg) => {
         this.ngZone.run(() => {
-          // Si el mensaje viene del receptor actual (o de mí mismo en el broadcast)
+          
           if (msg.emisorId === this.receptorId || msg.emisorId === this.miUsuarioId) {
-            // Evitar duplicados (por si ya lo añadimos localmente en enviar())
+            
             const existe = this.mensajes().some(m => 
               m.contenido === msg.contenido && 
               m.emisorId === msg.emisorId &&
@@ -110,7 +108,6 @@ export class ChatModalComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     this.webSocketService.enviarMensaje(this.receptorId, mensaje);
 
-    // Lo añadimos al store centralizado para feedback inmediato
     this.mensajes.update((prev) => [...prev, mensaje]);
     this.nuevoMensaje = '';
   }
@@ -123,13 +120,13 @@ export class ChatModalComponent implements OnInit, OnDestroy, AfterViewChecked {
   private cargarHistorial() {
     this.mensajeService.obtenerChat(this.miUsuarioId, this.receptorId).subscribe({
       next: (res) => {
-        const historial = res.content || res; // Manejar Page o Array
+        const historial = res.content || res; 
         if (Array.isArray(historial)) {
-          // Filtrar duplicados que ya pudieran estar en el store de la sesión actual
+          
           this.mensajes.update(actuales => {
             const idsActuales = new Set(actuales.map(m => m.id).filter(id => id !== undefined));
             const nuevos = historial.filter(m => !idsActuales.has(m.id));
-            // Combinar y ordenar por fecha
+            
             const total = [...actuales, ...nuevos];
             return total.sort((a, b) => new Date(a.fechaEnvio).getTime() - new Date(b.fechaEnvio).getTime());
           });

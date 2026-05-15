@@ -15,7 +15,7 @@ export class ConfirmModalComponent {
   @Input() message = '¿Estás seguro de que deseas realizar esta acción?';
   @Input() confirmText = 'Confirmar';
   @Input() cancelText = 'Cancelar';
-  @Input() dangerAction = false; // Si es true, el botón de confirmar será rojo
+  @Input() dangerAction = false; 
 
   @Output() confirm = new EventEmitter<void>();
   @Output() cancel = new EventEmitter<void>();

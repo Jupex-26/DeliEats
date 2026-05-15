@@ -1,7 +1,6 @@
 <ion-content>
   <div class="perfil-page">
 
-    <!-- Header -->
     <header class="perfil-header">
       <button class="btn-back" (click)="volver()" aria-label="Volver">
         <ion-icon name="arrow-back-outline"></ion-icon>
@@ -10,12 +9,11 @@
       @if (!loading()) {
       <div class="user-hero">
         <div class="avatar-wrapper">
-          @if (cliente()?.foto || usuario?.foto) {
-            <img [src]="environment.storageUrl + '/' + (cliente()?.foto || usuario?.foto)" 
-                 [alt]="usuario?.nombre" class="avatar-img">
+          @if (getFotoUrl(); as url) {
+            <img [src]="url" [alt]="usuario?.nombre" class="avatar-img" (error)="onAvatarError($event)">
           } @else {
             <div class="avatar-placeholder">
-              {{ usuario?.nombre?.charAt(0)?.toUpperCase() }}
+              {{ (usuario?.nombre?.charAt(0) || 'U').toUpperCase() }}
             </div>
           }
         </div>
@@ -26,17 +24,14 @@
       }
     </header>
 
-    <!-- Loading -->
     @if (loading()) {
     <div class="loading-state">
       <div class="spinner-perfil"></div>
     </div>
     }
 
-    <!-- Contenido CLIENTE / REPARTIDOR -->
     @if (!loading() && (rol === 'ROLE_CLIENTE' || rol === 'ROLE_REPARTIDOR')) {
 
-    <!-- Tabs -->
     <nav class="tabs-nav">
       <button class="tab-btn" [class.active]="activeTab() === 'perfil'" (click)="setTab('perfil')">
         <ion-icon name="person-outline"></ion-icon>
@@ -54,21 +49,18 @@
       }
     </nav>
 
-    <!-- Tab: Edición Perfil -->
     @if (activeTab() === 'perfil' && cliente()) {
     <section class="tab-content">
       <app-perfil-edicion [cliente]="cliente()!" (perfilActualizado)="onPerfilActualizado($event)"></app-perfil-edicion>
     </section>
     }
 
-    <!-- Tab: Mis Pedidos -->
     @if (activeTab() === 'pedidos') {
     <section class="tab-content">
       <app-mis-pedidos></app-mis-pedidos>
     </section>
     }
 
-    <!-- Tab: Modo Repartidor -->
     @if (activeTab() === 'repartidor') {
     <section class="tab-content repartidor-mode">
       <div class="mode-card bg-white rounded-2xl shadow-sm border p-6 max-w-2xl mx-auto mt-4 text-center">
@@ -97,7 +89,6 @@
             </div>
           </div>
 
-          <!-- Listado de Pedidos Entrantes para el Repartidor Disponible -->
           @if (repartidor()!.disponible) {
             <div class="pedidos-repartidor-section mt-10 pt-8 border-t text-left">
               <div class="flex items-center justify-between mb-6">
@@ -152,7 +143,6 @@
                         }
                       </div>
 
-                      <!-- Acciones según estado de asignación -->
                       <div class="pt-3 border-t border-gray-100 flex items-center justify-end gap-2">
                         @if (!pedido.repartidorId) {
                           <button (click)="asignarRepartidor(pedido)" [disabled]="asignandoPedidoId() === pedido.id"
@@ -166,7 +156,7 @@
                             }
                           </button>
                         } @else {
-                          <!-- El pedido ya es de este repartidor, permitir marcar como entregado y acceder a chat/ubicación -->
+                          
                           <div class="w-full flex flex-col gap-2.5">
                             <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-primary/5 p-3 rounded-xl border border-primary/15">
                               <span class="text-xs font-bold text-primary flex items-center gap-1.5">
@@ -174,7 +164,6 @@
                                 Asignado a ti
                               </span>
                               
-                              <!-- Botón exclusivo para pasar a ENTREGADO -->
                               <button (click)="marcarComoEntregado(pedido.id)"
                                       [disabled]="actualizandoEstadoPedidoId() === pedido.id"
                                       class="px-4 py-2 rounded-xl bg-green-600 hover:bg-green-700 text-white font-bold text-xs shadow-sm transition-all border-none cursor-pointer flex items-center justify-center gap-2">
@@ -188,7 +177,6 @@
                               </button>
                             </div>
 
-                            <!-- Botonera Chat y Ubicación en vivo con alto contraste -->
                             <div class="grid grid-cols-2 gap-2 pt-1">
                               <button (click)="abrirChatCliente(pedido)"
                                       class="px-3 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 border border-gray-300 text-xs font-bold text-gray-800 flex items-center justify-center gap-1.5 transition-all shadow-2xs cursor-pointer">
@@ -196,10 +184,12 @@
                                 <span>Chat Cliente</span>
                               </button>
                               <button (click)="enviarUbicacionLive(pedido)"
-                                      class="px-3 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 border border-gray-300 text-xs font-bold text-gray-800 flex items-center justify-center gap-1.5 transition-all shadow-2xs cursor-pointer">
-                                <ion-icon name="location-outline" class="text-primary text-base"></ion-icon>
-                                <span>Enviar Ubicación</span>
-                              </button>
+                                      [class]="trackingPedidoId() === pedido.id 
+                                               ? 'px-3 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white border border-red-600 flex items-center justify-center gap-1.5 transition-all shadow-lg cursor-pointer animate-pulse'
+                                               : 'px-3 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 border border-gray-300 text-xs font-bold text-gray-800 flex items-center justify-center gap-1.5 transition-all shadow-2xs cursor-pointer'">
+                                 <ion-icon name="location-outline" [class]="trackingPedidoId() === pedido.id ? 'text-white' : 'text-primary'"></ion-icon>
+                                 <span class="text-xs font-bold">{{ trackingPedidoId() === pedido.id ? 'Detener Ubicación' : 'Enviar Ubicación' }}</span>
+                               </button>
                             </div>
                           </div>
                         }
@@ -225,7 +215,6 @@
     }
     }
 
-    <!-- Contenido EMPRESA (por definir) -->
     @if (!loading() && rol === 'ROLE_EMPRESA') {
     <div class="coming-soon">
       <ion-icon name="business-outline"></ion-icon>
@@ -236,7 +225,6 @@
 
   </div>
 
-  <!-- Modal de Éxito de Entrega -->
   <app-info-modal [isOpen]="isSuccessModalOpen()"
                   title="Entrega Completada"
                   [message]="successModalMessage()"
@@ -244,7 +232,6 @@
                   (modalClosed)="isSuccessModalOpen.set(false)">
   </app-info-modal>
 
-  <!-- Modal de Chat en Tiempo Real (Carga diferida) -->
   @if (isChatOpen() && chatPedidoId() && chatReceptorId()) {
     @defer (on immediate) {
       <app-chat-modal [isOpen]="isChatOpen()"

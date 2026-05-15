@@ -14,7 +14,6 @@ export class HeaderComponent {
   isMenuOpen = false;
   private router = inject(Router);
 
-  // Usamos el signal del servicio directamente para reactividad total
   public currentUser = this.authService.currentUser;
 
   toggleMenu() {
