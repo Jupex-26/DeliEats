@@ -1,83 +1,84 @@
-<ion-content>
+<div class="home-container">
   
-  <section
-    class="hero-section flex flex-col-reverse md:flex-row items-center justify-between px-6 py-12 md:py-24 max-w-7xl mx-auto gap-8 w-full box-border">
-    
-    <div class="md:w-1/2 flex flex-col justify-center items-start mt-8 md:mt-0 space-y-6 w-full">
-      <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-main leading-tight m-0">
-        Sabor artesanal,<br>
-        <span class="text-primary">directo a tu mesa.</span>
-      </h1>
-      <p class="text-lg md:text-xl text-main opacity-90 max-w-md m-0">
-        Disfruta de la mejor selección de comida con ingredientes frescos y naturales.
-        Una experiencia sencilla, rápida y llena de energía.
-      </p>
-      <div class="flex space-x-4 pt-2 gap-4">
-        <button class="btn-secondary">
-          Ver Restaurantes
-        </button>
-        <button class="btn-alt-text">
-          Saber más
-        </button>
+  <section class="hero-section">
+    <div class="hero-bg-overlay"></div>
+    <div class="container hero-wrapper">
+      <div class="hero-content animate-up">
+        <span class="badge-new">¡Nuevo! DeliEats Premium</span>
+        <h1>El sabor de lo <br><span>artesanal</span> en tu casa</h1>
+        <p>Disfruta de ingredientes frescos, recetas tradicionales y el cariño de los mejores restaurantes locales, todo en un solo clic.</p>
+        <div class="cta-group">
+          <button routerLink="/restaurantes" class="btn-primary-lg">Explorar Menú</button>
+          <button routerLink="/nosotros" class="btn-outline-lg">Nuestra Historia</button>
+        </div>
       </div>
-    </div>
-    
-    <div class="md:w-1/2 flex justify-center w-full">
-      <div
-        class="hero-image-container w-full max-w-md rounded-full bg-alt flex items-center justify-center p-8 shadow-2xl relative overflow-hidden">
-        <div class="absolute inset-0 hero-placeholder-overlay"></div>
-        <div class="z-10 text-center flex flex-col items-center">
-          <span class="text-6xl mb-4">🥗</span>
-          <span class="text-primary text-xl font-bold">
-            Tu plato favorito<br>aquí
-          </span>
+      <div class="hero-visual animate-fade">
+        <div class="image-stack">
+          <img src="home_hero.png" alt="Comida DeliEats" class="main-img">
+          <div class="floating-card">
+            <ion-icon name="time-outline"></ion-icon>
+            <span>Entrega en 25 min</span>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="bg-alt py-16 px-6 w-full box-border">
-    <div class="max-w-7xl mx-auto text-center">
-      <h2 class="text-3xl font-bold text-main mb-12 m-0 pb-10">¿Por qué elegir DeliEats?</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        
-        <div class="feature-card bg-base p-8 rounded-3xl shadow-sm hover:shadow-md transition duration-300">
-          <div class="feature-icon bg-primary">🍃</div>
-          <h3 class="text-xl font-bold text-primary mb-3 m-0 pb-2">Ingredientes Naturales</h3>
-          <p class="text-main opacity-90 leading-relaxed m-0">
-            Nuestra prioridad es tu bienestar. Seleccionamos los alimentos más frescos para reducir tu estrés y darte
-            calidad.
-          </p>
+  <section class="features-section">
+    <div class="container">
+      <div class="section-header text-center animate-up">
+        <h2 class="section-title">¿Por qué DeliEats?</h2>
+        <p class="section-subtitle">No somos solo otro servicio de delivery. Somos tu conexión con el sabor real.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-item animate-up" style="animation-delay: 0.1s">
+          <div class="icon-box green">
+            <ion-icon name="leaf-outline"></ion-icon>
+          </div>
+          <h3>100% Natural</h3>
+          <p>Seleccionamos locales que usan ingredientes de proximidad y procesos artesanales.</p>
         </div>
 
-        <div class="feature-card bg-base p-8 rounded-3xl shadow-sm hover:shadow-md transition duration-300">
-          <div class="feature-icon bg-secondary">🛵</div>
-          <h3 class="text-xl font-bold text-secondary mb-3 m-0 pb-2">Servicio Dinámico</h3>
-          <p class="text-main opacity-90 leading-relaxed m-0">
-            Te llevamos la comida con energía y movimiento. Un proceso rápido y apetecible desde que pides hasta que
-            llega.
-          </p>
+        <div class="feature-item animate-up" style="animation-delay: 0.2s">
+          <div class="icon-box red">
+            <ion-icon name="bicycle-outline"></ion-icon>
+          </div>
+          <h3>Eco-Delivery</h3>
+          <p>Nuestra flota prioriza vehículos eléctricos y rutas optimizadas para cuidar el planeta.</p>
         </div>
 
-        <div class="feature-card bg-base p-8 rounded-3xl shadow-sm hover:shadow-md transition duration-300">
-          <div class="feature-icon bg-warning">👨‍🍳</div>
-          <h3 class="text-xl font-bold text-warning mb-3 m-0 pb-2">Calidad Artesanal</h3>
-          <p class="text-main opacity-90 leading-relaxed m-0">
-            Cada plato está preparado con esmero, transmitiendo la calidez y cercanía de la comida hecha en casa.
-          </p>
+        <div class="feature-item animate-up" style="animation-delay: 0.3s">
+          <div class="icon-box gold">
+            <ion-icon name="star-outline"></ion-icon>
+          </div>
+          <h3>Calidad Oro</h3>
+          <p>Garantizamos que tu pedido llegue en perfectas condiciones o te devolvemos el dinero.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="py-20 px-6 max-w-4xl mx-auto text-center w-full box-border">
-    <h2 class="text-3xl md:text-4xl font-bold text-main mb-6 m-0 pb-4">¿Hambre de algo bueno?</h2>
-    <p class="text-lg text-main opacity-90 mb-8 m-0 pb-8">
-      Únete a DeliEats y recibe un descuento especial en tu primer pedido saludable.
-    </p>
-    <div class="flex flex-col sm:flex-row justify-center max-w-lg mx-auto gap-4">
-      <input type="email" placeholder="Tu correo electrónico" class="newsletter-input">
-      <button class="btn-primary">Suscribirme</button>
+  <section class="join-section">
+    <div class="container">
+      <div class="join-card animate-scale">
+        <div class="join-content">
+          <h2>Únete a la familia DeliEats</h2>
+          <p>¿Eres dueño de un restaurante o quieres ser repartidor? Tenemos un lugar para ti en nuestra comunidad en constante crecimiento.</p>
+          <button routerLink="/registro" class="btn-white">Empezar ahora</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="newsletter-section bg-base">
+    <div class="container text-center animate-up">
+      <h2>Suscríbete a nuestra newsletter</h2>
+      <p>Recibe ofertas exclusivas y novedades de los mejores locales de tu zona.</p>
+      <form class="newsletter-form">
+        <input type="email" placeholder="Introduce tu email" class="input-round">
+        <button type="submit" class="btn-primary-round">Suscribirse</button>
+      </form>
     </div>
   </section>
 
@@ -92,4 +93,5 @@
       <div class="text-sm opacity-80">&copy; 2026 DeliEats. Todos los derechos reservados.</div>
     </div>
   </footer>
-</ion-content>
+
+</div>

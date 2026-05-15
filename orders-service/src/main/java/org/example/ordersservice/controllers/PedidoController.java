@@ -7,11 +7,14 @@ import org.example.ordersservice.dtos.pedido.PedidoOutputDto;
 import org.example.ordersservice.models.Pedido;
 import org.example.ordersservice.mappers.PedidoMapper;
 import org.example.ordersservice.services.PedidoService;
+import org.example.ordersservice.services.PdfService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +25,7 @@ public class PedidoController {
 
     private final PedidoService pedidoService;
     private final PedidoMapper pedidoMapper;
+    private final PdfService pdfService;
 
     @PostMapping
     public ResponseEntity<PedidoOutputDto> create(@Valid @RequestBody PedidoInputDto dto) {
@@ -102,5 +106,17 @@ public class PedidoController {
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         pedidoService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+    
+    @GetMapping("/{id}/factura")
+    public ResponseEntity<byte[]> descargarFactura(@PathVariable Long id) {
+        Pedido pedido = pedidoService.findById(id);
+        byte[] pdfBytes = pdfService.generarFactura(pedido);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment", "factura_" + pedido.getId() + ".pdf");
+
+        return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
     }
 }

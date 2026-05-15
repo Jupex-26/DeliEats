@@ -1,0 +1,139 @@
+<ion-content>
+  <div class="contacto-container">
+    
+    <section class="contacto-hero">
+      <div class="hero-overlay"></div>
+      <div class="container hero-content animate-up">
+        <h1>Estamos aquí para <span>ayudarte</span></h1>
+        <p>¿Tienes alguna duda, sugerencia o simplemente quieres saludar? Nuestro equipo está listo para escucharte.</p>
+      </div>
+    </section>
+
+    <section class="contacto-content container">
+      <div class="contacto-grid">
+        
+        <div class="contacto-info animate-up">
+          <h2 class="section-title">Información de Contacto</h2>
+          <p class="subtitle">Utiliza cualquiera de nuestros canales para comunicarte con nosotros.</p>
+
+          <div class="info-items">
+            <div class="info-item">
+              <div class="icon-circle">
+                <ion-icon name="location-outline"></ion-icon>
+              </div>
+              <div class="info-text">
+                <h4>Dirección</h4>
+                <p>Calle Gastronomía 123, Madrid, España</p>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <div class="icon-circle">
+                <ion-icon name="call-outline"></ion-icon>
+              </div>
+              <div class="info-text">
+                <h4>Teléfono</h4>
+                <p>+34 912 345 678</p>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <div class="icon-circle">
+                <ion-icon name="mail-outline"></ion-icon>
+              </div>
+              <div class="info-text">
+                <h4>Email</h4>
+                <p>soporte@delieats.com</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="social-links">
+            <h4>Síguenos en redes sociales</h4>
+            <div class="social-icons">
+              <a href="#" class="social-icon"><ion-icon name="logo-facebook"></ion-icon></a>
+              <a href="#" class="social-icon"><ion-icon name="logo-instagram"></ion-icon></a>
+              <a href="#" class="social-icon"><ion-icon name="logo-twitter"></ion-icon></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="contacto-form-wrapper animate-up" style="animation-delay: 0.2s">
+          <div class="form-card">
+            <h2 class="form-title">Envíanos un mensaje</h2>
+            
+            <form [formGroup]="contactoForm" (ngSubmit)="onSubmit()" *ngIf="!enviado">
+              <div class="form-group">
+                <label for="nombre">Nombre Completo</label>
+                <input type="text" id="nombre" formControlName="nombre" placeholder="Tu nombre" 
+                  [class.invalid]="contactoForm.get('nombre')?.invalid && contactoForm.get('nombre')?.touched">
+              </div>
+
+              <div class="form-group">
+                <label for="email">Correo Electrónico</label>
+                <input type="email" id="email" formControlName="email" placeholder="ejemplo@correo.com"
+                  [class.invalid]="contactoForm.get('email')?.invalid && contactoForm.get('email')?.touched">
+              </div>
+
+              <div class="form-group">
+                <label for="asunto">Asunto</label>
+                <select id="asunto" formControlName="asunto"
+                  [class.invalid]="contactoForm.get('asunto')?.invalid && contactoForm.get('asunto')?.touched">
+                  <option value="" disabled selected>Selecciona un motivo</option>
+                  <option value="Soporte Técnico">Soporte Técnico</option>
+                  <option value="Ventas">Ventas / Restaurantes</option>
+                  <option value="Repartidores">Ser Repartidor</option>
+                  <option value="Otro">Otro</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="mensaje">Tu Mensaje</label>
+                <textarea id="mensaje" formControlName="mensaje" rows="5" placeholder="¿En qué podemos ayudarte?"
+                  [class.invalid]="contactoForm.get('mensaje')?.invalid && contactoForm.get('mensaje')?.touched"></textarea>
+              </div>
+
+              <button type="submit" class="btn-submit" [disabled]="contactoForm.invalid">
+                <span>Enviar Mensaje</span>
+                <ion-icon name="send-outline"></ion-icon>
+              </button>
+            </form>
+
+            <div class="success-message animate-fade" *ngIf="enviado">
+              <div class="success-icon">
+                <ion-icon name="checkmark-circle-outline"></ion-icon>
+              </div>
+              <h3>¡Mensaje Enviado!</h3>
+              <p>Gracias por contactar con DeliEats. Te responderemos en un plazo máximo de 24 horas.</p>
+              <button class="btn-outline" (click)="enviado = false">Enviar otro mensaje</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="map-section container animate-up">
+      <div class="map-placeholder">
+        <div class="map-overlay">
+          <ion-icon name="location-outline"></ion-icon>
+          <h3>Encuéntranos en Madrid</h3>
+          <p>Visita nuestras oficinas centrales en el corazón de la ciudad.</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer class="footer-main bg-primary text-alt py-10 px-6 box-border">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+      <div class="text-2xl font-bold tracking-wider">DeliEats</div>
+      <div class="flex space-x-6 text-sm opacity-90 gap-6">
+        <a routerLink="/privacidad" class="footer-link">Privacidad</a>
+        <a routerLink="/terminos" class="footer-link">Términos</a>
+        <a routerLink="/contacto" class="footer-link">Contacto</a>
+      </div>
+      <div class="text-sm opacity-80">&copy; 2026 DeliEats. Todos los derechos reservados.</div>
+    </div>
+  </footer>
+</ion-content>

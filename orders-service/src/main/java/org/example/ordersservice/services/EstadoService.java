@@ -18,5 +18,4 @@ public interface EstadoService {
 
     void deleteById(Long id);
 
-    boolean existsByNombre(String nombre);
 }

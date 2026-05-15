@@ -4,8 +4,6 @@ import org.example.ordersservice.models.Pedido;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.math.BigDecimal;
-
 public interface PedidoService {
 
     Pedido save(Pedido pedido);
@@ -15,8 +13,6 @@ public interface PedidoService {
     Pedido findById(Long id);
 
     Page<Pedido> findByClienteId(Long clienteId, Pageable pageable);
-
-    Page<Pedido> findByEstadoId(Long estadoId, Pageable pageable);
 
     Page<Pedido> findByEmpresaId(Long empresaId, Pageable pageable);
 
@@ -31,7 +27,5 @@ public interface PedidoService {
     Pedido cancelarPedido(Long id);
 
     void deleteById(Long id);
-
-    BigDecimal calculateTotal(Long id);
 
 }

@@ -117,3 +117,29 @@
     box-shadow: 0 4px 12px rgba($color-secondary, 0.25) !important;
   }
 }
+
+.nav-link {
+  position: relative;
+  text-decoration: none;
+  transition: color 0.3s ease;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: $color-primary;
+    transition: width 0.3s ease;
+    border-radius: 2px;
+  }
+
+  &:hover {
+    color: $color-primary !important;
+    
+    &::after {
+      width: 100%;
+    }
+  }
+}

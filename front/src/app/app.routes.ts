@@ -51,6 +51,14 @@ export const routes: Routes = [
         loadComponent: () => import('./layouts/legal/terminos/terminos.component').then(m => m.TerminosComponent)
       },
       {
+        path: 'nosotros',
+        loadComponent: () => import('./layouts/nosotros/nosotros.component').then(m => m.NosotrosComponent)
+      },
+      {
+        path: 'contacto',
+        loadComponent: () => import('./layouts/contacto/contacto.component').then(m => m.ContactoComponent)
+      },
+      {
         path: 'perfil',
         loadComponent: () => import('./features/perfil/perfil.component').then(m => m.PerfilComponent),
         canActivate: [roleGuard],

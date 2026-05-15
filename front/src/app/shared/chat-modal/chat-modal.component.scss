@@ -1,3 +1,4 @@
+@use 'sass:color';
 @use '../../../styles/variables' as *;
 
 .chat-modal {
@@ -41,7 +42,7 @@
 .btn-submit {
   background-color: $color-primary;
   &:not(:disabled):hover {
-    background-color: darken($color-primary, 5%);
+    background-color: color.adjust($color-primary, $lightness: -5%);
   }
 }
 
