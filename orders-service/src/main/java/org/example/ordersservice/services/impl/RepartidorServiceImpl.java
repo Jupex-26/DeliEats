@@ -67,7 +67,7 @@ public class RepartidorServiceImpl implements RepartidorService {
 
     @Override
     public Repartidor updateDisponibilidad(Long clienteId, boolean disponible) {
-        Repartidor repartidor = findByClienteId(clienteId);
+        Repartidor repartidor = findById(clienteId);
         repartidor.setDisponible(disponible);
         return repartidorRepository.save(repartidor);
     }
