@@ -1,3 +1,4 @@
+version: '3.8'
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
@@ -18,7 +19,7 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092 # Changed to 'kafka' service name
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
@@ -30,3 +31,20 @@ services:
       - "9000:9000"
     environment:
       - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
+
+  orders-service:
+    build: . # Build from the Dockerfile in the current directory
+    container_name: orders-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - kafka # orders-service depends on kafka
+    environment:
+      # Configure Spring Boot to connect to Kafka service within Docker network
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      # Configure Spring Boot to connect to a database (example, adjust as needed)
+      # If using H2 in-memory, it's fine. For external DB, uncomment and configure:
+      # SPRING_DATASOURCE_URL: jdbc:mysql://mysql-host:3306/orders_db
+      # SPRING_DATASOURCE_USERNAME: user
+      # SPRING_DATASOURCE_PASSWORD: password
+      # SPRING_JPA_HIBERNATE_DDL_AUTO: update
