@@ -55,6 +55,7 @@
         <table class="data-table w-full border-collapse">
           <thead>
             <tr>
+              <th class="text-left px-6 py-4 text-xs font-semibold opacity-70 tracking-wider uppercase border-y">ID</th>
               <th class="text-left px-6 py-4 text-xs font-semibold opacity-70 tracking-wider uppercase border-y">NOMBRE
               </th>
               <th class="text-left px-6 py-4 text-xs font-semibold opacity-70 tracking-wider uppercase border-y">EMAIL
@@ -68,8 +69,13 @@
           <tbody>
             @for (repartidor of repartidores(); track repartidor.id) {
             <tr class="transition-colors group">
-              <td class="td-name px-6 py-4 border-b font-bold">{{ repartidor.nombreCliente || repartidor.cliente?.nombre }}</td>
-              <td class="td-email px-6 py-4 border-b text-sm">{{ repartidor.emailCliente || repartidor.cliente?.email }}</td>
+              <td class="px-6 py-4 border-b text-xs font-mono text-gray-400">#{{ repartidor.id }}</td>
+              <td class="td-name px-6 py-4 border-b font-bold">
+                {{ repartidor.nombre || repartidor.cliente?.nombre || 'Sin nombre' }}
+              </td>
+              <td class="td-email px-6 py-4 border-b text-sm">
+                {{ repartidor.email || repartidor.cliente?.email || 'Sin email' }}
+              </td>
               <td class="px-6 py-4 border-b text-center">
                 <ion-toggle [checked]="repartidor.disponible" (ionChange)="toggleDisponibilidad(repartidor, $event)"
                   class="deli-toggle"></ion-toggle>
@@ -184,13 +190,13 @@
               <div class="detail-header p-8 flex flex-col items-center border-b relative">
                 <div
                   class="avatar w-24 h-24 rounded-full flex items-center justify-center text-white text-3xl font-bold mb-4 shadow-lg border-4 border-white overflow-hidden">
-                  @if (viewingRepartidor()!.fotoCliente || viewingRepartidor()!.cliente?.foto) {
-                    <img [src]="environment.storageUrl + '/' + (viewingRepartidor()!.fotoCliente || viewingRepartidor()!.cliente?.foto)" alt="Foto de perfil" class="w-full h-full object-cover">
+                  @if (viewingRepartidor()!.foto || viewingRepartidor()!.cliente?.foto) {
+                    <img [src]="environment.storageUrl + '/' + (viewingRepartidor()!.foto || viewingRepartidor()!.cliente?.foto)" alt="Foto de perfil" class="w-full h-full object-cover">
                   } @else {
-                    {{ (viewingRepartidor()!.nombreCliente || viewingRepartidor()!.cliente?.nombre || 'U').charAt(0).toUpperCase() }}
+                    {{ (viewingRepartidor()!.nombre || viewingRepartidor()!.cliente?.nombre || 'U').charAt(0).toUpperCase() }}
                   }
                 </div>
-                <h2 class="name text-2xl font-bold mb-1">{{ viewingRepartidor()!.nombreCliente || viewingRepartidor()!.cliente?.nombre }}</h2>
+                <h2 class="name text-2xl font-bold mb-1">{{ viewingRepartidor()!.nombre || viewingRepartidor()!.cliente?.nombre }}</h2>
                 <div class="flex gap-2">
                   <span
                     class="role text-sm font-medium px-3 py-1 rounded-full bg-primary/10 text-primary">Repartidor</span>
@@ -212,7 +218,7 @@
                     </div>
                     <div>
                       <p class="label text-xs font-bold uppercase">Email</p>
-                      <p class="value font-medium mt-1 break-all">{{ viewingRepartidor()!.emailCliente || viewingRepartidor()!.cliente?.email }}</p>
+                      <p class="value font-medium mt-1 break-all">{{ viewingRepartidor()!.email || viewingRepartidor()!.cliente?.email }}</p>
                     </div>
                   </div>
 
@@ -222,7 +228,7 @@
                     </div>
                     <div>
                       <p class="label text-xs font-bold uppercase">Teléfono</p>
-                      <p class="value font-medium mt-1">{{ viewingRepartidor()!.telefonoCliente || viewingRepartidor()!.cliente?.telefono || 'No especificado' }}</p>
+                      <p class="value font-medium mt-1">{{ viewingRepartidor()!.telefono || viewingRepartidor()!.cliente?.telefono || 'No especificado' }}</p>
                     </div>
                   </div>
 
@@ -232,7 +238,7 @@
                     </div>
                     <div>
                       <p class="label text-xs font-bold uppercase">Dirección</p>
-                      <p class="value font-medium mt-1">{{ viewingRepartidor()!.direccionCliente || viewingRepartidor()!.cliente?.direccion || 'No especificada' }}</p>
+                      <p class="value font-medium mt-1">{{ viewingRepartidor()!.direccion || viewingRepartidor()!.cliente?.direccion || 'No especificada' }}</p>
                     </div>
                   </div>
                 </div>

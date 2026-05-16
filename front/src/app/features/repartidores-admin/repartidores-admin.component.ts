@@ -116,6 +116,7 @@ export class RepartidoresAdminComponent implements OnInit {
           this.totalPages.set(response.totalPages);
           this.totalElements.set(response.totalElements);
         },
+        error: (err) => console.error('Error al cargar repartidores:', err)
       });
   }
 

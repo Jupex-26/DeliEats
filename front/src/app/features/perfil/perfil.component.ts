@@ -100,7 +100,7 @@ export class PerfilComponent implements OnInit, OnDestroy {
           const id = user.userOutputDto.id;
           if (rol === 'ROLE_CLIENTE' || rol === 'ROLE_REPARTIDOR') {
             this.loading.set(true);
-            this.cliente.set(null); 
+            this.cliente.set(null);
             this.clienteService.obtenerPorId(id).subscribe({
               next: (c) => {
                 console.log('[Perfil] Cliente cargado:', c);
@@ -130,7 +130,7 @@ export class PerfilComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    
+
   }
 
   ngOnDestroy() {
@@ -148,14 +148,14 @@ export class PerfilComponent implements OnInit, OnDestroy {
   getFotoUrl(): string | null {
     const foto = this.cliente()?.foto || this.usuario?.foto;
     if (!foto) return null;
-    
+
     if (foto.startsWith('http')) return foto;
     return `${this.environment.storageUrl}/${foto}`;
   }
 
   onAvatarError(event: any) {
     console.error('[Perfil] Error al cargar la foto:', event);
-    
+
   }
 
   setTab(tab: Tab) {
@@ -169,7 +169,7 @@ export class PerfilComponent implements OnInit, OnDestroy {
     const id = this.cliente()?.id;
     if (!id) return;
     this.loadingRepartidor.set(true);
-    this.repartidorService.obtenerPorClienteId(id).subscribe({
+    this.repartidorService.obtenerPorId(id).subscribe({
       next: (rep) => {
         this.repartidor.set(rep);
         this.loadingRepartidor.set(false);
@@ -252,7 +252,7 @@ export class PerfilComponent implements OnInit, OnDestroy {
 
         this.pedidoService.actualizar(pedido.id, payload).subscribe({
           next: () => {
-            
+
             const estadoEnCamino = this.estadosList().find(e => e.nombre?.toLowerCase().includes('camino'));
             if (estadoEnCamino) {
               this.pedidoService.actualizarEstado(pedido.id, estadoEnCamino.id).subscribe({
@@ -292,7 +292,7 @@ export class PerfilComponent implements OnInit, OnDestroy {
     this.pedidoService.actualizarEstado(pedidoId, estadoEntregado.id).subscribe({
       next: () => {
         this.actualizandoEstadoPedidoId.set(null);
-        
+
         if (this.trackingPedidoId() === pedidoId) {
           this.trackingService.desconectar();
           this.trackingPedidoId.set(null);
@@ -323,7 +323,7 @@ export class PerfilComponent implements OnInit, OnDestroy {
         }
       },
       error: () => {
-        
+
         this.repartidor.set({ ...rep });
       }
     });
@@ -357,12 +357,12 @@ export class PerfilComponent implements OnInit, OnDestroy {
     if (!repId) return;
 
     if (this.trackingPedidoId() === pedido.id) {
-      
+
       this.trackingService.desconectar();
       this.trackingPedidoId.set(null);
       console.log('Rastreo detenido para el pedido:', pedido.id);
     } else {
-      
+
       // Iniciamos el rastreo para el nuevo pedido
       // Importante: usamos clienteId del repartidor para el emisor si el backend identifica por User.id
       this.trackingService.iniciarRastreo(repId, pedido.clienteId, pedido.id);

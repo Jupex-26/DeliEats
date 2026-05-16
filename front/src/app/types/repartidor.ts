@@ -3,12 +3,12 @@ import { ClienteOutputDto } from './cliente';
 export interface RepartidorOutputDto {
     id: number;
     clienteId: number;
-    cliente?: ClienteOutputDto; // Objeto anidado solicitado
-    nombreCliente: string;
-    emailCliente: string;
-    telefonoCliente: string;
-    direccionCliente: string;
-    fotoCliente?: string;
+    cliente?: ClienteOutputDto; 
+    nombre: string;
+    email: string;
+    telefono: string;
+    direccion: string;
+    foto?: string;
     disponible: boolean;
     aprobado: boolean;
 }

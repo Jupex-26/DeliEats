@@ -1,8 +1,8 @@
 import { Injectable, signal, WritableSignal, inject, NgZone } from '@angular/core';
-import { Client, StompSubscription } from '@stomp/stompjs';
+import { Client } from '@stomp/stompjs';
 import * as SockJS_ from 'sockjs-client';
 const SockJS = (SockJS_ as any).default || SockJS_;
-import { Subject, Observable, ReplaySubject, BehaviorSubject, filter, take, switchMap } from 'rxjs';
+import { Subject, Observable, ReplaySubject, BehaviorSubject, filter, take } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 export interface UbicacionPayload {
@@ -25,20 +25,10 @@ export class WebSocketService {
   private mensajesStore = new Map<number, WritableSignal<any[]>>();
 
   private ubicacionSubject = new ReplaySubject<UbicacionPayload>(1);
-  public ubicacionObservable = this.ubicacionSubject.asObservable();
-
-  constructor() {}
-
-  getMensajesPedido(pedidoId: number): WritableSignal<any[]> {
-    if (!this.mensajesStore.has(pedidoId)) {
-      this.mensajesStore.set(pedidoId, signal<any[]>([]));
-    }
-    return this.mensajesStore.get(pedidoId)!;
-  }
+  private ubicacionObservable = this.ubicacionSubject.asObservable();
 
   conectar(miUsuarioId?: number) {
     if (this.stompClient && this.stompClient.active) {
-      console.log('WebSocket ya está activo o conectando...');
       return;
     }
 
@@ -48,19 +38,20 @@ export class WebSocketService {
       reconnectDelay: 5000,
     });
 
-    this.stompClient.onConnect = () => {
-      console.log('Conectado a WebSocket STOMP');
+    this.stompClient.onConnect = (frame) => {
+      console.log('Conectado a STOMP');
       this.connected$.next(true);
       
       if (miUsuarioId) {
         this.stompClient.subscribe(`/topic/mensajes/${miUsuarioId}`, (mensaje) => {
           if (mensaje.body) {
-            const msg = JSON.parse(mensaje.body);
             this.ngZone.run(() => {
+              const msg = JSON.parse(mensaje.body);
               this.mensajeSubject.next(msg);
+              
               if (msg.pedidoId) {
-                const store = this.getMensajesPedido(msg.pedidoId);
-                store.update(prev => [...prev, msg]);
+                const signal = this.getMensajesPedido(msg.pedidoId);
+                signal.update(prev => [...prev, msg]);
               }
             });
           }
@@ -69,41 +60,28 @@ export class WebSocketService {
     };
 
     this.stompClient.onDisconnect = () => {
-      this.connected$.next(false);
-    };
-
-    this.stompClient.onStompError = (frame) => {
-      console.error('Broker reported error: ' + frame.headers['message']);
-      console.error('Additional details: ' + frame.body);
+      console.log('Desconectado de STOMP');
       this.connected$.next(false);
     };
 
     this.stompClient.activate();
   }
 
-  enviarUbicacion(payload: UbicacionPayload) {
-    if (this.stompClient && this.stompClient.connected) {
-      console.log('[WebSocketService] Enviando ubicación al destino /app/location:', payload);
-      this.stompClient.publish({
-        destination: '/app/location',
-        body: JSON.stringify(payload),
-      });
-    } else {
-      console.warn('[WebSocketService] No se pudo enviar ubicación: STOMP client no conectado');
+  getMensajesPedido(pedidoId: number): WritableSignal<any[]> {
+    if (!this.mensajesStore.has(pedidoId)) {
+      this.mensajesStore.set(pedidoId, signal<any[]>([]));
     }
+    return this.mensajesStore.get(pedidoId)!;
   }
 
   suscribirseAUbicacionCliente(clienteId: number): Observable<UbicacionPayload> {
-    
     this.connected$.pipe(
       filter(connected => connected === true),
       take(1)
     ).subscribe(() => {
-      console.log(`[WebSocketService] Conectado. Suscribiéndose ahora al topic de ubicación para cliente: ${clienteId}`);
       this.stompClient.subscribe(`/topic/location/${clienteId}`, (mensaje) => {
         if (mensaje.body) {
           const data = JSON.parse(mensaje.body);
-          console.log('[WebSocketService] Datos de ubicación recibidos del servidor:', data);
           this.ngZone.run(() => this.ubicacionSubject.next(data));
         }
       });
@@ -123,10 +101,19 @@ export class WebSocketService {
     }
   }
 
+  enviarUbicacion(payload: UbicacionPayload) {
+    if (this.stompClient && this.stompClient.connected) {
+      this.stompClient.publish({
+        destination: '/app/location',
+        body: JSON.stringify(payload),
+      });
+    }
+  }
+
   desconectar() {
     if (this.stompClient) {
       this.stompClient.deactivate();
-      console.log('Desconectado de WebSocket STOMP');
     }
+    this.connected$.next(false);
   }
 }

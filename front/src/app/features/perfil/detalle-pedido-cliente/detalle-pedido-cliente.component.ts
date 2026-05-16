@@ -1,6 +1,6 @@
 import {
   Component, OnInit, OnDestroy,
-  AfterViewInit, inject, signal, ElementRef, ViewChild
+  AfterViewInit, inject, signal, ElementRef, ViewChild, computed, effect
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -24,10 +24,11 @@ import { Subscription } from 'rxjs';
 import * as L from 'leaflet';
 import { PedidoService } from '../../../services/pedido/pedido-service';
 import { TrackingService } from '../../../services/tracking/tracking-service';
-import { PedidoOutputDto } from '../../../types';
+import { PedidoOutputDto, RepartidorOutputDto } from '../../../types';
 import { EuroPipe } from '../../../pipe/euro.pipe';
 import { ChatModalComponent } from '../../../shared/chat-modal/chat-modal.component';
 import { environment } from '../../../../environments/environment';
+import { RepartidorService } from '../../../services/repartidor/repartidor-service';
 
 const iconDefault = L.icon({
   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
@@ -73,6 +74,7 @@ export class DetallePedidoClienteComponent implements OnInit, AfterViewInit, OnD
   private router = inject(Router);
   private pedidoService = inject(PedidoService);
   private trackingService = inject(TrackingService);
+  private repartidorService = inject(RepartidorService);
   protected environment = environment;
 
   pedido = signal<PedidoOutputDto | null>(null);
@@ -85,6 +87,11 @@ export class DetallePedidoClienteComponent implements OnInit, AfterViewInit, OnD
   isChatOpen = signal(false);
   chatReceptorId = signal<number | null>(null);
   chatReceptorNombre = signal<string>('');
+
+  mostrarMapa = computed(() => {
+    const estado = this.pedido()?.estadoNombre?.toUpperCase();
+    return estado === 'EN CAMINO';
+  });
 
   private map?: L.Map;
   private repartidorMarker?: L.Marker;
@@ -99,6 +106,17 @@ export class DetallePedidoClienteComponent implements OnInit, AfterViewInit, OnD
       refreshOutline, checkmarkCircleOutline, downloadOutline,
       alertCircleOutline, receiptOutline, chatbubblesOutline
     });
+
+    effect(() => {
+      if (this.mostrarMapa()) {
+        const p = this.pedido();
+        if (p) {
+          this.trackingService.conectar(p.clienteId);
+          // Intentamos inicializar el mapa cuando el DOM esté disponible
+          setTimeout(() => this.initMap(), 1000);
+        }
+      }
+    });
   }
 
   ngOnInit() {
@@ -109,10 +127,17 @@ export class DetallePedidoClienteComponent implements OnInit, AfterViewInit, OnD
       next: (p) => {
         this.pedido.set(p);
         this.loading.set(false);
-        if (p.estadoNombre === 'EN CAMINO') {
-          this.trackingService.conectar(p.clienteId);
-          
-          setTimeout(() => this.initMap(), 100);
+
+        // Si no tenemos repartidorClienteId pero sí repartidorId, lo buscamos para habilitar el chat
+        if (!p.repartidorClienteId && p.repartidorId) {
+          this.repartidorService.obtenerPorId(p.repartidorId).subscribe({
+            next: (rep) => {
+              this.pedido.update(current => {
+                if (!current) return null;
+                return { ...current, repartidorClienteId: rep.clienteId };
+              });
+            }
+          });
         }
       },
       error: () => {
@@ -127,8 +152,17 @@ export class DetallePedidoClienteComponent implements OnInit, AfterViewInit, OnD
   }
 
   private initMap(lat = 40.4168, lng = -3.7038) {
-    if (this.map || !this.mapContainer) return;
-
+    console.log('[DetallePedidoCliente] Intentando inicializar mapa...');
+    if (this.map) {
+      console.log('[DetallePedidoCliente] El mapa ya existe.');
+      return;
+    }
+    if (!this.mapContainer) {
+      console.warn('[DetallePedidoCliente] mapContainer no encontrado en el DOM todavía.');
+      return;
+    }
+    
+    console.log('[DetallePedidoCliente] Inicializando mapa en:', lat, lng);
     this.map = L.map(this.mapContainer.nativeElement).setView([lat, lng], 14);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -146,7 +180,7 @@ export class DetallePedidoClienteComponent implements OnInit, AfterViewInit, OnD
     }
 
     this.trackingSub = this.trackingService.ubicacion$.subscribe(({ lat, lng }) => {
-      console.log(`[DetallePedidoCliente] Recibida posición: ${lat}, ${lng}`);
+      console.log(`[DetallePedidoCliente] Ubicación recibida del TrackingService: ${lat}, ${lng}`);
       this.ultimaUbicacionRecibida = { lat, lng };
       
       if (this.map) {
@@ -243,13 +277,12 @@ export class DetallePedidoClienteComponent implements OnInit, AfterViewInit, OnD
   }
 
   get puedeCancel(): boolean {
-    const estado = this.pedido()?.estadoNombre;
+    const estado = this.pedido()?.estadoNombre?.toUpperCase();
     return !!estado && estado !== 'EN CAMINO' && estado !== 'ENTREGADO' && estado !== 'CANCELADO';
   }
 
-  get mostrarMapa(): boolean {
-    return this.pedido()?.estadoNombre === 'EN CAMINO';
-  }
+  // get mostrarMapa ya no es necesario, es un computed signal
+
 
   get nombreRepartidor(): string {
     const p = this.pedido();

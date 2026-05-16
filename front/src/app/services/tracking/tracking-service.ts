@@ -30,6 +30,7 @@ export class TrackingService {
       .subscribe({
         next: (payload: UbicacionPayload) => {
           console.log('[TrackingService] Recibido payload de WS:', payload);
+          // Mapeamos latitud/longitud a lat/lng para el mapa Leaflet
           const coords = { lat: payload.latitud, lng: payload.longitud };
           this.ubicacion.set(coords);
           this.ubicacionSubject.next(coords);
