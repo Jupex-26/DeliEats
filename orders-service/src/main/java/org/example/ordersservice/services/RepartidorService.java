@@ -12,6 +12,8 @@ public interface RepartidorService {
     Page<Repartidor> findAll(Pageable pageable);
 
     Repartidor findById(Long id);
+    
+    Repartidor findByClienteId(Long clienteId);
 
     Page<Repartidor> findByDisponible(boolean disponible, Pageable pageable);
     
@@ -21,12 +23,15 @@ public interface RepartidorService {
 
     void deleteById(Long id);
 
-    Repartidor updateDisponibilidad(Long id, boolean disponible);
+    Repartidor updateDisponibilidad(Long clienteId, boolean disponible);
 
     void createFromCliente(Cliente cliente);
 
     void aprobarRepartidor(Long id, boolean aprobado);
 
     boolean existsById(Long id);
-    boolean isRepartidor(Long id);
+    
+    boolean existsByClienteId(Long clienteId);
+    
+    boolean isRepartidor(Long clienteId);
 }

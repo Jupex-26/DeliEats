@@ -15,7 +15,7 @@ public abstract class PedidoMapper {
     @Mapping(target = "direccionEntrega", source = "cliente.direccion")
     @Mapping(target = "estadoNombre", source = "estado.nombre")
     @Mapping(target = "repartidorId", source = "repartidor.id")
-    @Mapping(target = "nombreRepartidor", source = "repartidor.nombre")
+    @Mapping(target = "nombreRepartidor", source = "repartidor.cliente.nombre")
     @Mapping(target = "empresaId", source = "empresa.id")
     @Mapping(target = "nombreEmpresa", source = "empresa.nombre")
     public abstract PedidoOutputDto toDto(Pedido pedido);

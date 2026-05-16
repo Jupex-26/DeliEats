@@ -41,6 +41,12 @@ public class RepartidorController {
         Repartidor entity = repartidorService.findById(id);
         return ResponseEntity.ok(repartidorMapper.toDto(entity));
     }
+    
+    @GetMapping("/cliente/{clienteId}")
+    public ResponseEntity<RepartidorOutputDto> findByClienteId(@PathVariable Long clienteId) {
+        Repartidor entity = repartidorService.findByClienteId(clienteId);
+        return ResponseEntity.ok(repartidorMapper.toDto(entity));
+    }
 
     @GetMapping("/disponibles")
     public ResponseEntity<Page<RepartidorOutputDto>> findByDisponible(@PageableDefault Pageable pageable) {
@@ -65,9 +71,9 @@ public class RepartidorController {
         return ResponseEntity.ok(repartidorMapper.toDto(updated));
     }
 
-    @PatchMapping("/{id}/disponibilidad")
-    public ResponseEntity<RepartidorOutputDto> updateDisponibilidad(@PathVariable Long id, @RequestParam boolean disponible) {
-        Repartidor updated = repartidorService.updateDisponibilidad(id, disponible);
+    @PatchMapping("/cliente/{clienteId}/disponibilidad")
+    public ResponseEntity<RepartidorOutputDto> updateDisponibilidad(@PathVariable Long clienteId, @RequestParam boolean disponible) {
+        Repartidor updated = repartidorService.updateDisponibilidad(clienteId, disponible);
         return ResponseEntity.ok(repartidorMapper.toDto(updated));
     }
 

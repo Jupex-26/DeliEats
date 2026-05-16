@@ -1,56 +1,23 @@
 package org.example.ordersservice.services.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.example.ordersservice.exception.custom.EmailExistsException;
 import org.example.ordersservice.exception.custom.NotFoundException;
 import org.example.ordersservice.models.Cliente;
 import org.example.ordersservice.models.Repartidor;
 import org.example.ordersservice.repositories.RepartidorRepository;
-import org.example.ordersservice.repositories.UserRepository;
 import org.example.ordersservice.services.RepartidorService;
-import org.example.ordersservice.services.RolService;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Objects;
-import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
 public class RepartidorServiceImpl implements RepartidorService {
 
     private final RepartidorRepository repartidorRepository;
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JdbcTemplate jdbcTemplate;
-
-    private final RolService rolService;
-    private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$");
-
 
     @Override
     public Repartidor save(Repartidor repartidor) {
-        if (userRepository.existsByEmail(repartidor.getEmail())) {
-            throw new EmailExistsException("El email " + repartidor.getEmail() + " ya está registrado.");
-        }
-
-        String rawPassword = repartidor.getPassword();
-
-        if (Objects.isNull(rawPassword) || rawPassword.isEmpty()) {
-            throw new IllegalArgumentException("La contraseña no puede estar vacía");
-        }
-
-        if (!PASSWORD_PATTERN.matcher(rawPassword).matches()) {
-            throw new IllegalArgumentException("La contraseña no cumple con el formato de seguridad requerido");
-        }
-
-        repartidor.setPassword(passwordEncoder.encode(rawPassword));
-
-        repartidor.setRol(rolService.findByNombre("ROLE_REPARTIDOR"));
         return repartidorRepository.save(repartidor);
     }
 
@@ -66,6 +33,12 @@ public class RepartidorServiceImpl implements RepartidorService {
     }
 
     @Override
+    public Repartidor findByClienteId(Long clienteId) {
+        return repartidorRepository.findByClienteId(clienteId)
+                .orElseThrow(() -> new NotFoundException("Repartidor no encontrado para el cliente con ID: " + clienteId));
+    }
+
+    @Override
     public Page<Repartidor> findByDisponible(boolean disponible, Pageable pageable) {
         return repartidorRepository.findByDisponible(disponible, pageable);
     }
@@ -78,31 +51,12 @@ public class RepartidorServiceImpl implements RepartidorService {
     @Override
     public Repartidor update(Long id, Repartidor repartidor) {
         Repartidor existingRepartidor = findById(id);
-
-        if (!existingRepartidor.getEmail().equalsIgnoreCase(repartidor.getEmail()) && userRepository.existsByEmail(repartidor.getEmail())) {
-            throw new EmailExistsException("El email " + repartidor.getEmail() + " ya está en uso por otro usuario.");
-        }
-
-        repartidor.setId(existingRepartidor.getId());
-
-        repartidor.setAprobado(existingRepartidor.getAprobado());
-
-        String rawPassword = repartidor.getPassword();
-
-        if (Objects.nonNull(rawPassword) && !rawPassword.isEmpty()) {
-
-            if (!PASSWORD_PATTERN.matcher(rawPassword).matches()) {
-                throw new IllegalArgumentException("La nueva contraseña no cumple con el formato de seguridad");
-            }
-
-            repartidor.setPassword(passwordEncoder.encode(rawPassword));
-        } else {
-            repartidor.setPassword(existingRepartidor.getPassword());
-        }
-
-        repartidor.setRol(rolService.findByNombre("ROLE_REPARTIDOR"));
-
-        return repartidorRepository.save(repartidor);
+        
+        // Update fields if needed. Note: Cliente association usually shouldn't change
+        existingRepartidor.setDisponible(repartidor.getDisponible());
+        existingRepartidor.setAprobado(repartidor.getAprobado());
+        
+        return repartidorRepository.save(existingRepartidor);
     }
 
     @Override
@@ -111,16 +65,24 @@ public class RepartidorServiceImpl implements RepartidorService {
     }
 
     @Override
-    public Repartidor updateDisponibilidad(Long id, boolean disponible) {
-        Repartidor repartidor = findById(id);
+    public Repartidor updateDisponibilidad(Long clienteId, boolean disponible) {
+        Repartidor repartidor = findByClienteId(clienteId);
         repartidor.setDisponible(disponible);
         return repartidorRepository.save(repartidor);
     }
 
     @Override
     public void createFromCliente(Cliente cliente) {
-        String sql = "INSERT INTO repartidor (id, disponible, aprobado) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sql, cliente.getId(), false, false);
+        if (repartidorRepository.existsByClienteId(cliente.getId())) {
+            // Already a repartidor
+            return;
+        }
+        Repartidor repartidor = Repartidor.builder()
+                .cliente(cliente)
+                .disponible(false)
+                .aprobado(false)
+                .build();
+        repartidorRepository.save(repartidor);
     }
 
     @Override
@@ -136,13 +98,15 @@ public class RepartidorServiceImpl implements RepartidorService {
     }
 
     @Override
-    public boolean isRepartidor(Long id) {
-        String sql = "SELECT aprobado FROM repartidor WHERE id = ?";
-        try {
-            return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, id));
-        } catch (EmptyResultDataAccessException e) {
-            return false;
-        }
+    public boolean existsByClienteId(Long clienteId) {
+        return repartidorRepository.existsByClienteId(clienteId);
+    }
+
+    @Override
+    public boolean isRepartidor(Long clienteId) {
+        return repartidorRepository.findByClienteId(clienteId)
+                .map(Repartidor::getAprobado)
+                .orElse(false);
     }
 
 }

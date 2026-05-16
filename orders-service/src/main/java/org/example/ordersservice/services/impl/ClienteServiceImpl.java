@@ -101,7 +101,7 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     @Transactional
     public void solicitarSerRepartidor(Long id) {
-        if (repartidorService.existsById(id)) {
+        if (repartidorService.existsByClienteId(id)) {
             throw new RepartidorExistsException("Ya existe una solicitud o perfil de repartidor.");
         }
 

@@ -1,13 +1,17 @@
 package org.example.ordersservice.dtos.repartidor;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.example.ordersservice.dtos.user.UserOutputDto;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
-public class RepartidorOutputDto extends UserOutputDto {
+public class RepartidorOutputDto {
 
+    private Long id;
+    private Long clienteId;
+    private String nombre;
+    private String email;
+    private String telefono;
+    private String foto;
     private Boolean disponible;
+    private Boolean aprobado;
 
 }
