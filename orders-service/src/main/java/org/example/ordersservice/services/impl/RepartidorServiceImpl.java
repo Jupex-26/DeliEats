@@ -5,6 +5,7 @@ import org.example.ordersservice.exception.custom.EmailExistsException;
 import org.example.ordersservice.exception.custom.NotFoundException;
 import org.example.ordersservice.models.Cliente;
 import org.example.ordersservice.models.Repartidor;
+import org.example.ordersservice.repositories.ClienteRepository;
 import org.example.ordersservice.repositories.RepartidorRepository;
 import org.example.ordersservice.repositories.UserRepository;
 import org.example.ordersservice.services.RepartidorService;
@@ -30,6 +31,7 @@ public class RepartidorServiceImpl implements RepartidorService {
 
     private final RolService rolService;
     private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$");
+    private final ClienteRepository clienteRepository;
 
 
     @Override
@@ -115,10 +117,18 @@ public class RepartidorServiceImpl implements RepartidorService {
         Repartidor repartidor = findById(id);
         repartidor.setDisponible(disponible);
 
-        if (disponible){
+        if (disponible) {
             repartidor.setRol(rolService.findByNombre("ROLE_REPARTIDOR"));
-        } else{
+            // Eliminar de cliente si existe
+            clienteRepository.deleteById(id);
+        } else {
             repartidor.setRol(rolService.findByNombre("ROLE_CLIENTE"));
+            // Insertar en cliente si no existe
+            if (!clienteRepository.existsById(id)) {
+                Cliente cliente = new Cliente();
+                cliente.setId(id);
+                clienteRepository.save(cliente);
+            }
         }
         return repartidorRepository.save(repartidor);
     }
