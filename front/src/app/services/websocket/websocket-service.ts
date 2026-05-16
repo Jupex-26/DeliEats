@@ -19,6 +19,8 @@ export class WebSocketService {
   private ngZone = inject(NgZone);
   
   private connected$ = new BehaviorSubject<boolean>(false);
+  private miUsuarioId: number | null = null;
+  private mensajeSubscription: any = null;
 
   private mensajeSubject = new Subject<any>();
   public mensajeObservable = this.mensajeSubject.asObservable();
@@ -28,7 +30,15 @@ export class WebSocketService {
   private ubicacionObservable = this.ubicacionSubject.asObservable();
 
   conectar(miUsuarioId?: number) {
+    if (miUsuarioId) {
+      this.miUsuarioId = miUsuarioId;
+    }
+
     if (this.stompClient && this.stompClient.active) {
+      // Si ya está activo y tenemos el ID, intentamos suscribirnos si no lo estamos
+      if (this.stompClient.connected) {
+        this.suscribirAMensajesPrivados();
+      }
       return;
     }
 
@@ -41,30 +51,38 @@ export class WebSocketService {
     this.stompClient.onConnect = (frame) => {
       console.log('Conectado a STOMP');
       this.connected$.next(true);
-      
-      if (miUsuarioId) {
-        this.stompClient.subscribe(`/topic/mensajes/${miUsuarioId}`, (mensaje) => {
-          if (mensaje.body) {
-            this.ngZone.run(() => {
-              const msg = JSON.parse(mensaje.body);
-              this.mensajeSubject.next(msg);
-              
-              if (msg.pedidoId) {
-                const signal = this.getMensajesPedido(msg.pedidoId);
-                signal.update(prev => [...prev, msg]);
-              }
-            });
-          }
-        });
-      }
+      this.suscribirAMensajesPrivados();
     };
 
     this.stompClient.onDisconnect = () => {
       console.log('Desconectado de STOMP');
       this.connected$.next(false);
+      this.mensajeSubscription = null;
     };
 
     this.stompClient.activate();
+  }
+
+  private suscribirAMensajesPrivados() {
+    if (!this.miUsuarioId || !this.stompClient || !this.stompClient.connected) return;
+    
+    // Evitar múltiples suscripciones al mismo canal
+    if (this.mensajeSubscription) return;
+
+    console.log(`Suscribiéndose a /topic/mensajes/${this.miUsuarioId}`);
+    this.mensajeSubscription = this.stompClient.subscribe(`/topic/mensajes/${this.miUsuarioId}`, (mensaje) => {
+      if (mensaje.body) {
+        this.ngZone.run(() => {
+          const msg = JSON.parse(mensaje.body);
+          this.mensajeSubject.next(msg);
+          
+          if (msg.pedidoId) {
+            const sig = this.getMensajesPedido(msg.pedidoId);
+            sig.update(prev => [...prev, msg]);
+          }
+        });
+      }
+    });
   }
 
   getMensajesPedido(pedidoId: number): WritableSignal<any[]> {
@@ -115,5 +133,7 @@ export class WebSocketService {
       this.stompClient.deactivate();
     }
     this.connected$.next(false);
+    this.mensajeSubscription = null;
+    this.miUsuarioId = null;
   }
 }

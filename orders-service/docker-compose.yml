@@ -46,8 +46,6 @@ services:
       MYSQL_DATABASE: orders_db
       MYSQL_USER: user
       MYSQL_PASSWORD: password
-    volumes:
-      - mysql_data:/var/lib/mysql
     healthcheck: # Add healthcheck for MySQL
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       timeout: 20s

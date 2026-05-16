@@ -13,7 +13,6 @@ export interface PedidoInputDto {
     clienteId: number;
     empresaId: number;
     idRepartidor?: number;
-    repartidorId?: number;
     detalles: DetallePedidoInputDto[];
 }
 

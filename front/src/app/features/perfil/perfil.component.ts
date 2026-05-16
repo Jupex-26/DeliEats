@@ -169,7 +169,7 @@ export class PerfilComponent implements OnInit, OnDestroy {
     const id = this.cliente()?.id;
     if (!id) return;
     this.loadingRepartidor.set(true);
-    this.repartidorService.obtenerPorId(id).subscribe({
+    this.repartidorService.obtenerPorClienteId(id).subscribe({
       next: (rep) => {
         this.repartidor.set(rep);
         this.loadingRepartidor.set(false);
@@ -241,7 +241,6 @@ export class PerfilComponent implements OnInit, OnDestroy {
           clienteId: pedidoCompleto.clienteId,
           empresaId: pedidoCompleto.empresaId,
           idRepartidor: repId,
-          repartidorId: repId,
           detalles: pedidoCompleto.detalles.map(d => ({
             pedidoId: pedidoCompleto.id,
             productoId: d.productoId,

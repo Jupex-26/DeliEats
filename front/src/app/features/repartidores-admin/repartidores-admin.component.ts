@@ -126,8 +126,8 @@ export class RepartidoresAdminComponent implements OnInit {
     this.cargarRepartidores();
   }
 
-  aprobarRepartidor(id: number) {
-    this.userService.aprobarRepartidor(id, true).subscribe({
+  aprobarRepartidor(repartidor: RepartidorOutputDto) {
+    this.userService.aprobarRepartidor(repartidor.clienteId, true).subscribe({
       next: () => {
         this.cargarRepartidores();
         this.cargarSolicitudesCount();
