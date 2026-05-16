@@ -1,5 +1,7 @@
 package org.example.ordersservice.services.impl;
 
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.exception.custom.EmailExistsException;
 import org.example.ordersservice.exception.custom.NotFoundException;
@@ -32,6 +34,7 @@ public class RepartidorServiceImpl implements RepartidorService {
     private final RolService rolService;
     private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$");
     private final ClienteRepository clienteRepository;
+    private final EntityManager entityManager;
 
 
     @Override
@@ -113,24 +116,26 @@ public class RepartidorServiceImpl implements RepartidorService {
     }
 
     @Override
+    @Transactional
     public Repartidor updateDisponibilidad(Long id, boolean disponible) {
         Repartidor repartidor = findById(id);
         repartidor.setDisponible(disponible);
 
         if (disponible) {
             repartidor.setRol(rolService.findByNombre("ROLE_REPARTIDOR"));
-            // Eliminar de cliente si existe
             clienteRepository.deleteById(id);
         } else {
             repartidor.setRol(rolService.findByNombre("ROLE_CLIENTE"));
-            // Insertar en cliente si no existe
             if (!clienteRepository.existsById(id)) {
                 Cliente cliente = new Cliente();
                 cliente.setId(id);
                 clienteRepository.save(cliente);
             }
         }
-        return repartidorRepository.save(repartidor);
+
+        Repartidor result = repartidorRepository.save(repartidor);
+        entityManager.clear(); // limpiar caché de Hibernate
+        return result;
     }
 
     @Override
