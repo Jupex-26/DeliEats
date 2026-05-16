@@ -25,6 +25,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -55,14 +56,16 @@ class ClienteServiceImplTest {
         cliente = new Cliente();
         cliente.setId(1L);
         cliente.setEmail("test@test.com");
-        cliente.setPassword("password");
+        cliente.setPassword("Password123!"); // Contraseña que cumple el formato
         cliente.setRol(rolCliente);
     }
 
     @Test
     void save_Success() {
+        String originalPassword = cliente.getPassword(); // guardar antes
+
         when(userRepository.existsByEmail(cliente.getEmail())).thenReturn(false);
-        when(passwordEncoder.encode(cliente.getPassword())).thenReturn("encodedPassword");
+        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
         when(rolService.findByNombre("ROLE_CLIENTE")).thenReturn(rolCliente);
         when(clienteRepository.save(cliente)).thenReturn(cliente);
 
@@ -72,7 +75,7 @@ class ClienteServiceImplTest {
         assertEquals("encodedPassword", result.getPassword());
         assertEquals(rolCliente, result.getRol());
         verify(userRepository).existsByEmail(cliente.getEmail());
-        verify(passwordEncoder).encode(cliente.getPassword());
+        verify(passwordEncoder).encode(originalPassword); // usar el original
         verify(rolService).findByNombre("ROLE_CLIENTE");
         verify(clienteRepository).save(cliente);
     }
@@ -129,7 +132,7 @@ class ClienteServiceImplTest {
 
         when(clienteRepository.findById(id)).thenReturn(Optional.of(existingCliente));
         when(userRepository.existsByEmail(cliente.getEmail())).thenReturn(false);
-        when(passwordEncoder.encode(cliente.getPassword())).thenReturn("newEncodedPassword");
+        when(passwordEncoder.encode(anyString())).thenReturn("newEncodedPassword"); // anyString()
         when(rolService.findByNombre("ROLE_CLIENTE")).thenReturn(rolCliente);
         when(clienteRepository.save(cliente)).thenReturn(cliente);
 

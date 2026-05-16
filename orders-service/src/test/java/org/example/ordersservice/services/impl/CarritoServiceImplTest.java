@@ -1,11 +1,11 @@
 package org.example.ordersservice.services.impl;
 
 import org.example.ordersservice.exception.custom.NotFoundException;
-import org.example.ordersservice.models.Carrito;
-import org.example.ordersservice.models.DetalleCarrito;
-import org.example.ordersservice.models.Producto;
+import org.example.ordersservice.models.*;
 import org.example.ordersservice.repositories.CarritoRepository;
+import org.example.ordersservice.services.ClienteService;
 import org.example.ordersservice.services.DetalleCarritoService;
+import org.example.ordersservice.services.EmpresaService;
 import org.example.ordersservice.services.ProductoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +18,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -35,18 +37,29 @@ class CarritoServiceImplTest {
     @Mock
     private DetalleCarritoService detalleCarritoService;
 
+    @Mock
+    private ClienteService clienteService;
+
+    @Mock
+    private EmpresaService empresaService;
+
     @InjectMocks
     private CarritoServiceImpl carritoService;
 
     private Carrito carrito;
     private Producto producto1;
     private Producto producto2;
+    private Cliente cliente;
 
     @BeforeEach
     void setUp() {
+        cliente = new Cliente();
+        cliente.setId(100L); // Set a client ID
+
         carrito = new Carrito();
         carrito.setId(1L);
         carrito.setDetalles(new ArrayList<>());
+        carrito.setCliente(cliente); // Set the client for the carrito
 
         producto1 = new Producto();
         producto1.setId(10L);
@@ -116,12 +129,31 @@ class CarritoServiceImplTest {
 
     @Test
     void create() {
-        when(carritoRepository.save(carrito)).thenReturn(carrito);
+        Empresa empresa = new Empresa();
+        empresa.setId(1L);
+
+        // Apertura que cubre todo el día de hoy
+        Apertura apertura = new Apertura();
+        apertura.setDia(Dia.from(LocalDateTime.now().getDayOfWeek()));
+        apertura.setHoraApertura(LocalTime.of(0, 0));
+        apertura.setHoraCierre(LocalTime.of(23, 59));
+        empresa.setAperturas(List.of(apertura));
+
+        producto1.setEmpresa(empresa);
+
+        DetalleCarrito detalle = new DetalleCarrito();
+        detalle.setProducto(producto1);
+        detalle.setCantidad(1);
+        carrito.getDetalles().add(detalle);
+
+        when(clienteService.findById(anyLong())).thenReturn(cliente);
+        when(empresaService.findById(anyLong())).thenReturn(empresa);
+        when(carritoRepository.save(any(Carrito.class))).thenReturn(carrito);
 
         Carrito result = carritoService.create(carrito);
 
         assertNotNull(result);
-        verify(carritoRepository).save(carrito);
+        verify(carritoRepository).save(any(Carrito.class));
     }
 
     @Test
@@ -148,7 +180,7 @@ class CarritoServiceImplTest {
 
         assertNotNull(result);
         assertEquals(1, result.getDetalles().size());
-        assertEquals(cantidad, result.getDetalles().get(0).getCantidad());
+        assertEquals(cantidad, result.getDetalles().getFirst().getCantidad());
         verify(carritoRepository).findById(carritoId);
         verify(productoService).findById(productoId);
         verify(carritoRepository).save(any(Carrito.class));
@@ -158,7 +190,7 @@ class CarritoServiceImplTest {
     void addProducto_ExistingItem() {
         Long carritoId = 1L;
         Long productoId = 10L;
-        Integer cantidad = 2;
+        int cantidad = 2;
 
         DetalleCarrito existingDetalle = new DetalleCarrito();
         existingDetalle.setProducto(producto1);
@@ -173,7 +205,7 @@ class CarritoServiceImplTest {
 
         assertNotNull(result);
         assertEquals(1, result.getDetalles().size());
-        assertEquals(1 + cantidad, result.getDetalles().get(0).getCantidad());
+        assertEquals(cantidad, result.getDetalles().getFirst().getCantidad()); // solo la nueva cantidad
         verify(carritoRepository).findById(carritoId);
         verify(productoService).findById(productoId);
         verify(carritoRepository).save(any(Carrito.class));
@@ -235,12 +267,10 @@ class CarritoServiceImplTest {
         DetalleCarrito detalle1 = new DetalleCarrito();
         detalle1.setProducto(producto1);
         detalle1.setCantidad(2);
-        detalle1.setPrecioUnitario(producto1.getPrecio());
 
         DetalleCarrito detalle2 = new DetalleCarrito();
         detalle2.setProducto(producto2);
         detalle2.setCantidad(3);
-        detalle2.setPrecioUnitario(producto2.getPrecio());
 
         carrito.getDetalles().add(detalle1);
         carrito.getDetalles().add(detalle2);

@@ -9,6 +9,7 @@ import org.example.ordersservice.repositories.RepartidorRepository;
 import org.example.ordersservice.repositories.UserRepository;
 import org.example.ordersservice.services.RepartidorService;
 import org.example.ordersservice.services.RolService;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -133,6 +134,21 @@ public class RepartidorServiceImpl implements RepartidorService {
         Repartidor repartidor = findById(id);
         repartidor.setAprobado(aprobado);
         repartidorRepository.save(repartidor);
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return repartidorRepository.existsById(id);
+    }
+
+    @Override
+    public boolean isRepartidor(Long id) {
+        String sql = "SELECT aprobado FROM repartidor WHERE id = ?";
+        try {
+            return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, id));
+        } catch (EmptyResultDataAccessException e) {
+            return false;
+        }
     }
 
 }
