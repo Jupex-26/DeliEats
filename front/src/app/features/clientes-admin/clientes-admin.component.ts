@@ -11,6 +11,7 @@ import {
   IonModal,
   IonInput,
   IonItem,
+  IonSpinner,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -25,12 +26,13 @@ import {
   mailOutline,
   callOutline,
   calendarOutline,
-  locationOutline
+  locationOutline,
+  refreshOutline
 } from 'ionicons/icons';
 import { ClienteService } from '../../services/cliente/cliente-service';
 import { ClienteOutputDto, ClienteInputDto } from '../../types';
 import { ConfirmModalComponent } from '../../shared/confirm-modal/confirm-modal.component';
-import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+import { Subject, debounceTime, distinctUntilChanged, finalize } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import { environment } from '../../../environments/environment';
 
@@ -50,6 +52,7 @@ import { environment } from '../../../environments/environment';
     IonInput,
     ConfirmModalComponent,
     IonItem,
+    IonSpinner,
     DatePipe,
   ],
   templateUrl: './clientes-admin.component.html',
@@ -72,6 +75,11 @@ export class ClientesAdminComponent implements OnInit {
   viewingCliente = signal<ClienteOutputDto | null>(null);
   clienteIdParaEliminar = signal<number | null>(null);
   protected environment = environment;
+  isLoading = signal(false);
+
+  refrescarTodo() {
+    this.cargarClientes();
+  }
 
   private debouncer = new Subject<string>();
   clienteForm: ClienteInputDto = this.getEmptyForm();
@@ -89,7 +97,8 @@ export class ClientesAdminComponent implements OnInit {
       mailOutline,
       callOutline,
       calendarOutline,
-      locationOutline
+      locationOutline,
+      refreshOutline
     });
 
     this.debouncer.pipe(debounceTime(400), distinctUntilChanged()).subscribe((valor) => {
@@ -162,9 +171,17 @@ export class ClientesAdminComponent implements OnInit {
       ? this.clienteService.actualizar(editId, this.clienteForm)
       : this.clienteService.crear(this.clienteForm);
 
-    request.subscribe(() => {
-      this.isModalOpen.set(false);
-      this.cargarClientes();
+    this.isLoading.set(true);
+    request.pipe(
+      finalize(() => this.isLoading.set(false))
+    ).subscribe({
+      next: () => {
+        this.isModalOpen.set(false);
+        this.cargarClientes();
+      },
+      error: (err) => {
+        console.error('Error al guardar cliente:', err);
+      }
     });
   }
 

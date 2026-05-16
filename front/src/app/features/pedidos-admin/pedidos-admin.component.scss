@@ -22,6 +22,15 @@
   }
 }
 
+.btn-refresh {
+  background-color: $color-bg-base;
+  color: $color-primary;
+  border: 1px solid rgba($color-primary, 0.2);
+  &:hover {
+    background-color: rgba($color-primary, 0.05);
+  }
+}
+
 .table-card {
   border-color: $color-bg-alt;
 }
@@ -74,9 +83,11 @@
   td {
     border-bottom-color: rgba($color-bg-alt, 0.3);
   }
-  .td-id {
+  .td-id, .td-empresa {
     color: $color-primary;
+    font-weight: 700;
   }
+
   .td-fecha, .td-precio {
     color: $color-text-main;
   }
@@ -247,4 +258,8 @@ ion-item {
 
 ion-input {
   color: $color-text-main;
+}
+
+.text-primary {
+  color: $color-primary !important;
 }

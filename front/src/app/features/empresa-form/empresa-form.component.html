@@ -29,8 +29,18 @@
 
     <div class="form-group">
       <ion-item lines="none" class="custom-input rounded-xl shadow-sm border">
-        <ion-input formControlName="password" type="password" label="Contraseña" labelPlacement="stacked"
-          placeholder="••••••••" class="font-medium"></ion-input>
+        <ion-input
+          formControlName="password"
+          [type]="showPassword() ? 'text' : 'password'"
+          label="Contraseña"
+          labelPlacement="stacked"
+          placeholder="••••••••"
+          class="font-medium"
+          >
+        </ion-input>
+        <ion-button fill="clear" slot="end" (click)="showPassword.set(!showPassword())" class="mt-4">
+          <ion-icon [name]="showPassword() ? 'eye-off-outline' : 'eye-outline'" slot="icon-only" class="text-gray-400"></ion-icon>
+        </ion-button>
       </ion-item>
       @if (form.get('password')?.touched) {
       @if (form.get('password')?.hasError('required')) { <div class="error-text text-xs mt-1 ml-2 font-medium">La
@@ -120,6 +130,54 @@
       </ion-item>
       @if (form.get('descripcion')?.touched && form.get('descripcion')?.hasError('required')) {
       <div class="error-text text-xs mt-1 ml-2 font-medium">La descripción es obligatoria.</div>
+      }
+    </div>
+
+    <div class="md:col-span-2 mt-6 mb-2">
+      <div class="flex items-center justify-between border-b pb-2">
+        <h2 class="section-title text-lg font-bold tracking-wide">Horarios de Apertura</h2>
+        <ion-button fill="clear" size="small" (click)="addApertura()" class="font-bold">
+          <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+          Añadir Horario
+        </ion-button>
+      </div>
+      <p class="text-xs text-gray-400 mt-1">Configura los días y horas que tu restaurante estará abierto.</p>
+    </div>
+
+    <div class="md:col-span-2" formArrayName="aperturas">
+      <div *ngFor="let apertura of aperturas.controls; let i = index" [formGroupName]="i" 
+           class="apertura-row grid grid-cols-1 sm:grid-cols-4 gap-3 bg-gray-50 p-4 rounded-xl border border-dashed mb-3 relative group">
+        
+        <div class="form-group">
+          <label class="form-label text-[10px] font-bold uppercase mb-1 block opacity-60">Día</label>
+          <select formControlName="dia" class="w-full bg-white rounded-lg border p-2 text-sm font-medium outline-none">
+            <option *ngFor="let dia of diasSemana" [value]="dia">{{ dia }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label text-[10px] font-bold uppercase mb-1 block opacity-60">Apertura</label>
+          <input type="time" formControlName="horaApertura" class="w-full bg-white rounded-lg border p-2 text-sm font-medium outline-none">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label text-[10px] font-bold uppercase mb-1 block opacity-60">Cierre</label>
+          <input type="time" formControlName="horaCierre" class="w-full bg-white rounded-lg border p-2 text-sm font-medium outline-none">
+        </div>
+
+        <div class="flex items-end justify-end pb-1">
+          <ion-button fill="clear" color="danger" (click)="removeApertura(i)" class="h-9 m-0">
+            <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
+
+      <div *ngIf="aperturas.length === 0" class="text-center py-6 bg-gray-50/50 rounded-xl border-2 border-dashed border-gray-200">
+        <p class="text-sm text-gray-400 font-medium">No has añadido horarios todavía.</p>
+        <button type="button" (click)="addApertura()" class="text-primary text-xs font-bold mt-1 underline">Añadir el primero</button>
+      </div>
+      @if (aperturas.length === 0 && form.touched) {
+        <div class="error-text text-xs mt-2 text-center font-bold">⚠️ Es obligatorio añadir al menos un horario para completar el registro.</div>
       }
     </div>
 

@@ -32,7 +32,17 @@
     @if (mode === 'register') {
       <div class="form-group">
         <ion-item lines="none" class="custom-input rounded-xl shadow-sm border">
-          <ion-input formControlName="password" type="password" label="Contraseña" labelPlacement="stacked" placeholder="••••••••" class="font-medium"></ion-input>
+          <ion-input
+            formControlName="password"
+            [type]="showPassword() ? 'text' : 'password'"
+            label="Contraseña"
+            labelPlacement="stacked"
+            placeholder="••••••••"
+            class="font-medium"
+          ></ion-input>
+          <ion-button fill="clear" slot="end" (click)="showPassword.set(!showPassword())" class="mt-4">
+            <ion-icon [name]="showPassword() ? 'eye-off-outline' : 'eye-outline'" slot="icon-only" class="text-gray-400"></ion-icon>
+          </ion-button>
         </ion-item>
         @if (form.get('password')?.touched) {
           @if (form.get('password')?.hasError('required')) {

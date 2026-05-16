@@ -5,8 +5,19 @@
         {{ mostrarSolicitudes() ? 'Solicitudes de Registro' : 'Repartidores Aprobados' }}
         <span class="count-badge ml-2 text-sm opacity-60">({{ totalElements() }})</span>
       </h1>
-      <!-- El registro ahora se hace desde la solicitud del cliente -->
-      <div class="header-actions"></div>
+      <div class="header-actions flex gap-3">
+        <button
+          class="btn-refresh border-none px-4 py-2.5 rounded-md font-bold text-sm flex items-center gap-2 cursor-pointer transition-all hover:opacity-80"
+          (click)="refrescarTodo()" title="Refrescar datos">
+          <ion-icon name="refresh-outline" class="text-lg"></ion-icon>
+        </button>
+        <button
+          class="btn-new border-none px-5 py-2.5 rounded-md font-bold text-sm flex items-center gap-2 cursor-pointer transition-all hover:shadow-md"
+          (click)="abrirModalNuevo()">
+          <ion-icon name="add-circle-outline" class="text-lg"></ion-icon>
+          NUEVO REPARTIDOR
+        </button>
+      </div>
     </div>
   </header>
 
@@ -42,7 +53,7 @@
         <div class="pagination-size text-sm font-medium flex items-center">
           <span>Mostrar:</span>
           <select [ngModel]="pageSize()"
-            (ngModelChange)="pageSize.set($event); currentPage.set(0); cargarRepartidores()"
+            (ngModelChange)="pageSize.set(+$event); currentPage.set(0); cargarRepartidores()"
             class="ml-2 border rounded-md px-2 py-1 outline-none">
             <option [value]="5">5</option>
             <option [value]="10">10</option>
@@ -77,7 +88,7 @@
                 {{ repartidor.email || repartidor.cliente?.email || 'Sin email' }}
               </td>
               <td class="px-6 py-4 border-b text-center">
-                <ion-toggle [checked]="repartidor.disponible" (ionChange)="toggleDisponibilidad(repartidor, $event)"
+                <ion-toggle [checked]="repartidor.disponible" (ionChange)="toggleDisponibilidad(repartidor, $any($event))"
                   class="deli-toggle"></ion-toggle>
               </td>
               <td class="px-6 py-4 border-b">
@@ -100,7 +111,7 @@
                   }
 
                   <button class="btn-icon delete border rounded-md p-1.5 text-xl cursor-pointer transition-all"
-                    (click)="confirmarEliminar(repartidor.id!)" title="Eliminar">
+                    (click)="confirmarEliminar(repartidor)" title="Eliminar">
                     <ion-icon name="trash-outline"></ion-icon>
                   </button>
                 </div>
@@ -139,20 +150,103 @@
         </div>
 
         <div class="modal-body flex-1 overflow-y-auto bg-base p-6">
-          <form (ngSubmit)="guardarRepartidor()" class="modern-form flex flex-col gap-5">
-            <div class="form-grid grid grid-cols-1 gap-5">
-              <div class="form-group">
-                <ion-item lines="none" class="rounded-lg shadow-sm">
-                  <ion-input label="Cliente ID" labelPlacement="stacked" type="number" [(ngModel)]="repartidorForm.clienteId"
-                    name="clienteId" placeholder="ID del cliente" class="font-medium"></ion-input>
+          <form [formGroup]="form" (ngSubmit)="guardarRepartidor()" class="modern-form flex flex-col gap-5">
+            <div class="form-grid grid grid-cols-1 md:grid-cols-2 gap-5">
+              
+              <div class="form-group md:col-span-2">
+                <ion-item lines="none" class="rounded-lg shadow-sm border">
+                  <ion-input label="Nombre Completo" labelPlacement="stacked" formControlName="nombre"
+                    placeholder="Ej. Juan Pérez" class="font-medium"></ion-input>
                 </ion-item>
+                @if (form.get('nombre')?.touched) {
+                  @if (form.get('nombre')?.hasError('required')) {
+                    <div class="error-text text-xs mt-1 ml-2 font-medium">El nombre es obligatorio.</div>
+                  }
+                  @if (form.get('nombre')?.hasError('nombreInvalido')) {
+                    <div class="error-text text-xs mt-1 ml-2 font-medium">El nombre solo debe contener letras.</div>
+                  }
+                }
               </div>
 
               <div class="form-group">
-                <ion-item lines="none" class="rounded-lg shadow-sm flex items-center gap-4 px-4 py-2">
-                  <label class="text-sm font-bold text-gray-700 uppercase">Disponible</label>
-                  <ion-toggle [(ngModel)]="repartidorForm.disponible" name="disponible" class="deli-toggle"></ion-toggle>
+                <ion-item lines="none" class="rounded-lg shadow-sm border">
+                  <ion-input label="Email" labelPlacement="stacked" type="email" formControlName="email"
+                    placeholder="correo@ejemplo.com" class="font-medium"></ion-input>
                 </ion-item>
+                @if (form.get('email')?.touched) {
+                  @if (form.get('email')?.hasError('required')) {
+                    <div class="error-text text-xs mt-1 ml-2 font-medium">El correo es obligatorio.</div>
+                  }
+                  @if (form.get('email')?.hasError('email')) {
+                    <div class="error-text text-xs mt-1 ml-2 font-medium">Debe ser un correo válido.</div>
+                  }
+                }
+              </div>
+
+              @if (!editingRepartidor()) {
+              <div class="form-group">
+                <ion-item lines="none" class="rounded-lg shadow-sm border">
+                  <ion-input label="Contraseña" labelPlacement="stacked" [type]="showPassword() ? 'text' : 'password'"
+                    formControlName="password" placeholder="••••••••" class="font-medium"></ion-input>
+                  <ion-button fill="clear" slot="end" (click)="showPassword.set(!showPassword())" class="mt-4">
+                    <ion-icon [name]="showPassword() ? 'eye-off-outline' : 'eye-outline'" slot="icon-only" class="text-gray-400"></ion-icon>
+                  </ion-button>
+                </ion-item>
+                @if (form.get('password')?.touched) {
+                  @if (form.get('password')?.hasError('required')) {
+                    <div class="error-text text-xs mt-1 ml-2 font-medium">La contraseña es obligatoria.</div>
+                  }
+                  @if (form.get('password')?.hasError('strongPassword')) {
+                    <div class="error-text text-xs mt-1 ml-2 font-medium">Mínimo 8 caracteres, mayúscula, número y símbolo.</div>
+                  }
+                }
+              </div>
+              }
+
+              <div class="form-group">
+                <ion-item lines="none" class="rounded-lg shadow-sm border">
+                  <ion-input label="Teléfono" labelPlacement="stacked" type="tel" formControlName="telefono"
+                    placeholder="666..." class="font-medium"></ion-input>
+                </ion-item>
+                @if (form.get('telefono')?.touched && form.get('telefono')?.hasError('telefonoInvalido')) {
+                  <div class="error-text text-xs mt-1 ml-2 font-medium">Debe ser un número español (6, 7, 8 o 9).</div>
+                }
+              </div>
+
+              <div class="form-group">
+                <ion-item lines="none" class="rounded-lg shadow-sm border">
+                  <ion-input label="Fecha de Nacimiento" labelPlacement="stacked" type="date"
+                    formControlName="fechaNacimiento" [max]="fechaLimite16.toISOString().split('T')[0]" 
+                    class="font-medium"></ion-input>
+                </ion-item>
+                @if (form.get('fechaNacimiento')?.touched) {
+                  @if (form.get('fechaNacimiento')?.hasError('required')) {
+                    <div class="error-text text-xs mt-1 ml-2 font-medium">La fecha de nacimiento es obligatoria.</div>
+                  }
+                  @if (form.get('fechaNacimiento')?.hasError('fechaPosterior')) {
+                    <div class="error-text text-xs mt-1 ml-2 font-medium">Debes ser mayor de 16 años.</div>
+                  }
+                }
+              </div>
+
+              <div class="form-group md:col-span-2">
+                <ion-item lines="none" class="rounded-lg shadow-sm border" [class.border-red-500]="errorDireccion()">
+                  <ion-input label="Dirección" labelPlacement="stacked" formControlName="direccion"
+                    name="direccion" placeholder="Calle, Número, Ciudad" class="font-medium"></ion-input>
+                </ion-item>
+                @if (form.get('direccion')?.touched && form.get('direccion')?.hasError('required')) {
+                  <div class="error-text text-xs mt-1 ml-2 font-medium">La dirección es obligatoria.</div>
+                }
+                @if (errorDireccion()) {
+                  <div class="error-text text-xs mt-1 ml-2 font-medium flex items-center gap-1">
+                    <span class="text-red-500 font-bold">⚠️</span> No hemos podido encontrar esta dirección.
+                  </div>
+                }
+                @if (validandoDireccion()) {
+                  <div class="text-xs mt-1 ml-2 font-medium text-primary animate-pulse">
+                    🔍 Verificando dirección...
+                  </div>
+                }
               </div>
             </div>
 
@@ -161,9 +255,15 @@
                 class="btn-cancel px-6 py-3 rounded-lg font-bold text-sm bg-transparent border transition-colors"
                 (click)="isModalOpen.set(false)">CANCELAR</button>
               <button type="submit"
-                class="btn-submit px-6 py-3 rounded-lg font-bold text-sm text-white transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
-                [disabled]="!repartidorForm.clienteId">
-                {{ editingRepartidor() ? 'ACTUALIZAR' : 'ASIGNAR REPARTIDOR' }}
+                class="btn-submit px-6 py-3 rounded-lg font-bold text-sm text-white transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-h-[48px] min-w-[200px]"
+                [disabled]="form.invalid || validandoDireccion() || isLoading()">
+                @if (isLoading()) {
+                  <ion-spinner name="crescent" color="light"></ion-spinner>
+                } @else if (validandoDireccion()) {
+                  VERIFICANDO...
+                } @else {
+                  {{ editingRepartidor() ? 'ACTUALIZAR DATOS' : 'REGISTRAR REPARTIDOR' }}
+                }
               </button>
             </div>
           </form>

@@ -58,6 +58,7 @@ export class RestauranteClienteComponent implements OnInit {
   addedProductId = signal<number | null>(null);
   showAllHorarios = signal(false);
   showExitWarningModal = signal(false);
+  showEnterpriseWarningModal = signal(false);
 
   readonly diaHoy = (() => {
     const dias = ['DOMINGO', 'LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO'];
@@ -172,6 +173,11 @@ export class RestauranteClienteComponent implements OnInit {
   agregarAlCarrito(producto: ProductoOutputDto) {
     if (!this.authService.isLogin()) {
       this.router.navigate(['/login']);
+      return;
+    }
+
+    if (this.authService.getRol() === 'ROLE_EMPRESA') {
+      this.showEnterpriseWarningModal.set(true);
       return;
     }
 

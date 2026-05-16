@@ -1,6 +1,8 @@
-import { Component, EventEmitter, inject, Input, Output, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output, OnInit, OnChanges, SimpleChanges, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { IonItem, IonInput } from '@ionic/angular/standalone';
+import { IonItem, IonInput, IonButton, IonIcon } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { eyeOutline, eyeOffOutline } from 'ionicons/icons';
 import { ClienteInputDto, ClienteOutputDto } from '../../types';
 import { Validador } from '../../validadores/validador';
 import { GeocodingService } from '../../services/geocoding/geocoding-service';
@@ -8,7 +10,7 @@ import { GeocodingService } from '../../services/geocoding/geocoding-service';
 @Component({
   selector: 'app-usuario-form',
   standalone: true,
-  imports: [IonItem, IonInput, ReactiveFormsModule],
+  imports: [IonItem, IonInput, IonButton, IonIcon, ReactiveFormsModule],
   templateUrl: './usuario-form.component.html',
   styleUrls: ['./usuario-form.component.scss'],
 })
@@ -17,6 +19,11 @@ export class UsuarioFormComponent implements OnInit, OnChanges {
   private geocodingService = inject(GeocodingService);
   validandoDireccion = false;
   errorDireccion = false;
+  showPassword = signal(false);
+
+  constructor() {
+    addIcons({ eyeOutline, eyeOffOutline });
+  }
 
   readonly fechaLimite16 = new Date(new Date().setFullYear(new Date().getFullYear() - 16));
 

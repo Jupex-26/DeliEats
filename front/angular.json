@@ -8,7 +8,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "front": {
+    "app": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -69,6 +69,11 @@
               {
                 "input": "src/theme/variables.css"
               }
+            ],
+            "allowedCommonJsDependencies": [
+              "leaflet",
+              "@stomp/stompjs",
+              "sockjs-client"
             ]
           },
           "configurations": {
@@ -99,10 +104,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "front:build:production"
+              "buildTarget": "app:build:production"
             },
             "development": {
-              "buildTarget": "front:build:development"
+              "buildTarget": "app:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -113,24 +118,24 @@
         "ionic-cordova-serve": {
           "builder": "@ionic/angular-toolkit:cordova-serve",
           "options": {
-            "cordovaBuildTarget": "front:ionic-cordova-build",
-            "devServerTarget": "front:serve"
+            "cordovaBuildTarget": "app:ionic-cordova-build",
+            "devServerTarget": "app:serve"
           },
           "configurations": {
             "production": {
-              "cordovaBuildTarget": "front:ionic-cordova-build:production",
-              "devServerTarget": "front:serve:production"
+              "cordovaBuildTarget": "app:ionic-cordova-build:production",
+              "devServerTarget": "app:serve:production"
             }
           }
         },
         "ionic-cordova-build": {
           "builder": "@ionic/angular-toolkit:cordova-build",
           "options": {
-            "browserTarget": "front:build"
+            "browserTarget": "app:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "front:build:production"
+              "browserTarget": "app:build:production"
             }
           }
         }

@@ -212,4 +212,11 @@
                   type="info"
                   (modalClosed)="confirmarSalida()">
   </app-info-modal>
+
+  <app-info-modal [isOpen]="showEnterpriseWarningModal()"
+                  title="Acción no permitida"
+                  message="No puedes agregar productos por ser una empresa"
+                  type="info"
+                  (modalClosed)="showEnterpriseWarningModal.set(false)">
+  </app-info-modal>
 </ion-content>

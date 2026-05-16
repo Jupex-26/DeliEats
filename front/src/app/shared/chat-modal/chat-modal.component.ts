@@ -60,29 +60,35 @@ export class ChatModalComponent implements OnInit, OnDestroy, AfterViewChecked {
 
       this.subscription = this.webSocketService.mensajeObservable.subscribe((msg) => {
         this.ngZone.run(() => {
-          
+          // Filtrar por receptor/emisor actual
           if (msg.emisorId === this.receptorId || msg.emisorId === this.miUsuarioId) {
-            
-            const existe = this.mensajes().some(m => 
-              m.contenido === msg.contenido && 
-              m.emisorId === msg.emisorId &&
-              (m.fechaEnvio === msg.fechaEnvio || (m as any).id === (msg as any).id)
-            );
-            
-            if (!existe) {
-              this.mensajes.update((prev) => [...prev, msg]);
-            }
+            this.agregarMensajeConFiltro(msg);
           }
         });
       });
     }
   }
 
+  private agregarMensajeConFiltro(msg: any) {
+    this.mensajes.update(actuales => {
+      // Detector de duplicados inteligente (tolerancia de 5s para Railway/Timezones)
+      const existe = actuales.some(m => 
+        (m.id && msg.id && m.id === msg.id) || 
+        (m.contenido === msg.contenido && m.emisorId === msg.emisorId && 
+         Math.abs(new Date(m.fechaEnvio).getTime() - new Date(msg.fechaEnvio).getTime()) < 5000)
+      );
+      
+      if (!existe) {
+        return [...actuales, msg];
+      }
+      return actuales;
+    });
+  }
+
   ngOnDestroy() {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
-    this.webSocketService.desconectar();
   }
 
   ngAfterViewChecked() {
@@ -107,8 +113,7 @@ export class ChatModalComponent implements OnInit, OnDestroy, AfterViewChecked {
     };
 
     this.webSocketService.enviarMensaje(this.receptorId, mensaje);
-
-    this.mensajes.update((prev) => [...prev, mensaje]);
+    this.agregarMensajeConFiltro(mensaje);
     this.nuevoMensaje = '';
   }
 
