@@ -9,6 +9,39 @@
   flex-wrap: wrap;
 }
 
+.btn-reload {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1.5px solid rgba($color-bg-alt, 0.9);
+  background: white;
+  color: $color-primary;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  flex-shrink: 0;
+
+  ion-icon {
+    font-size: 20px;
+    &.spinning {
+      animation: spin 1s linear infinite;
+    }
+  }
+
+  &:hover:not(:disabled) {
+    border-color: $color-primary;
+    background: rgba($color-primary, 0.05);
+    transform: rotate(30deg);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
 .filtro-btn {
   display: flex;
   align-items: center;

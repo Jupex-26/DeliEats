@@ -14,7 +14,8 @@ import {
   personOutline,
   bicycleOutline,
   locationOutline,
-  cartOutline
+  cartOutline,
+  refreshOutline
 } from 'ionicons/icons';
 import { PedidoService } from '../../../services/pedido/pedido-service';
 import { EstadoService } from '../../../services/estado/estado-service';
@@ -65,7 +66,7 @@ export class EmpresaPedidosComponent implements OnInit {
     addIcons({
       chevronBackOutline, chevronForwardOutline, receiptOutline,
       timeOutline, calendarOutline, cashOutline, eyeOutline,
-      closeOutline, personOutline, bicycleOutline, locationOutline, cartOutline
+      closeOutline, personOutline, bicycleOutline, locationOutline, cartOutline, refreshOutline
     });
 
     const year = new Date().getFullYear();
@@ -112,6 +113,11 @@ export class EmpresaPedidosComponent implements OnInit {
       },
       error: () => this.loading.set(false)
     });
+  }
+
+  recargar() {
+    this.currentPage.set(0);
+    this.cargarPedidos();
   }
 
   setFiltro(f: PedidoFiltro) {

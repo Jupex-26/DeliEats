@@ -1,17 +1,23 @@
 <div class="empresa-pedidos">
 
-  <div class="filtros-bar">
-    <button class="filtro-btn" [class.active]="filtroActivo() === 'recientes'" (click)="setFiltro('recientes')">
-      <ion-icon name="time-outline"></ion-icon>
-      Más recientes
-    </button>
-    <button class="filtro-btn" [class.active]="filtroActivo() === 'mes'" (click)="setFiltro('mes')">
-      <ion-icon name="calendar-outline"></ion-icon>
-      Por mes
-    </button>
-    <button class="filtro-btn" [class.active]="filtroActivo() === 'mayor-importe'" (click)="setFiltro('mayor-importe')">
-      <ion-icon name="cash-outline"></ion-icon>
-      Mayor importe
+  <div class="filtros-bar flex justify-between items-center w-full">
+    <div class="flex gap-2">
+      <button class="filtro-btn" [class.active]="filtroActivo() === 'recientes'" (click)="setFiltro('recientes')">
+        <ion-icon name="time-outline"></ion-icon>
+        Más recientes
+      </button>
+      <button class="filtro-btn" [class.active]="filtroActivo() === 'mes'" (click)="setFiltro('mes')">
+        <ion-icon name="calendar-outline"></ion-icon>
+        Por mes
+      </button>
+      <button class="filtro-btn" [class.active]="filtroActivo() === 'mayor-importe'" (click)="setFiltro('mayor-importe')">
+        <ion-icon name="cash-outline"></ion-icon>
+        Mayor importe
+      </button>
+    </div>
+    
+    <button class="btn-reload" (click)="recargar()" [disabled]="loading()" title="Recargar pedidos">
+      <ion-icon name="refresh-outline" [class.spinning]="loading()"></ion-icon>
     </button>
   </div>
 

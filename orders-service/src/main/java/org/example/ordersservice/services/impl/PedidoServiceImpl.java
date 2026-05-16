@@ -125,7 +125,7 @@ public class PedidoServiceImpl implements PedidoService {
         }
 
         if (pedido.hasRepartidor()) {
-            if (Objects.equals(pedido.getRepartidor().getId(), pedido.getCliente().getId())) {
+            if (Objects.equals(pedido.getRepartidor().getCliente().getId(), pedido.getCliente().getId())) {
                 throw new UnauthorizedException("No puede asignarse el mismo repartidor que cliente");
             }
             pedido.setRepartidor(repartidorService.findById(pedido.getRepartidor().getId()));
