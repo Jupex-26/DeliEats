@@ -29,7 +29,8 @@ public class RepartidorServiceImpl implements RepartidorService {
     @Override
     public Repartidor findById(Long id) {
         return repartidorRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Repartidor no encontrado con ID: " + id));
+                .or(() -> repartidorRepository.findByClienteId(id))
+                .orElseThrow(() -> new NotFoundException("Repartidor no encontrado con ID o Cliente ID: " + id));
     }
 
     @Override
@@ -74,7 +75,6 @@ public class RepartidorServiceImpl implements RepartidorService {
     @Override
     public void createFromCliente(Cliente cliente) {
         if (repartidorRepository.existsByClienteId(cliente.getId())) {
-            // Already a repartidor
             return;
         }
         Repartidor repartidor = Repartidor.builder()
