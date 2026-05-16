@@ -108,6 +108,25 @@ export class RestaurantesAdminComponent implements OnInit {
   modalErrorData = signal<CustomError | null>(null);
   protected environment = environment;
 
+  diasSemana = ['LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO', 'DOMINGO'];
+
+  addApertura() {
+    if (!this.empresaForm.aperturas) {
+      this.empresaForm.aperturas = [];
+    }
+    this.empresaForm.aperturas.push({
+      dia: 'LUNES',
+      horaApertura: '09:00',
+      horaCierre: '22:00'
+    });
+  }
+
+  removeApertura(index: number) {
+    if (this.empresaForm.aperturas) {
+      this.empresaForm.aperturas.splice(index, 1);
+    }
+  }
+
   private debouncer = new Subject<string>();
 
   constructor() {
@@ -193,7 +212,8 @@ export class RestaurantesAdminComponent implements OnInit {
     this.empresaForm = {
       ...empresa,
       rolId: 3,
-      tipoCocinaId: empresa.tipoCocina.id
+      tipoCocinaId: empresa.tipoCocina.id,
+      aperturas: empresa.aperturas ? [...empresa.aperturas] : []
     };
     this.isModalOpen.set(true);
   }
@@ -242,6 +262,7 @@ export class RestaurantesAdminComponent implements OnInit {
       correoContacto: '',
       telefonoContacto: '',
       tipoCocinaId: 0,
+      aperturas: []
     };
   }
 

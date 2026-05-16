@@ -70,53 +70,61 @@ public class EmpresaServiceImpl implements EmpresaService {
 
     @Override
     public Empresa update(Long id, Empresa empresa) {
+        // 1. Buscamos la empresa real de la base de datos (Entidad Gestionada)
         Empresa existingEmpresa = findById(id);
 
+        // Validar Email
         if (!existingEmpresa.getEmail().equalsIgnoreCase(empresa.getEmail()) && userRepository.existsByEmail(empresa.getEmail())) {
             throw new EmailExistsException("El email " + empresa.getEmail() + " ya está en uso por otro usuario.");
         }
 
-        empresa.setId(existingEmpresa.getId());
-        empresa.setFoto(existingEmpresa.getFoto());
+        // 2. Actualizamos los datos básicos de la empresa existente
+        existingEmpresa.setNombre(empresa.getNombre());
+        existingEmpresa.setEmail(empresa.getEmail());
+        existingEmpresa.setDireccion(empresa.getDireccion());
+        existingEmpresa.setTelefono(empresa.getTelefono());
+        existingEmpresa.setDescripcion(empresa.getDescripcion());
+        existingEmpresa.setCorreoContacto(empresa.getCorreoContacto());
+        existingEmpresa.setTelefonoContacto(empresa.getTelefonoContacto());
+        existingEmpresa.setTipoCocina(empresa.getTipoCocina());
 
+        // Gestión de contraseña
         String rawPassword = empresa.getPassword();
-
         if (Objects.nonNull(rawPassword) && !rawPassword.isEmpty()) {
-
             if (!PASSWORD_PATTERN.matcher(rawPassword).matches()) {
                 throw new IllegalArgumentException("La nueva contraseña no cumple con el formato de seguridad");
             }
-
-            empresa.setPassword(passwordEncoder.encode(rawPassword));
-        } else {
-            empresa.setPassword(existingEmpresa.getPassword());
+            existingEmpresa.setPassword(passwordEncoder.encode(rawPassword));
         }
 
-        empresa.setRol(rolService.findByNombre("ROLE_EMPRESA"));
-        
+        // 3. GESTIÓN DE APERTURAS (Modificando la lista gestionada)
         if (empresa.hasAperturas()) {
-            List<Apertura> existingAperturas = existingEmpresa.hasAperturas() ? existingEmpresa.getAperturas() : new ArrayList<>();
-            
+            List<Apertura> existingAperturas = existingEmpresa.getAperturas();
+
+            List<Apertura> nuevasAperturas = new ArrayList<>();
+
             for (Apertura newApertura : empresa.getAperturas()) {
                 Optional<Apertura> matchOpt = existingAperturas.stream()
                         .filter(a -> a.getDia() == newApertura.getDia())
                         .findFirst();
-                
+
                 if (matchOpt.isPresent()) {
                     Apertura match = matchOpt.get();
                     match.setHoraApertura(newApertura.getHoraApertura());
                     match.setHoraCierre(newApertura.getHoraCierre());
+                    nuevasAperturas.add(match);
                 } else {
                     newApertura.setEmpresa(existingEmpresa);
-                    existingAperturas.add(newApertura);
+                    nuevasAperturas.add(newApertura);
                 }
             }
-            empresa.setAperturas(existingAperturas);
-        } else {
-            empresa.setAperturas(existingEmpresa.getAperturas());
-        }
 
-        return empresaRepository.save(empresa);
+            existingAperturas.clear();
+            existingAperturas.addAll(nuevasAperturas);
+        } else {
+            existingEmpresa.getAperturas().clear();
+        }
+        return empresaRepository.save(existingEmpresa);
     }
 
     @Override

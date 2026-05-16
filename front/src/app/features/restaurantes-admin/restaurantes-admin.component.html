@@ -184,6 +184,48 @@
                     placeholder="Cuentanos sobre el restaurante..." class="font-medium"></ion-input>
                 </ion-item>
               </div>
+              <div class="form-group md:col-span-2 mt-4">
+                <div class="flex items-center justify-between border-b pb-2 mb-4">
+                  <h3 class="text-sm font-bold uppercase tracking-wider opacity-70">Horarios de Apertura</h3>
+                  <button type="button" (click)="addApertura()" class="text-primary text-xs font-bold flex items-center gap-1 hover:underline">
+                    <ion-icon name="add-circle-outline"></ion-icon> AÑADIR DÍA
+                  </button>
+                </div>
+                
+                @if (empresaForm.aperturas && empresaForm.aperturas.length > 0) {
+                  <div class="aperturas-list flex flex-col gap-3">
+                    @for (apertua of empresaForm.aperturas; track $index) {
+                      <div class="apertura-item grid grid-cols-1 sm:grid-cols-4 gap-3 p-3 bg-gray-50 rounded-lg border border-dashed relative">
+                        <div class="form-group">
+                          <label class="text-[10px] font-bold uppercase opacity-50 block mb-1">Día</label>
+                          <select [(ngModel)]="apertua.dia" [name]="'dia-' + $index" class="w-full bg-white border rounded p-2 text-xs font-medium outline-none">
+                            @for (dia of diasSemana; track dia) {
+                              <option [value]="dia">{{ dia }}</option>
+                            }
+                          </select>
+                        </div>
+                        <div class="form-group">
+                          <label class="text-[10px] font-bold uppercase opacity-50 block mb-1">Apertura</label>
+                          <input type="time" [(ngModel)]="apertua.horaApertura" [name]="'apertura-' + $index" class="w-full bg-white border rounded p-2 text-xs font-medium outline-none">
+                        </div>
+                        <div class="form-group">
+                          <label class="text-[10px] font-bold uppercase opacity-50 block mb-1">Cierre</label>
+                          <input type="time" [(ngModel)]="apertua.horaCierre" [name]="'cierre-' + $index" class="w-full bg-white border rounded p-2 text-xs font-medium outline-none">
+                        </div>
+                        <div class="flex items-end justify-end">
+                          <button type="button" (click)="removeApertura($index)" class="text-red-500 p-2 hover:bg-red-50 rounded-md transition-colors">
+                            <ion-icon name="trash-outline" class="text-lg"></ion-icon>
+                          </button>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                } @else {
+                  <div class="text-center py-6 bg-gray-50 rounded-lg border-2 border-dashed">
+                    <p class="text-xs text-gray-400 font-medium">No se han definido horarios aún.</p>
+                  </div>
+                }
+              </div>
             </div>
 
             <div class="form-actions flex justify-end gap-3 mt-4 pt-4 border-t">
@@ -271,6 +313,22 @@
                     <p class="value font-medium mt-1">{{ viewingEmpresa()!.direccion || 'No especificada' }}</p>
                   </div>
                 </div>
+              </div>
+
+              <h3 class="section-title text-sm font-bold uppercase tracking-wider mb-6 mt-10 pb-2 border-b">Horarios de Apertura</h3>
+              <div class="horarios-grid grid grid-cols-1 sm:grid-cols-2 gap-4">
+                @if (viewingEmpresa()!.aperturas && viewingEmpresa()!.aperturas.length > 0) {
+                  @for (apertura of viewingEmpresa()!.aperturas; track apertura.id) {
+                    <div class="horario-card-mini flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-100">
+                      <span class="dia font-bold text-xs">{{ apertura.dia }}</span>
+                      <span class="rango text-xs font-medium text-primary">
+                        {{ apertura.horaApertura }} - {{ apertura.horaCierre }}
+                      </span>
+                    </div>
+                  }
+                } @else {
+                  <p class="col-span-2 text-center text-xs opacity-50 italic">No hay horarios definidos.</p>
+                }
               </div>
             </div>
 

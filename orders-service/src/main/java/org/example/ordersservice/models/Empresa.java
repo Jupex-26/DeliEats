@@ -36,7 +36,7 @@ public class Empresa extends User {
     @ToString.Exclude
     private List<Producto> productos;
 
-    @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     private List<Apertura> aperturas;
 
