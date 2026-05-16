@@ -1,48 +1,105 @@
 import { Routes } from '@angular/router';
 
+import { PublicLayoutComponent } from './layouts/public-layout/public-layout.component';
+import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
+import { HomeComponentComponent } from './layouts/home-component/home-component.component';
+
+import { RestaurantesComponent } from './features/restaurantes/restaurantes.component';
+import { LoginComponent } from './features/login-component/login.component';
+import { RegistroComponent } from './features/registro/registro.component';
+import { ClientesAdminComponent } from './features/clientes-admin/clientes-admin.component';
+import { RestaurantesAdminComponent } from './features/restaurantes-admin/restaurantes-admin.component';
+import { RepartidoresAdminComponent } from './features/repartidores-admin/repartidores-admin.component';
+
+import { roleGuard } from './guards/role-guard';
+
 export const routes: Routes = [
   {
+    path: 'login',
+    component: LoginComponent,
+  },
+  {
+    path: 'registro',
+    component: RegistroComponent,
+  },
+  {
     path: '',
-    loadComponent: () =>
-      import('./layouts/public-layout/public-layout.component').then(
-        (m) => m.PublicLayoutComponent,
-      ),
+    component: PublicLayoutComponent,
     children: [
       {
         path: '',
-        loadComponent: () =>
-          import('./layouts/home-component/home-component.component').then(
-            (m) => m.HomeComponentComponent,
-          ),
+        component: HomeComponentComponent,
       },
       {
         path: 'restaurantes',
-        loadComponent: () =>
-          import('./features/restaurantes/restaurantes.component').then(
-            (m) => m.RestaurantesComponent,
-          ),
+        component: RestaurantesComponent,
+      },
+      {
+        path: 'restaurantes/:id',
+        loadComponent: () => import('./features/restaurante-cliente/restaurante-cliente.component').then(m => m.RestauranteClienteComponent)
+      },
+      {
+        path: 'checkout',
+        loadComponent: () => import('./features/checkout/checkout.component').then(m => m.CheckoutComponent)
+      },
+      {
+        path: 'privacidad',
+        loadComponent: () => import('./layouts/legal/privacidad/privacidad.component').then(m => m.PrivacidadComponent)
+      },
+      {
+        path: 'terminos',
+        loadComponent: () => import('./layouts/legal/terminos/terminos.component').then(m => m.TerminosComponent)
+      },
+      {
+        path: 'nosotros',
+        loadComponent: () => import('./layouts/nosotros/nosotros.component').then(m => m.NosotrosComponent)
+      },
+      {
+        path: 'contacto',
+        loadComponent: () => import('./layouts/contacto/contacto.component').then(m => m.ContactoComponent)
+      },
+      {
+        path: 'perfil',
+        loadComponent: () => import('./features/perfil/perfil.component').then(m => m.PerfilComponent),
+        canActivate: [roleGuard],
+        data: { role: ['ROLE_CLIENTE', 'ROLE_REPARTIDOR'] }
+      },
+      {
+        path: 'empresa-perfil',
+        loadComponent: () => import('./features/empresa-perfil/empresa-perfil.component').then(m => m.EmpresaPerfilComponent),
+        canActivate: [roleGuard],
+        data: { role: ['ROLE_EMPRESA'] }
+      },
+      {
+        path: 'pedidos/:id',
+        loadComponent: () => import('./features/perfil/detalle-pedido-cliente/detalle-pedido-cliente.component')
+          .then(m => m.DetallePedidoClienteComponent),
+        canActivate: [roleGuard],
+        data: { role: ['ROLE_CLIENTE'] }
       },
     ],
   },
   {
-    path: 'login',
-    loadComponent: () =>
-      import('./features/login-component/login.component').then((m) => m.LoginComponent),
-  },
-  {
-    path: 'registro',
-    loadComponent: () =>
-      import('./features/registro/registro.component').then((m) => m.RegistroComponent),
-  },
-  {
     path: 'admin',
-    loadComponent: () =>
-      import('./layouts/admin-layout/admin-layout.component').then(
-        (m) => m.AdminLayoutComponent,
-      ),
+    component: AdminLayoutComponent,
     children: [
-      // Aquí irán las rutas hijas del admin
-    ]
+      {
+        path: 'clientes',
+        component: ClientesAdminComponent
+      },
+      {
+        path: 'restaurantes',
+        component: RestaurantesAdminComponent
+      },
+      {
+        path: 'repartidores',
+        component: RepartidoresAdminComponent
+      },
+      {
+        path: 'pedidos',
+        loadComponent: () => import('./features/pedidos-admin/pedidos-admin.component').then(m => m.PedidosAdminComponent)
+      }
+    ],
   },
   {
     path: '**',

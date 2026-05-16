@@ -1,15 +1,15 @@
 package org.example.ordersservice.dtos.apertura;
 
 import lombok.Data;
-import java.time.LocalDateTime;
+import org.example.ordersservice.models.Dia;
+
+import java.time.LocalTime;
 
 @Data
 public class AperturaOutputDto {
 
     private Long id;
-    private String dia;
-    private LocalDateTime horaApertura;
-    private LocalDateTime horaCierre;
-    private Long empresaId;
-    private String nombreEmpresa;
+    private Dia dia;
+    private LocalTime horaApertura;
+    private LocalTime horaCierre;
 }

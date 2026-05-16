@@ -35,27 +35,39 @@ public class SecurityConfig {
                     corsConfiguration.addAllowedOrigin("http://www.delieats.com");
                     corsConfiguration.addAllowedHeader("*");
                     corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+                    corsConfiguration.setAllowCredentials(true);
                     return corsConfiguration;
                 }))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/auth/**", "/uploads/**").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        
-                        // Endpoints públicos de lectura (ver menú, locales, etc.)
-                        .requestMatchers(HttpMethod.GET, "/productos/**", "/empresas/**", "/categorias/**", "/aperturas/**").permitAll()
-                        
-                        // Endpoints de gestión (crear/editar productos y empresas)
-                        .requestMatchers(HttpMethod.POST, "/clientes", "/empresas").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/productos/**", "/empresas/**", "/categorias/**").hasAnyRole("ADMIN", "RESTAURANTE")
-                        .requestMatchers(HttpMethod.PUT, "/productos/**", "/empresas/**").hasAnyRole("ADMIN", "RESTAURANTE")
-                        .requestMatchers(HttpMethod.DELETE, "/productos/**", "/empresas/**", "/categorias/**").hasRole("ADMIN")
-                        
-                        // Endpoints propios del cliente (operaciones de compra)
-                        .requestMatchers("/carrito/**", "/pedidos/**", "/clientes/**").hasAnyRole("ADMIN", "CLIENTE")
+                        .requestMatchers("/auth/**", "/uploads/**", "/error", "/ws-chat/**").permitAll() // ¡Permitir WS!
 
-                        // 4. Cerrar el acceso
+                        // Reglas de ADMIN
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/users/repartidores/*/aprobar").hasRole("ADMIN") // endpoint de aprobar
+                        .requestMatchers(HttpMethod.GET, "/repartidores/aprobado**").hasRole("ADMIN")
+
+                        // Endpoints públicos de lectura
+                        .requestMatchers(HttpMethod.GET, "/productos/**", "/empresas/**", "/categorias/**", "/aperturas/**", "/tiposcocina/**").permitAll()
+
+                        // Registro (Público)
+                        .requestMatchers(HttpMethod.POST, "/clientes", "/empresas").permitAll()
+
+                        // Operaciones de gestión (Admin o Restaurante)
+                        .requestMatchers(HttpMethod.POST, "/productos/**", "/empresas/**", "/categorias/**").hasAnyRole("ADMIN", "EMPRESA")
+                        .requestMatchers(HttpMethod.PUT, "/productos/**", "/empresas/**").hasAnyRole("ADMIN", "EMPRESA")
+                        .requestMatchers(HttpMethod.DELETE, "/productos/**", "/empresas/**", "/categorias/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/pedidos/**").hasAnyRole("CLIENTE", "EMPRESA", "ADMIN", "REPARTIDOR")
+                        .requestMatchers(HttpMethod.PATCH, "/pedidos/*/cancelar").hasAnyRole("CLIENTE", "EMPRESA", "ADMIN")
+                        
+                        // Mensajes (Solo Cliente y Repartidor)
+                        .requestMatchers("/mensajes/**").hasAnyRole("CLIENTE", "REPARTIDOR")
+
+                        // Acceso compartido (Admin y Cliente)
+                        // Esta regla ahora cubrirá GET /clientes y cualquier subruta
+                        .requestMatchers("/carrito/**",  "/clientes/**").hasAnyRole("ADMIN", "CLIENTE", "REPARTIDOR")
+
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

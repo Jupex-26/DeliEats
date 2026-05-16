@@ -7,6 +7,7 @@ import org.example.ordersservice.dtos.mensaje.MensajeOutputDto;
 import org.example.ordersservice.models.Mensaje;
 import org.example.ordersservice.mappers.MensajeMapper;
 import org.example.ordersservice.services.MensajeService;
+import org.example.ordersservice.services.MensajeProducerService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -21,12 +22,17 @@ public class MensajeController {
 
     private final MensajeService mensajeService;
     private final MensajeMapper mensajeMapper;
+    private final MensajeProducerService mensajeProducerService;
 
     @PostMapping
     public ResponseEntity<MensajeOutputDto> create(@Valid @RequestBody MensajeInputDto dto) {
         Mensaje entity = mensajeMapper.toEntity(dto);
         Mensaje saved = mensajeService.save(entity);
-        return new ResponseEntity<>(mensajeMapper.toDto(saved), HttpStatus.CREATED);
+        MensajeOutputDto outputDto = mensajeMapper.toDto(saved);
+
+        mensajeProducerService.sendMessage(outputDto);
+        
+        return new ResponseEntity<>(outputDto, HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -40,6 +46,16 @@ public class MensajeController {
     public ResponseEntity<MensajeOutputDto> findById(@PathVariable Long id) {
         Mensaje entity = mensajeService.findById(id);
         return ResponseEntity.ok(mensajeMapper.toDto(entity));
+    }
+    
+    @GetMapping("/chat")
+    public ResponseEntity<Page<MensajeOutputDto>> getChat(
+            @RequestParam Long usuario1Id, 
+            @RequestParam Long usuario2Id, 
+            @PageableDefault Pageable pageable) {
+        Page<MensajeOutputDto> dtos = mensajeService.findChat(usuario1Id, usuario2Id, pageable)
+                .map(mensajeMapper::toDto);
+        return ResponseEntity.ok(dtos);
     }
 
     @DeleteMapping("/{id}")

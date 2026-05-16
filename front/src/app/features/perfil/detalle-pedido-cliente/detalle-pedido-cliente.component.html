@@ -1,0 +1,173 @@
+<ion-content>
+  <div class="detalle-page">
+
+    <header class="detalle-header">
+      <button class="btn-back" (click)="volver()" aria-label="Volver">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <h1>Detalle del Pedido</h1>
+    </header>
+
+    @if (loading()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Cargando pedido...</p>
+      </div>
+    }
+
+    @if (!loading() && pedido()) {
+      <main class="detalle-content">
+
+        <section class="card estado-card">
+          <div class="estado-badge" [attr.data-estado]="pedido()!.estadoNombre">
+            <ion-icon [name]="getEstadoIcono(pedido()!.estadoNombre)"></ion-icon>
+            {{ pedido()!.estadoNombre }}
+          </div>
+          <div class="meta-info">
+            <p class="restaurante-nombre font-bold text-primary">{{ pedido()!.nombreEmpresa }}</p>
+            <p class="fecha">{{ formatFecha(pedido()!.fechaCompra) }}</p>
+            <p class="pedido-id">Pedido #{{ pedido()!.id }}</p>
+          </div>
+        </section>
+
+        <section class="card repartidor-card">
+          <div class="card-title">
+            <ion-icon name="bicycle-outline"></ion-icon>
+            <h2>Repartidor</h2>
+          </div>
+          <div class="repartidor-info">
+            <div class="repartidor-avatar">
+              <ion-icon name="person-outline"></ion-icon>
+            </div>
+            <div>
+              <p class="repartidor-nombre">{{ nombreRepartidor }}</p>
+              @if (!pedido()!.nombreRepartidor && pedido()!.estadoNombre !== 'EN CAMINO') {
+                <p class="repartidor-hint">Se asignará cuando el pedido esté en camino</p>
+              }
+            </div>
+            @if (pedido()!.repartidorId) {
+              <button (click)="abrirChatRepartidor()" class="btn-chat-repartidor">
+                <ion-icon name="chatbubbles-outline"></ion-icon>
+                Chat
+              </button>
+            }
+          </div>
+        </section>
+
+        @if (mostrarMapa) {
+          <section class="card mapa-card">
+            <div class="card-title">
+              <ion-icon name="location-outline"></ion-icon>
+              <h2>Ubicación en tiempo real</h2>
+              <span class="live-badge">
+                <span class="live-dot"></span> EN VIVO
+              </span>
+            </div>
+            <p class="mapa-hint">
+              <ion-icon name="alert-circle-outline"></ion-icon>
+              Conectando con el repartidor... La ubicación se actualizará en tiempo real.
+            </p>
+            <div #mapContainer class="map-container"></div>
+          </section>
+        }
+
+        <section class="card productos-card">
+          <div class="card-title">
+            <ion-icon name="receipt-outline"></ion-icon>
+            <h2>Productos</h2>
+          </div>
+
+          <ul class="productos-list">
+            @for (detalle of pedido()!.detalles; track detalle.id) {
+              <li class="producto-item">
+                <div class="producto-info">
+                  <span class="producto-nombre">{{ detalle.nombreProducto }}</span>
+                  <span class="producto-cantidad">× {{ detalle.cantidad }}</span>
+                </div>
+                <div class="producto-precios">
+                  <span class="precio-unitario">{{ detalle.precioUnitario | euro }} c/u</span>
+                  <span class="subtotal">{{ detalle.subtotal | euro }}</span>
+                </div>
+              </li>
+            }
+          </ul>
+
+          <div class="precio-total-row">
+            <span>Total</span>
+            <span class="total-amount">{{ pedido()!.precioTotal | euro }}</span>
+          </div>
+        </section>
+
+        @if (pedido()!.direccionEntrega) {
+          <section class="card direccion-card">
+            <div class="card-title">
+              <ion-icon name="location-outline"></ion-icon>
+              <h2>Dirección de entrega</h2>
+            </div>
+            <p class="direccion-text">{{ pedido()!.direccionEntrega }}</p>
+          </section>
+        }
+
+        <section class="acciones">
+
+          @if (pedido()!.estadoNombre === 'ENTREGADO') {
+            <button class="btn-factura" (click)="descargarFactura()" [disabled]="descargando()">
+              @if (descargando()) {
+                <div class="spinner-sm"></div> Descargando...
+              } @else {
+                <ion-icon name="download-outline"></ion-icon> Descargar Factura
+              }
+            </button>
+          }
+
+          @if (puedeCancel) {
+            <div class="cancelar-section">
+              @if (errorCancelar()) {
+                <div class="error-banner">
+                  <ion-icon name="alert-circle-outline"></ion-icon>
+                  {{ errorCancelar() }}
+                </div>
+              }
+              @if (exitoCancelar()) {
+                <div class="success-banner">
+                  <ion-icon name="checkmark-circle-outline"></ion-icon>
+                  Pedido cancelado correctamente.
+                </div>
+              }
+              @if (!exitoCancelar()) {
+                <button class="btn-cancelar" (click)="cancelarPedido()" [disabled]="cancelando()">
+                  @if (cancelando()) {
+                    <div class="spinner-sm spinner-red"></div> Cancelando...
+                  } @else {
+                    <ion-icon name="close-circle-outline"></ion-icon> Cancelar Pedido
+                  }
+                </button>
+              }
+            </div>
+          }
+
+          @if (pedido()!.estadoNombre === 'EN CAMINO') {
+            <p class="no-cancel-hint">
+              <ion-icon name="bicycle-outline"></ion-icon>
+              El pedido ya está en camino y no puede cancelarse.
+            </p>
+          }
+
+        </section>
+
+      </main>
+    }
+
+  </div>
+
+  @if (isChatOpen() && pedido() && chatReceptorId()) {
+    @defer (on immediate) {
+      <app-chat-modal [isOpen]="isChatOpen()"
+                      [pedidoId]="pedido()!.id"
+                      [receptorId]="chatReceptorId()!"
+                      [receptorNombre]="chatReceptorNombre()"
+                      (closed)="isChatOpen.set(false)">
+      </app-chat-modal>
+    }
+  }
+</ion-content>

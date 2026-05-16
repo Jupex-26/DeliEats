@@ -3,14 +3,12 @@ export interface Apertura {
     dia: string;
     horaApertura: string;
     horaCierre: string;
-    empresaId?: number;
 }
 
 export interface AperturaInputDto {
     dia: string;
     horaApertura: string;
     horaCierre: string;
-    empresaId: number;
 }
 
 export interface AperturaOutputDto {
@@ -18,6 +16,4 @@ export interface AperturaOutputDto {
     dia: string;
     horaApertura: string;
     horaCierre: string;
-    empresaId: number;
-    nombreEmpresa: string;
 }

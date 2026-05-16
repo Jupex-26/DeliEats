@@ -12,13 +12,11 @@ public interface MensajeService {
 
     Mensaje findById(Long id);
 
-    Page<Mensaje> findByEmisorId(Long emisorId, Pageable pageable);
-
-    Page<Mensaje> findByReceptorId(Long receptorId, Pageable pageable);
+    Page<Mensaje> findChat(Long usuario1Id, Long usuario2Id, Pageable pageable);
 
     void deleteById(Long id);
 
-    Long countUnreadByReceptorId(Long receptorId);
-
     void markAsRead(Long id);
+    
+    void validateUsersRole(Long emisorId, Long receptorId);
 }

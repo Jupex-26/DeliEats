@@ -14,8 +14,4 @@ public interface CarritoRepository extends JpaRepository<Carrito, Long> {
      */
     Optional<Carrito> findByClienteId(Long clienteId);
 
-    /**
-     * Verifica si un cliente ya tiene un carrito creado.
-     */
-    boolean existsByClienteId(Long clienteId);
 }

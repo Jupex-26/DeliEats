@@ -1,6 +1,5 @@
-@import "../../../styles/styles";
+@use '../../../styles/variables' as *;
 $aside-width: 260px;
-
 
 .aside-container {
   position: relative;
@@ -10,7 +9,6 @@ $aside-width: 260px;
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 100;
 
-  // Estado COLAPSADO (Se oculta a la izquierda)
   &.is-collapsed {
     transform: translateX(-100%);
   }
@@ -33,7 +31,7 @@ $aside-width: 260px;
   box-shadow: 2px 0 5px rgba(0,0,0,0.2);
 
   &:hover {
-    background: lighten($color-primary, 10%);
+    background: $color-text-main;
   }
 
   .arrow-icon {
@@ -46,5 +44,29 @@ $aside-width: 260px;
 @media (min-width: 769px) {
   .toggle-arrow-btn {
     display: none ;
+  }
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 0.85rem 1rem;
+  color: $color-bg-alt;
+  text-decoration: none;
+  border-radius: 12px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border-left: 4px solid transparent;
+
+  .nav-label {
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+
+  &:hover, &.active {
+    background-color: rgba($color-text-main, 0.5);
+    color: $color-bg-base;
+    transform: translateX(4px);
+    font-weight: bold;
+    border-left-color: $color-secondary;
   }
 }

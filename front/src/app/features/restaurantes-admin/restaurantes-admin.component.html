@@ -1,0 +1,488 @@
+<div class="admin-container h-full flex flex-col">
+  <header class="admin-header px-8 py-5 shadow-sm">
+    <div class="header-content flex justify-between items-center max-w-[1200px] mx-auto w-full">
+      <h1 class="title text-xl font-bold tracking-wide">Restaurantes ({{ totalElements() }})</h1>
+      <button
+        class="btn-new border-none px-5 py-2.5 rounded-md font-bold text-sm flex items-center gap-2 cursor-pointer transition-all hover:shadow-md"
+        (click)="abrirModalNuevo()">
+        <ion-icon name="add-circle-outline" class="text-lg"></ion-icon>
+        NUEVO RESTAURANTE
+      </button>
+    </div>
+  </header>
+
+  <div class="main-content p-8 flex-1 overflow-y-auto">
+    <div class="table-card max-w-[1200px] mx-auto bg-white rounded-xl shadow-lg border overflow-hidden">
+
+      <div class="table-toolbar p-6 flex justify-between items-center bg-white border-b">
+        <div
+          class="search-box flex items-center border rounded-lg px-4 py-2 w-[350px] transition-all focus-within:shadow-sm">
+          <ion-icon name="search-outline"></ion-icon>
+          <input type="text" placeholder="Buscar por nombre..."
+            class="bg-transparent border-none ml-3 w-full outline-none text-sm" (input)="onSearch($event)">
+        </div>
+
+        <div class="pagination-size text-sm font-medium flex items-center">
+          <span>Mostrar:</span>
+          <select [ngModel]="pageSize()" (ngModelChange)="pageSize.set($event); currentPage.set(0); cargarEmpresas()"
+            class="ml-2 border rounded-md px-2 py-1 outline-none">
+            <option [value]="5">5</option>
+            <option [value]="10">10</option>
+            <option [value]="20">20</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="data-table w-full border-collapse">
+          <thead>
+            <tr>
+              <th class="text-left px-6 py-4 text-xs font-semibold opacity-70 tracking-wider uppercase border-y">NOMBRE
+              </th>
+              <th class="text-left px-6 py-4 text-xs font-semibold opacity-70 tracking-wider uppercase border-y">TIPO
+                COCINA</th>
+              <th class="text-left px-6 py-4 text-xs font-semibold opacity-70 tracking-wider uppercase border-y">EMAIL
+              </th>
+              <th class="text-right px-6 py-4 text-xs font-semibold opacity-70 tracking-wider uppercase border-y">
+                ACCIONES</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (empresa of empresas(); track empresa.id) {
+            <tr class="transition-colors group">
+              <td class="td-name px-6 py-4 border-b font-bold">{{ empresa.nombre }}</td>
+              <td class="px-6 py-4 border-b text-sm">
+                <span class="badge-cocina">
+                  {{ empresa.tipoCocina.nombre || 'N/A' }}
+                </span>
+              </td>
+              <td class="td-email px-6 py-4 border-b text-sm">{{ empresa.email }}</td>
+              <td class="px-6 py-4 border-b">
+                <div class="actions flex justify-end gap-2">
+                  <button class="btn-icon view border rounded-md p-1.5 text-xl cursor-pointer transition-all"
+                    (click)="abrirModalVer(empresa)" title="Ver detalle">
+                    <ion-icon name="eye-outline"></ion-icon>
+                  </button>
+                  <button class="btn-icon products border rounded-md p-1.5 text-xl cursor-pointer transition-all"
+                    (click)="abrirModalProductos(empresa)" title="Gestionar Productos">
+                    <ion-icon name="fast-food-outline"></ion-icon>
+                  </button>
+                  <button class="btn-icon edit border rounded-md p-1.5 text-xl cursor-pointer transition-all"
+                    (click)="abrirModalEditar(empresa)" title="Editar">
+                    <ion-icon name="create-outline"></ion-icon>
+                  </button>
+                  <button class="btn-icon delete border rounded-md p-1.5 text-xl cursor-pointer transition-all"
+                    (click)="confirmarEliminar(empresa.id!)" title="Eliminar">
+                    <ion-icon name="trash-outline"></ion-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <footer class="table-footer px-6 py-4 flex justify-between items-center bg-white border-t">
+        <span class="page-info text-xs font-medium">Página {{ currentPage() + 1 }} de {{ totalPages() }}</span>
+        <div class="nav-buttons flex gap-2">
+          <button [disabled]="currentPage() === 0" (click)="cambiarPagina(-1)"
+            class="bg-white border px-3 py-1.5 rounded-md text-xs font-bold cursor-pointer transition-colors disabled:opacity-30 flex items-center gap-1">
+            <ion-icon name="chevron-back-outline"></ion-icon> ANTERIOR
+          </button>
+          <button [disabled]="currentPage() >= totalPages() - 1" (click)="cambiarPagina(1)"
+            class="bg-white border px-3 py-1.5 rounded-md text-xs font-bold cursor-pointer transition-colors disabled:opacity-30 flex items-center gap-1">
+            SIGUIENTE <ion-icon name="chevron-forward-outline"></ion-icon>
+          </button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <ion-modal [isOpen]="isModalOpen()" (didDismiss)="isModalOpen.set(false)" class="custom-modal-form">
+    <ng-template>
+      <ion-header class="ion-no-border">
+        <ion-toolbar>
+          <ion-title class="font-bold tracking-wide">{{ editingEmpresa() ? 'Editar' : 'Nuevo' }} Restaurante</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="isModalOpen.set(false)">
+              <ion-icon name="close-outline" class="text-xl"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="view-modal-content">
+        <div class="p-6">
+          <form (ngSubmit)="guardarEmpresa()" class="modern-form flex flex-col gap-5">
+            <div class="form-grid grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div class="form-group md:col-span-2">
+                <ion-item lines="none" class="rounded-lg shadow-sm">
+                  <ion-input label="Nombre del Restaurante" labelPlacement="stacked" [(ngModel)]="empresaForm.nombre"
+                    name="nombre" placeholder="Ej. Pizzería Roma" class="font-medium"></ion-input>
+                </ion-item>
+              </div>
+
+              <div class="form-group">
+                <ion-item lines="none" class="rounded-lg shadow-sm">
+                  <ion-input label="Email de Acceso" labelPlacement="stacked" type="email"
+                    [(ngModel)]="empresaForm.email" name="email" placeholder="correo@ejemplo.com"
+                    class="font-medium"></ion-input>
+                </ion-item>
+              </div>
+
+              @if (!editingEmpresa()) {
+              <div class="form-group">
+                <ion-item lines="none" class="rounded-lg shadow-sm">
+                  <ion-input label="Contraseña" labelPlacement="stacked" type="password"
+                    [(ngModel)]="empresaForm.password" name="password" placeholder="••••••••"
+                    class="font-medium"></ion-input>
+                </ion-item>
+              </div>
+              }
+
+              <div class="form-group">
+                <label class="form-label text-xs font-bold uppercase mb-2 block opacity-70">Categoría de Cocina</label>
+                <div class="border rounded-lg shadow-sm bg-white overflow-hidden p-1">
+                  <select [(ngModel)]="empresaForm.tipoCocinaId" name="tipoCocinaId"
+                    class="w-full bg-transparent border-none outline-none p-3 font-medium text-main cursor-pointer">
+                    <option value="" disabled class="text-gray-400">-- Selecciona --</option>
+                    @for (tipo of tiposCocina(); track tipo.id) {
+                      <option [value]="tipo.id" class="text-main bg-white">{{ tipo.nombre }}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <ion-item lines="none" class="rounded-lg shadow-sm">
+                  <ion-input label="Email de Contacto Público" labelPlacement="stacked" type="email"
+                    [(ngModel)]="empresaForm.correoContacto" name="correoContacto" placeholder="info@ejemplo.com"
+                    class="font-medium"></ion-input>
+                </ion-item>
+              </div>
+
+              <div class="form-group">
+                <ion-item lines="none" class="rounded-lg shadow-sm">
+                  <ion-input label="Teléfono Público" labelPlacement="stacked" type="tel"
+                    [(ngModel)]="empresaForm.telefonoContacto" name="telefonoContacto" placeholder="+34 ..."
+                    class="font-medium"></ion-input>
+                </ion-item>
+              </div>
+
+              <div class="form-group md:col-span-2">
+                <ion-item lines="none" class="rounded-lg shadow-sm">
+                  <ion-input label="Dirección Física" labelPlacement="stacked" [(ngModel)]="empresaForm.direccion"
+                    name="direccion" placeholder="Calle, Número, Ciudad" class="font-medium"></ion-input>
+                </ion-item>
+              </div>
+
+              <div class="form-group md:col-span-2">
+                <ion-item lines="none" class="rounded-lg shadow-sm">
+                  <ion-input label="Descripción del Restaurante" labelPlacement="stacked"
+                    [(ngModel)]="empresaForm.descripcion" name="descripcion"
+                    placeholder="Cuentanos sobre el restaurante..." class="font-medium"></ion-input>
+                </ion-item>
+              </div>
+            </div>
+
+            <div class="form-actions flex justify-end gap-3 mt-4 pt-4 border-t">
+              <button type="button"
+                class="btn-cancel px-6 py-3 rounded-lg font-bold text-sm bg-transparent border transition-colors"
+                (click)="isModalOpen.set(false)">CANCELAR</button>
+              <button type="submit"
+                class="btn-submit px-6 py-3 rounded-lg font-bold text-sm text-white transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                [disabled]="!empresaForm.nombre || !empresaForm.email">
+                {{ editingEmpresa() ? 'ACTUALIZAR RESTAURANTE' : 'REGISTRAR RESTAURANTE' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <ion-modal [isOpen]="isViewModalOpen()" (didDismiss)="isViewModalOpen.set(false)" class="custom-modal-form">
+    <ng-template>
+      <ion-header class="ion-no-border">
+        <ion-toolbar>
+          <ion-title class="font-bold tracking-wide">Detalles del Restaurante</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="isViewModalOpen.set(false)">
+              <ion-icon name="close-outline" class="text-xl"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="view-modal-content">
+        @if (viewingEmpresa()) {
+        <div class="p-8 max-w-3xl mx-auto">
+          <div class="detail-card bg-white rounded-2xl shadow-xl overflow-hidden border">
+            <div class="detail-header p-8 flex flex-col items-center border-b relative">
+              <div
+                class="avatar w-24 h-24 rounded-full flex items-center justify-center text-white text-3xl font-bold mb-4 shadow-lg border-4 border-white overflow-hidden">
+                @if (viewingEmpresa()!.foto) {
+                  <img [src]="environment.storageUrl + '/' + viewingEmpresa()!.foto" alt="Foto del restaurante" class="w-full h-full object-cover">
+                } @else {
+                  {{ viewingEmpresa()!.nombre.charAt(0).toUpperCase() }}
+                }
+              </div>
+              <h2 class="name text-2xl font-bold mb-1">{{ viewingEmpresa()!.nombre }}</h2>
+              <span class="role text-sm font-medium px-3 py-1 rounded-full">{{ viewingEmpresa()!.tipoCocina.nombre ||
+                'Restaurante' }}</span>
+            </div>
+
+            <div class="p-8">
+              <p class="text-center italic mb-6 opacity-70">{{ viewingEmpresa()!.descripcion || 'Sin descripción
+                disponible.' }}</p>
+              <h3 class="section-title text-sm font-bold uppercase tracking-wider mb-6 pb-2 border-b">Información de
+                Contacto</h3>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="detail-item flex gap-4 items-start">
+                  <div class="icon-box w-10 h-10 rounded-full flex items-center justify-center shrink-0">
+                    <ion-icon name="mail-outline" class="text-xl"></ion-icon>
+                  </div>
+                  <div>
+                    <p class="label text-xs font-bold uppercase">Correo Comercial</p>
+                    <p class="value font-medium mt-1 break-all">{{ viewingEmpresa()!.correoContacto ||
+                      viewingEmpresa()!.email }}</p>
+                  </div>
+                </div>
+
+                <div class="detail-item flex gap-4 items-start">
+                  <div class="icon-box w-10 h-10 rounded-full flex items-center justify-center shrink-0">
+                    <ion-icon name="call-outline" class="text-xl"></ion-icon>
+                  </div>
+                  <div>
+                    <p class="label text-xs font-bold uppercase">Teléfono Restaurante</p>
+                    <p class="value font-medium mt-1">{{ viewingEmpresa()!.telefonoContacto ||
+                      viewingEmpresa()!.telefono || 'No especificado' }}</p>
+                  </div>
+                </div>
+
+                <div class="detail-item flex gap-4 items-start">
+                  <div class="icon-box w-10 h-10 rounded-full flex items-center justify-center shrink-0">
+                    <ion-icon name="location-outline" class="text-xl"></ion-icon>
+                  </div>
+                  <div>
+                    <p class="label text-xs font-bold uppercase">Ubicación</p>
+                    <p class="value font-medium mt-1">{{ viewingEmpresa()!.direccion || 'No especificada' }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="footer px-8 py-4 flex justify-end border-t">
+              <button
+                class="btn-close bg-white border px-6 py-2.5 rounded-lg font-bold text-sm transition-colors shadow-sm"
+                (click)="isViewModalOpen.set(false)">
+                CERRAR
+              </button>
+            </div>
+          </div>
+        </div>
+        }
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <app-confirm-modal [isOpen]="isConfirmModalOpen()" title="Eliminar Restaurante"
+    message="¿Estás seguro de que deseas eliminar este restaurante? También perderás el acceso y se borrarán sus productos."
+    confirmText="ELIMINAR" [dangerAction]="true" (confirm)="ejecutarEliminacion()"
+    (cancel)="isConfirmModalOpen.set(false)">
+  </app-confirm-modal>
+
+  <ion-modal [isOpen]="isProductsModalOpen()" (didDismiss)="isProductsModalOpen.set(false)" class="custom-modal-form">
+    <ng-template>
+      <ion-header class="ion-no-border">
+        <ion-toolbar>
+          <ion-title class="font-bold tracking-wide">Productos de {{ selectedEmpresaForProducts()?.nombre }}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="isProductsModalOpen.set(false)">
+              <ion-icon name="close-outline" class="text-xl"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="view-modal-content">
+        <div class="p-6">
+          <div class="table-card bg-white rounded-xl shadow-lg border overflow-hidden">
+            <div class="table-toolbar p-6 flex justify-between items-center bg-white border-b">
+              <h2 class="text-lg font-bold td-name">Catálogo ({{ productos().length }})</h2>
+              <button
+                class="btn-new border-none px-4 py-2 rounded-md font-bold text-sm flex items-center gap-2 cursor-pointer transition-all hover:shadow-md"
+                (click)="abrirModalNuevoProducto()">
+                <ion-icon name="add-circle-outline" class="text-lg"></ion-icon>
+                NUEVO PRODUCTO
+              </button>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="data-table w-full border-collapse">
+                <thead>
+                  <tr>
+                    <th class="text-left px-6 py-4 text-xs font-semibold opacity-70 tracking-wider uppercase border-y">
+                      PRODUCTO</th>
+                    <th class="text-left px-6 py-4 text-xs font-semibold opacity-70 tracking-wider uppercase border-y">
+                      PRECIO</th>
+                    <th class="text-left px-6 py-4 text-xs font-semibold opacity-70 tracking-wider uppercase border-y">
+                      STOCK</th>
+                    <th class="text-right px-6 py-4 text-xs font-semibold opacity-70 tracking-wider uppercase border-y">
+                      ACCIONES</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @if(productos().length === 0) {
+                  <tr>
+                    <td colspan="4" class="text-center py-8 opacity-50 italic">No hay productos en este restaurante.
+                    </td>
+                  </tr>
+                  }
+                  @for (prod of productos(); track prod.id) {
+                  <tr class="transition-colors group">
+                    <td class="td-name px-6 py-4 border-b font-bold">
+                      <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-md overflow-hidden bg-gray-100 flex-shrink-0 border">
+                          @if (prod.foto) {
+                            <img [src]="environment.storageUrl + '/' + prod.foto" alt="Foto producto" class="w-full h-full object-cover">
+                          } @else {
+                            <div class="w-full h-full flex items-center justify-center opacity-30">
+                              <ion-icon name="fast-food-outline"></ion-icon>
+                            </div>
+                          }
+                        </div>
+                        {{ prod.nombre }}
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 border-b text-sm font-semibold">{{ prod.precio | currency:'EUR':'symbol' }}
+                    </td>
+                    <td class="px-6 py-4 border-b text-sm">
+                      <span [class]="prod.cantidad > 0 ? 'text-green-600 font-bold' : 'text-red-600 font-bold'">
+                        {{ prod.cantidad > 0 ? prod.cantidad + ' uds' : 'Agotado' }}
+                      </span>
+                    </td>
+                    <td class="px-6 py-4 border-b">
+                      <div class="actions flex justify-end gap-2">
+                        <button class="btn-icon edit border rounded-md p-1.5 text-xl cursor-pointer transition-all"
+                          (click)="abrirModalEditarProducto(prod)" title="Editar">
+                          <ion-icon name="create-outline"></ion-icon>
+                        </button>
+                        <button class="btn-icon delete border rounded-md p-1.5 text-xl cursor-pointer transition-all"
+                          (click)="confirmarEliminarProducto(prod.id!)" title="Eliminar">
+                          <ion-icon name="trash-outline"></ion-icon>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <ion-modal [isOpen]="isProductFormModalOpen()" (didDismiss)="isProductFormModalOpen.set(false)"
+    class="custom-modal-form">
+    <ng-template>
+      <ion-header class="ion-no-border">
+        <ion-toolbar>
+          <ion-title class="font-bold tracking-wide">{{ editingProducto() ? 'Editar' : 'Nuevo' }} Producto</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="isProductFormModalOpen.set(false)">
+              <ion-icon name="close-outline" class="text-xl"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="view-modal-content">
+        <div class="p-6">
+          <form (ngSubmit)="guardarProducto()" class="modern-form flex flex-col gap-5">
+            <div class="form-grid grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div class="form-group md:col-span-2">
+                <ion-item lines="none" class="rounded-lg shadow-sm">
+                  <ion-input label="Nombre del Producto" labelPlacement="stacked" [(ngModel)]="productoForm.nombre"
+                    name="nombre" placeholder="Ej. Pizza Margarita" class="font-medium"></ion-input>
+                </ion-item>
+              </div>
+
+              <div class="form-group md:col-span-2">
+                <label class="form-label text-xs font-bold uppercase mb-2 block opacity-70">Imagen del Producto</label>
+                <div class="flex items-center gap-4 p-4 border rounded-lg bg-gray-50/50">
+                  <div class="w-20 h-20 rounded-lg overflow-hidden bg-white border-2 border-dashed border-gray-300 flex items-center justify-center">
+                    @if (productFotoPreview()) {
+                      <img [src]="productFotoPreview()" alt="Preview" class="w-full h-full object-cover">
+                    } @else {
+                      <ion-icon name="camera-outline" class="text-2xl opacity-20"></ion-icon>
+                    }
+                  </div>
+                  <div class="flex-1">
+                    <label class="btn-upload inline-flex items-center gap-2 px-4 py-2 border rounded-md cursor-pointer hover:bg-gray-100 transition-colors text-sm font-bold" for="prod-foto-input">
+                      <ion-icon name="camera-outline"></ion-icon>
+                      {{ productFotoPreview() ? 'Cambiar foto' : 'Subir foto' }}
+                    </label>
+                    <input id="prod-foto-input" type="file" accept="image/*" (change)="onProductFotoSelected($event)" hidden>
+                    <p class="text-[10px] opacity-50 mt-1">Formatos: JPG, PNG. Máx 2MB.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <ion-item lines="none" class="rounded-lg shadow-sm">
+                  <ion-input label="Precio (€)" labelPlacement="stacked" type="number" step="0.01"
+                    [(ngModel)]="productoForm.precio" name="precio" placeholder="0.00" class="font-medium"></ion-input>
+                </ion-item>
+              </div>
+
+              <div class="form-group">
+                <ion-item lines="none" class="rounded-lg shadow-sm">
+                  <ion-input label="Cantidad (Stock)" labelPlacement="stacked" type="number"
+                    [(ngModel)]="productoForm.cantidad" name="cantidad" placeholder="0" class="font-medium"></ion-input>
+                </ion-item>
+              </div>
+
+              <div class="form-group md:col-span-2">
+                <ion-item lines="none" class="rounded-lg shadow-sm">
+                  <ion-input label="Descripción Corta" labelPlacement="stacked" [(ngModel)]="productoForm.descripcion"
+                    name="descripcion" placeholder="Ingredientes o breve resumen..." class="font-medium"></ion-input>
+                </ion-item>
+              </div>
+            </div>
+
+            <div class="form-actions flex justify-end gap-3 mt-4 pt-4 border-t">
+              <button type="button"
+                class="btn-cancel px-6 py-3 rounded-lg font-bold text-sm bg-transparent border transition-colors"
+                (click)="isProductFormModalOpen.set(false)">CANCELAR</button>
+              <button type="submit"
+                class="btn-submit px-6 py-3 rounded-lg font-bold text-sm text-white transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                [disabled]="!productoForm.nombre || productoForm.precio <= 0">
+                {{ editingProducto() ? 'ACTUALIZAR PRODUCTO' : 'GUARDAR PRODUCTO' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <app-confirm-modal [isOpen]="isProductConfirmModalOpen()" title="Eliminar Producto"
+    message="¿Estás seguro de que deseas eliminar este producto? La acción no se puede deshacer." confirmText="ELIMINAR"
+    [dangerAction]="true" (confirm)="ejecutarEliminacionProducto()" (cancel)="isProductConfirmModalOpen.set(false)">
+  </app-confirm-modal>
+
+  <app-info-modal
+    [isOpen]="isInfoModalOpen()"
+    [title]="modalTitle()"
+    [message]="modalMessage()"
+    [errorData]="modalErrorData()"
+    [type]="modalType()"
+    (modalClosed)="onModalClosed()">
+  </app-info-modal>
+
+</div>

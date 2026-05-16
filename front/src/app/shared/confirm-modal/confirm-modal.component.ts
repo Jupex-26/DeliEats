@@ -1,11 +1,11 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonModal, IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons } from '@ionic/angular/standalone';
+import { IonModal } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-confirm-modal',
   standalone: true,
-  imports: [CommonModule, IonModal, IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons],
+  imports: [CommonModule, IonModal],
   templateUrl: './confirm-modal.component.html',
   styleUrls: ['./confirm-modal.component.scss']
 })
@@ -15,7 +15,7 @@ export class ConfirmModalComponent {
   @Input() message = '¿Estás seguro de que deseas realizar esta acción?';
   @Input() confirmText = 'Confirmar';
   @Input() cancelText = 'Cancelar';
-  @Input() dangerAction = false; // Si es true, el botón de confirmar será rojo
+  @Input() dangerAction = false; 
 
   @Output() confirm = new EventEmitter<void>();
   @Output() cancel = new EventEmitter<void>();

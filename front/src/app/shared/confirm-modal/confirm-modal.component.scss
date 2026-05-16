@@ -1,51 +1,58 @@
-@import '../../../styles/styles';
+@use '../../../styles/variables' as *;
 
-:host {
-  display: block;
-}
-
-.custom-modal {
-  --width: 90%;
-  --max-width: 400px;
+ion-modal.custom-modal {
   --height: auto;
+  --width: 90%;
+  --max-width: 450px;
   --border-radius: 16px;
-  --box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  --background: transparent;
+  --backdrop-opacity: 0.7; 
+  
+  &::part(content) {
+    border-radius: 16px;
+    background: transparent;
+    overflow: visible;
+  }
 }
 
-ion-toolbar {
-  --background: var(--color-bg-base);
-  border-bottom: 1px solid rgba(0,0,0,0.05);
+.modal-wrapper {
+  background-color: $color-bg-base;
+  border-radius: 16px;
+  overflow: hidden;
 }
 
-ion-content {
-  --background: var(--color-bg-base);
+.modal-header {
+  background-color: $color-primary;
+  color: white;
 }
 
-.text-main {
-  color: var(--color-text-main);
+.modal-body {
+  background-color: $color-bg-base;
 }
 
-// Estilos de botones
-ion-button {
-  --border-radius: 8px;
-  margin: 0;
+.main-message {
+  color: $color-text-main;
 }
 
 .btn-cancel {
-  --background: transparent;
-  --color: var(--color-text-main);
-  --border-color: var(--color-text-main);
-  --border-style: solid;
-  --border-width: 1px;
-  --background-hover: rgba(0,0,0,0.05);
+  background-color: transparent;
+  border-color: $color-bg-alt;
+  color: $color-text-main;
+  &:hover {
+    background-color: rgba($color-bg-alt, 0.3);
+  }
 }
 
-.btn-primary {
-  --background: var(--color-primary);
-  --color: white;
+.btn-submit {
+  background-color: $color-primary;
+  &:hover {
+    background-color: rgba($color-primary, 0.9);
+  }
 }
 
 .btn-danger {
-  --background: var(--color-error);
-  --color: white;
+  background-color: $color-error;
+  &:hover {
+    background-color: rgba($color-error, 0.9);
+  }
 }

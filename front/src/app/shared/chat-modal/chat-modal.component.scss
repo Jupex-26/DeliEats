@@ -1,0 +1,69 @@
+@use 'sass:color';
+@use '../../../styles/variables' as *;
+
+.chat-modal {
+  --height: 70%;
+  --width: 95%;
+  --max-width: 500px;
+  --border-radius: 24px;
+  --box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  
+  &::part(content) {
+    border-radius: 24px;
+    overflow: hidden;
+  }
+}
+
+.chat-header {
+  background-color: $color-primary;
+  color: white !important;
+
+  h2, p {
+    color: white !important;
+    margin: 0;
+  }
+}
+
+.messages-area {
+  scroll-behavior: smooth;
+  
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba($color-primary, 0.2);
+    border-radius: 10px;
+  }
+}
+
+.btn-submit {
+  background-color: $color-primary;
+  &:not(:disabled):hover {
+    background-color: color.adjust($color-primary, $lightness: -5%);
+  }
+}
+
+.chat-input {
+    color: #111827 !important; 
+    background-color: #ffffff;
+    
+    &::placeholder {
+        color: #9ca3af; 
+    }
+    
+    &:focus {
+        border-color: $color-primary !important;
+        box-shadow: 0 0 0 2px rgba($color-primary, 0.1);
+    }
+}
+
+.bg-primary {
+    background-color: $color-primary !important;
+}
+
+.text-primary {
+    color: $color-primary !important;
+}

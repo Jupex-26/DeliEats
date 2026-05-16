@@ -7,12 +7,14 @@ import org.example.ordersservice.dtos.user.UserOutputDto;
 import org.example.ordersservice.models.User;
 import org.example.ordersservice.mappers.UserMapper;
 import org.example.ordersservice.services.UserService;
+import org.example.ordersservice.services.RepartidorService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/users")
@@ -21,6 +23,7 @@ public class UserController {
 
     private final UserService userService;
     private final UserMapper userMapper;
+    private final RepartidorService repartidorService;
 
     @PostMapping
     public ResponseEntity<UserOutputDto> create(@Valid @RequestBody UserInputDto dto) {
@@ -65,5 +68,20 @@ public class UserController {
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         userService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/foto")
+    public ResponseEntity<UserOutputDto> subirFoto(
+            @PathVariable Long id,
+            @RequestParam("foto") MultipartFile archivo) {
+
+        User updatedUser = userService.uploadFoto(id, archivo);
+        return ResponseEntity.ok(userMapper.toDto(updatedUser));
+    }
+
+    @PatchMapping("/repartidores/{id}/aprobar")
+    public ResponseEntity<Void> aprobarRepartidor(@PathVariable Long id, @RequestParam boolean aprobado) {
+        repartidorService.aprobarRepartidor(id, aprobado);
+        return ResponseEntity.ok().build();
     }
 }

@@ -82,7 +82,7 @@ public class CarritoController {
             @PathVariable Long id,
             @PathVariable Long productoId) {
 
-        Carrito actualizado = carritoService.addProducto(id, productoId, 0);
-        return ResponseEntity.ok(carritoMapper.toDto(actualizado));
+        Carrito carrito = carritoService.removeProducto(id, productoId);
+        return ResponseEntity.ok(carritoMapper.toDto(carrito));
     }
 }

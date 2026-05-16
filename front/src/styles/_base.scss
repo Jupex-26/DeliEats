@@ -1,29 +1,30 @@
-// ==========================================
-// DeliEats - Estilos Base & Reseteo Global
-// ==========================================
-@import "variables";
+@use "variables" as *;
+
 @layer base {
 
-  // 1. Configuración del documento y scroll
   html {
     -webkit-tap-highlight-color: transparent;
     scroll-behavior: smooth;
-    // Evita saltos visuales bruscos al cargar imágenes
+    
   }
 
   body {
-    background-color: $color-bg-base; // Floral White
-    color: $color-text-main;          // Evergreen
-    font-family: 'Lora', 'Verdana', serif; // Fuente secundaria legible
-    font-size: 16px;                  // Texto Base
-    line-height: 1.6;                 // Interlineado anti-fatiga
+    background-color: $color-bg-base; 
+    color: $color-text-main; 
+    font-family: 'Lora', 'Verdana', serif; 
+    font-size: 16px; 
+    line-height: 1.6; 
     margin: 0;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  // 2. Jerarquía Tipográfica (Merriweather)
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: 'Merriweather', serif;
     font-weight: 700;
     color: $color-text-main;
@@ -31,58 +32,60 @@
   }
 
   h1 {
-    font-size: 40px; //
-    @apply mb-6;
+    font-size: 40px; 
   }
 
   h2 {
-    font-size: 32px; //
-    @apply mb-4;
+    font-size: 32px; 
   }
 
-  // 3. Estilos Globales de Ionic (Optimización UX)
   ion-content {
     --background: #{$color-bg-base};
     --color: #{$color-text-main};
   }
 
-  // Botones e Interacciones (Micro-interacciones)
-  button, .button, ion-button {
-    --border-radius: 8px !important; // Bordes redondeados obligatorios
-    transition: all 0.3s ease-in-out !important; //
+  button,
+  .button,
+  ion-button {
+    --border-radius: 8px !important; 
+    transition: all 0.3s ease-in-out !important; 
 
     &:active {
-      transform: scale(0.98); // Efecto de presión táctil
+      transform: scale(0.98); 
     }
   }
 
-  // 4. Sombras Orgánicas (No negras pesadas)
   .shadow-organic {
     box-shadow: 0 4px 12px rgba(27, 46, 36, 0.08);
   }
 
-  // 5. Adaptación Responsive para Títulos
   @media (max-width: 768px) {
-    h1, h2, h3 {
-      font-size: 85%; // Reducción del 15% en móvil
+
+    h1,
+    h2,
+    h3 {
+      font-size: 85%; 
     }
   }
 
-  // 6. Accesibilidad - Focus Ring visible en Verde Bosque
   :focus-visible {
     outline: 2px solid $color-primary;
     outline-offset: 2px;
   }
 }
 
-// 7. Utilidades de Transiciones (Fade-in)
 .fade-in-load {
   animation: fadeIn 0.5s ease-in;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 ion-modal.custom-modal {
@@ -99,118 +102,3 @@ ion-modal.custom-modal {
     overflow: visible;
   }
 }
-
-
-:host {
-  /* Declaración de variables CSS a partir de las de SCSS */
-  --color-primary: #{$color-primary};
-  --color-secondary: #{$color-secondary};
-  --color-text-main: #{$color-text-main};
-  --color-bg-base: #{$color-bg-base};
-  --color-bg-alt: #{$color-bg-alt};
-
-  display: block;
-  width: 100%;
-  position: relative;
-  z-index: 50;
-}
-
-/* Clases de utilidad vinculadas a variables */
-.bg-base {
-  background-color: var(--color-bg-base);
-}
-
-.text-main {
-  color: var(--color-text-main);
-}
-
-.text-primary {
-  color: var(--color-primary);
-}
-
-.bg-secondary {
-  background-color: var(--color-secondary);
-}
-
-/* Lógica del Botón Hamburguesa */
-.hamburger-line {
-  background-color: var(--color-text-main);
-
-  // Estas clases se activan mediante [class.rotate-45], etc. en tu HTML
-  &.rotate-45 {
-    transform: rotate(45deg) translateY(0px);
-  }
-
-  &.-rotate-45 {
-    transform: rotate(-45deg) translateY(0px);
-  }
-
-  &.opacity-0 {
-    opacity: 0;
-  }
-}
-
-/* Panel del Menú Móvil */
-.mobile-menu-panel {
-  top: 100%;
-  max-height: 0;
-  opacity: 0;
-  visibility: hidden; // Evita que se pueda interactuar si está cerrado
-  transition: all 0.3s ease-in-out;
-  pointer-events: none;
-
-  // Clase que se activa con [class.menu-open]="isMenuOpen"
-  &.menu-open {
-    max-height: 500px;
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-  }
-}
-
-/* Contenedor interno del menú móvil */
-.mobile-menu-container {
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-
-  // Ajuste para cuando el fondo es oscuro (opcional)
-  @media (prefers-color-scheme: dark) {
-    border-top-color: rgba(255, 255, 255, 0.1);
-  }
-}
-
-/* Transiciones globales para hover */
-.transition-colors {
-  transition-property: color, background-color, border-color;
-  transition-duration: 200ms;
-}
-
-
-
-.btn-profile {
-  color: $color-primary;
-  background-color: transparent;
-  font-weight: bold;
-  border: 2px solid $color-primary;
-  padding: 8px 46px;
-
-
-  &:hover {
-    background-color: $color-primary; // Un toque sutil de tu verde
-    color: white;
-  }
-}
-
-.btn-logout {
-  color: $color-secondary;
-  border: 2px solid $color-secondary;
-  background-color: transparent;
-
-  &:hover {
-    background-color: $color-secondary;
-    color: white;
-    box-shadow: 0 2px 8px rgba($color-secondary, 0.3);
-  }
-}
-
-
-

@@ -7,10 +7,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface RolMapper {
+public abstract class RolMapper {
 
-    RolOutputDto toDto(Rol rol);
+    public abstract RolOutputDto toDto(Rol rol);
 
     @Mapping(target = "id", ignore = true)
-    Rol toEntity(RolInputDto dto);
+    public abstract Rol toEntity(RolInputDto dto);
 }

@@ -11,6 +11,9 @@ export interface Pedido {
 
 export interface PedidoInputDto {
     clienteId: number;
+    empresaId: number;
+    idRepartidor?: number;
+    repartidorId?: number;
     detalles: DetallePedidoInputDto[];
 }
 
@@ -20,6 +23,8 @@ export interface PedidoOutputDto {
     precioTotal: number;
     clienteId: number;
     nombreCliente: string;
+    empresaId: number;
+    nombreEmpresa: string;
     direccionEntrega?: string;
     estadoNombre: string;
     repartidorId?: number;

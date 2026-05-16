@@ -17,9 +17,6 @@ public class UserInputDto {
     @NotBlank(message = "El email es obligatorio")
     private String email;
 
-    @NotBlank(message = "La contraseña es obligatoria")
-    @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres")
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!_\\-]).*$", message = "La contraseña debe contener al menos un dígito, una letra minúscula, una mayúscula y un carácter especial")
     private String password;
 
     @NotNull(message = "El teléfono es obligatorio")

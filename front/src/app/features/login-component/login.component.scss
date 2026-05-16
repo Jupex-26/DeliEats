@@ -1,118 +1,77 @@
-@import '../../../styles/styles';
-
-:host {
-  --color-primary: #{$color-primary};
-  --color-secondary: #{$color-secondary};
-  --color-text-main: #{$color-text-main};
-  --color-bg-base: #{$color-bg-base};
-  --color-bg-alt: #{$color-bg-alt};
-  --color-success: #{$color-success};
-  --color-error: #{$color-error};
-  --color-warning: #{$color-warning};
-}
+@use '../../../styles/variables' as *;
 
 ion-content {
-  --background: var(--color-bg-base);
+  --background: #{$color-bg-base};
 }
 
-.login-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 1.5rem;
+.login-wrapper {
+  background-color: $color-bg-base;
 }
 
 .login-card {
-  width: 100%;
-  max-width: 400px;
-  background-color: var(--color-bg-alt);
-  border-radius: 1rem;
-  padding: 2.5rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  background-color: white;
+  border-color: rgba($color-bg-alt, 0.5);
 }
 
 .logo-title {
-  text-align: center;
-  color: var(--color-primary);
-  font-size: 2.25rem;
-  font-weight: 800;
-  margin-bottom: 0.5rem;
-  letter-spacing: 0.025em;
+  color: $color-primary;
 }
 
 .subtitle {
-  text-align: center;
-  color: var(--color-text-main);
-  opacity: 0.8;
-  margin-bottom: 2rem;
+  color: rgba($color-text-main, 0.7);
 }
 
-.input-group {
-  margin-bottom: 1.5rem;
+.text-main {
+  color: $color-text-main;
 }
 
-ion-item {
-  --background: transparent;
-  --color: var(--color-text-main);
-  --border-color: var(--color-text-main);
-  --highlight-color-focused: var(--color-primary);
-  --padding-start: 0;
-  --inner-padding-end: 0;
-  margin-bottom: 1rem;
-}
-
-ion-input {
-  --placeholder-color: var(--color-text-main);
-  --placeholder-opacity: 0.5;
-  color: var(--color-text-main);
-  font-size: 1rem;
+.custom-input {
+  border-color: rgba($color-bg-alt, 0.5);
 }
 
 .error-text {
-  color: var(--color-error);
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
-  padding-left: 0.5rem;
+  color: $color-error;
 }
 
-.register-link {
-  text-align: center;
-  margin-top: 1.5rem;
-  color: var(--color-text-main);
-  font-size: 0.875rem;
-}
-
-.register-link a {
-  color: var(--color-secondary);
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.error-message-container {
-  text-align: center;
-  margin-bottom: 1rem;
-}
-
-.register-link a:hover {
-  text-decoration: underline;
-}
-
-.home-link {
-  margin-top: $spacing-m;
-  text-align: center;
-
-  a {
-    color: $color-secondary;
-    text-decoration: underline;
-    font-weight: 500;
-    transition: color 0.3s ease-in-out;
-    &:hover {
-      color: $color-primary;
-      text-decoration: none;
-    }
-    &:active {
-      opacity: 0.7;
-    }
+.btn-submit {
+  background-color: $color-primary;
+  color: white;
+  &:hover {
+    background-color: rgba($color-primary, 0.9);
   }
+}
+
+.link-secondary {
+  color: $color-secondary;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.link-home {
+  color: rgba($color-text-main, 0.7);
+  &:hover {
+    color: $color-text-main;
+    text-decoration: underline;
+  }
+}
+
+ion-item {
+  --background: white !important;
+  --highlight-color-focused: #{$color-primary} !important;
+  --padding-start: 16px;
+  --inner-padding-end: 16px;
+  
+  &::part(native) {
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+}
+
+ion-input {
+  color: $color-text-main;
+}
+
+ion-input {
+  color: $color-text-main;
 }

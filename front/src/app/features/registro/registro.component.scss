@@ -1,9 +1,8 @@
-@import '../../../styles/styles';
+@use '../../../styles/variables' as *;
 
 :host {
   display: block;
 }
-
 
 .registro-container {
   display: flex;

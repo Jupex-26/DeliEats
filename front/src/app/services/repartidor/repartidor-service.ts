@@ -25,8 +25,10 @@ export class RepartidorService {
     return this.http.get<RepartidorOutputDto>(`${this.urlApi}/${id}`);
   }
 
-  obtenerDisponibles(): Observable<RepartidorOutputDto[]> {
-    return this.http.get<RepartidorOutputDto[]>(`${this.urlApi}/disponibles`);
+  obtenerDisponibles(page: number = 0, size: number = 10, sort?: string): Observable<any> {
+    let params = new HttpParams().set('page', page).set('size', size);
+    if (sort) params = params.set('sort', sort);
+    return this.http.get<any>(`${this.urlApi}/disponibles`, { params });
   }
 
   actualizar(id: number, repartidor: RepartidorInputDto): Observable<RepartidorOutputDto> {
@@ -40,4 +42,16 @@ export class RepartidorService {
   eliminar(id: number): Observable<void> {
     return this.http.delete<void>(`${this.urlApi}/${id}`);
   }
+
+  obtenerPorAprobado(aprobado: boolean, page: number = 0, size: number = 10, sort?: string): Observable<any> {
+    let params = new HttpParams()
+      .set('aprobado', aprobado.toString()) 
+      .set('page', page)
+      .set('size', size);
+
+    if (sort) params = params.set('sort', sort);
+
+    return this.http.get<any>(`${this.urlApi}/aprobado`, { params });
+  }
+
 }

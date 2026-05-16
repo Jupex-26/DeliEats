@@ -1,8 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonModal, IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonList, IonItem, IonLabel,
-  IonIcon
-} from '@ionic/angular/standalone';
+import { IonModal } from '@ionic/angular/standalone';
 import { CustomError } from '../../types';
 
 @Component({
@@ -10,17 +8,7 @@ import { CustomError } from '../../types';
   standalone: true,
   imports: [
     CommonModule,
-    IonModal,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonContent,
-    IonButton,
-    IonButtons,
-    IonList,
-    IonItem,
-    IonLabel,
-    IonIcon,
+    IonModal
   ],
   templateUrl: './info-modal.component.html',
   styleUrls: ['./info-modal.component.scss'],

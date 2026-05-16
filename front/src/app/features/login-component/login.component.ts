@@ -1,19 +1,30 @@
 import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { IonContent, IonInput, IonItem, IonButton, IonSpinner } from '@ionic/angular/standalone';
+import { IonContent, IonInput, IonItem, IonSpinner } from '@ionic/angular/standalone';
 import { AuthService } from '../../services/auth/auth-service';
 import { LoginRequestDto, CustomError } from '../../types';
 import { InfoModalComponent } from '../../shared/info-modal/info-modal.component';
 import { finalize } from 'rxjs/operators';
-import { Validador } from '../../validadores/validador'; // Importar finalize
+import { Validador } from '../../validadores/validador';
 
 @Component({
   selector: 'app-login-component',
   standalone: true,
-  imports: [IonContent, IonInput, IonItem, IonButton, IonSpinner, ReactiveFormsModule, RouterLink, InfoModalComponent],
+  imports: [
+    IonContent,
+    IonInput,
+    IonItem,
+    IonSpinner,
+    ReactiveFormsModule,
+    RouterLink,
+    InfoModalComponent,
+  ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
+  host: {
+    class: 'ion-page', 
+  },
 })
 export class LoginComponent {
   private fb = inject(FormBuilder);
@@ -28,7 +39,6 @@ export class LoginComponent {
 
   isLoading = false;
 
-  // Modal state
   isModalOpen = false;
   modalTitle = '';
   modalMessage = '';
@@ -47,42 +57,47 @@ export class LoginComponent {
       password: this.loginForm.value.password as string,
     };
 
-    this.authService.login(credentials).pipe(
-      finalize(() => this.isLoading = false) // Asegura que isLoading siempre se ponga en false al finalizar
-    ).subscribe({
-      next: () => {
-        // Navigation on success
-        this.router.navigate(['/']);
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        // isLoading ya se maneja con finalize, así que lo quitamos de aquí
-        // this.isLoading = false;
+    this.authService
+      .login(credentials)
+      .pipe(
+        finalize(() => (this.isLoading = false)), 
+      )
+      .subscribe({
+        next: (res) => {
 
-        // Show error modal
-        this.modalTitle = 'Error de Autenticación';
-        this.modalType = 'error';
-
-        if (err.error && err.error.message) {
-          console.log(err.error);
-          // Si es un CustomError que viene del backend
-          this.errorData = err.error as CustomError;
-          this.modalMessage = this.errorData.message;
-          console.log(this.modalMessage);
-        } else {
-          // Error genérico o de red
-          this.errorData = null;
-          if (err.status === 401 || err.status === 403) {
-            this.modalMessage = 'Correo o contraseña incorrectos.';
+          if (res.userOutputDto.nombreRol == 'ROLE_ADMIN') {
+            this.router.navigate(['/admin/clientes']);
           } else {
-            this.modalMessage = 'Hubo un error al conectar con el servidor. Inténtalo más tarde.';
+            this.router.navigate(['/']);
           }
-        }
 
-        this.isModalOpen = true;
-        this.cdr.detectChanges();
-      },
-    });
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          
+          this.modalTitle = 'Error de Autenticación';
+          this.modalType = 'error';
+
+          if (err.error && err.error.message) {
+            console.log(err.error);
+            
+            this.errorData = err.error as CustomError;
+            this.modalMessage = this.errorData.message;
+            console.log(this.modalMessage);
+          } else {
+            
+            this.errorData = null;
+            if (err.status === 401 || err.status === 403) {
+              this.modalMessage = 'Correo o contraseña incorrectos.';
+            } else {
+              this.modalMessage = 'Hubo un error al conectar con el servidor. Inténtalo más tarde.';
+            }
+          }
+
+          this.isModalOpen = true;
+          this.cdr.detectChanges();
+        },
+      });
   }
 
   onModalClosed() {

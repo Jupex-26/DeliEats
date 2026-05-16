@@ -10,7 +10,6 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly urlApi = `${environment.apiUrl}/auth`;
 
-  // Se inicializa leyendo 'user' del storage
   private currentUserSignal = signal<any>(this.getUserFromStorage());
   readonly currentUser = this.currentUserSignal.asReadonly();
 
@@ -26,7 +25,7 @@ export class AuthService {
   login(userData: any): Observable<any> {
     return this.http.post<any>(`${this.urlApi}/login`, userData).pipe(
       tap((response) => {
-        // Guardamos el objeto completo (incluye token y userOutputDto)
+        
         localStorage.setItem('user', JSON.stringify(response));
         this.currentUserSignal.set(response);
       }),
@@ -38,13 +37,21 @@ export class AuthService {
     this.currentUserSignal.set(null);
   }
 
+  updateUser(userData: any): void {
+    const current = this.currentUser();
+    if (current) {
+      const updated = { ...current, userOutputDto: { ...current.userOutputDto, ...userData } };
+      localStorage.setItem('user', JSON.stringify(updated));
+      this.currentUserSignal.set(updated);
+    }
+  }
+
   getRol(): string | null {
-    // Buscamos el rol dentro de userOutputDto según tu respuesta de red
-    return this.currentUser()?.userOutputDto?.rol?.nombre || null;
+    return this.currentUser()?.userOutputDto?.nombreRol || null;
   }
 
   isLogin() {
-    // Es válido si existe el objeto y tiene el DTO del usuario
+    
     return !!this.currentUser()?.userOutputDto;
   }
 }

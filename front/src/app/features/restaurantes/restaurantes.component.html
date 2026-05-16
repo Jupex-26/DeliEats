@@ -1,10 +1,11 @@
 <ion-content>
   <div class="max-w-7xl mx-auto px-6 py-8">
 
-    <!-- Buscador y Categorías (Se mantienen igual) -->
     <div class="flex flex-wrap items-center gap-6 mb-12">
       <div class="search-container relative flex-1 min-w-[300px]">
-        <span class="search-icon">🔍</span>
+        <span class="search-icon">
+          <ion-icon name="search-outline"></ion-icon>
+        </span>
         <input
           type="text"
           [value]="searchTerm()"
@@ -15,31 +16,45 @@
       </div>
 
       <div class="flex gap-3 overflow-x-auto no-scrollbar py-2">
-        @for (cat of categories(); track cat) {
+        <button
+          (click)="selectCategory('Todos')"
+          class="category-pill"
+          [class.active]="selectedCategory() === 'Todos'"
+        >
+          Todos
+        </button>
+        @for (cat of categories(); track cat.id) {
           <button
-            (click)="selectCategory(cat)"
+            (click)="selectCategory(cat.nombre)"
             class="category-pill"
-            [class.active]="selectedCategory() === cat"
+            [class.active]="selectedCategory() === cat.nombre"
           >
-            {{ cat }}
+            {{ cat.nombre }}
           </button>
         }
       </div>
     </div>
 
-    <!-- Grid de Restaurantes -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
       @for (res of filteredRestaurants(); track res.id) {
-        <div class="feature-card group bg-white shadow-xl">
+        @let abierto = estaAbierto(res);
+        <div class="feature-card group bg-white shadow-xl" 
+             [class.is-closed]="!abierto"
+             [routerLink]="abierto ? ['/restaurantes', res.id] : null">
           <div class="image-wrapper">
             <img
-              [src]="res.foto || 'assets/placeholder.png'"
+              [src]="res.foto ? (environment.storageUrl + '/' + res.foto) : 'assets/placeholder.png'"
               [alt]="res.nombre"
               class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             >
             <span class="category-tag">
-              {{ res.tipoCocina }}
+              {{ res.tipoCocina.nombre }}
             </span>
+            @if (!abierto) {
+              <div class="closed-overlay absolute inset-0 bg-black/40 flex items-center justify-center z-20">
+                <span class="text-white font-bold text-lg uppercase tracking-wider border-2 border-white px-4 py-1">Cerrado</span>
+              </div>
+            }
             <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 z-10"></div>
           </div>
 
@@ -52,15 +67,23 @@
             </p>
 
             <div class="flex items-center gap-4 mt-6 pt-4 border-t border-gray-100 font-bold text-primary">
-              <span class="flex items-center gap-1">🕒 <span class="text-main/80">20-30 min</span></span>
-              <span class="flex items-center gap-1">🛵 <span class="text-main/80">Envío Gratis</span></span>
+              <span class="flex items-center gap-2">
+                <ion-icon name="time-outline" class="text-lg"></ion-icon>
+                <span class="text-main/80">20-30 min</span>
+              </span>
+              <span class="flex items-center gap-2">
+                <ion-icon name="bicycle-outline" class="text-lg"></ion-icon>
+                <span class="text-main/80">Envío Gratis</span>
+              </span>
             </div>
           </div>
         </div>
       } @empty {
-        <!-- Mensaje de No Resultados (Estilo DeliEats) -->
+        
         <div class="col-span-full py-20 text-center animate-in fade-in duration-500">
-          <div class="text-6xl mb-4">🍽️</div>
+          <div class="text-6xl mb-4 text-primary opacity-20">
+            <ion-icon name="restaurant-outline"></ion-icon>
+          </div>
           <h3 class="text-2xl font-bold text-main font-header">No se encontraron empresas</h3>
           <p class="text-main/60 font-body mt-2">
             Prueba a ajustar tu búsqueda o cambiar de categoría.

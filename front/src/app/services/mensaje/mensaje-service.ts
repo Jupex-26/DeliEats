@@ -32,4 +32,14 @@ export class MensajeService {
   marcarComoLeido(id: number): Observable<void> {
     return this.http.patch<void>(`${this.urlApi}/${id}/leer`, {});
   }
+
+  obtenerChat(usuario1Id: number, usuario2Id: number, page: number = 0, size: number = 50): Observable<any> {
+    const params = new HttpParams()
+      .set('usuario1Id', usuario1Id.toString())
+      .set('usuario2Id', usuario2Id.toString())
+      .set('page', page.toString())
+      .set('size', size.toString())
+      .set('sort', 'fecha,asc');
+    return this.http.get<any>(`${this.urlApi}/chat`, { params });
+  }
 }

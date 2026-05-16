@@ -1,0 +1,200 @@
+<div class="empresa-pedidos">
+
+  <div class="filtros-bar">
+    <button class="filtro-btn" [class.active]="filtroActivo() === 'recientes'" (click)="setFiltro('recientes')">
+      <ion-icon name="time-outline"></ion-icon>
+      Más recientes
+    </button>
+    <button class="filtro-btn" [class.active]="filtroActivo() === 'mes'" (click)="setFiltro('mes')">
+      <ion-icon name="calendar-outline"></ion-icon>
+      Por mes
+    </button>
+    <button class="filtro-btn" [class.active]="filtroActivo() === 'mayor-importe'" (click)="setFiltro('mayor-importe')">
+      <ion-icon name="cash-outline"></ion-icon>
+      Mayor importe
+    </button>
+  </div>
+
+  @if (filtroActivo() === 'mes') {
+    <div class="mes-selector-container">
+      <div class="select-wrapper">
+        <select (change)="cambiarMes($event)" [value]="mesSeleccionado()" class="custom-select">
+          @for (m of meses; track m.id) {
+            <option [value]="m.id">{{ m.nombre }}</option>
+          }
+        </select>
+      </div>
+      <div class="select-wrapper">
+        <select (change)="cambiarAnio($event)" [value]="anioSeleccionado()" class="custom-select">
+          @for (a of anios; track a) {
+            <option [value]="a">{{ a }}</option>
+          }
+        </select>
+      </div>
+    </div>
+  }
+
+  @if (!loading()) {
+  <p class="resultado-count">
+    {{ totalElem() }} {{ totalElem() === 1 ? 'pedido encontrado' : 'pedidos encontrados' }}
+  </p>
+  }
+
+  @if (loading()) {
+  <div class="loading-state">
+    <div class="spinner"></div>
+    <p>Cargando pedidos...</p>
+  </div>
+  }
+
+  @if (!loading() && pedidos().length === 0) {
+  <div class="empty-state">
+    <ion-icon name="receipt-outline"></ion-icon>
+    <h3>Sin pedidos</h3>
+    <p>Aún no tienes pedidos con el filtro seleccionado.</p>
+  </div>
+  }
+
+  @if (!loading() && pedidos().length > 0) {
+  <ul class="pedidos-list">
+    @for (pedido of pedidos(); track pedido.id) {
+    <li class="pedido-card">
+      <div class="pedido-header">
+        <div class="pedido-meta">
+          <span class="pedido-id">#{{ pedido.id }}</span>
+          <span class="pedido-fecha">{{ pedido.fechaCompra | date:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+        <span class="estado-badge" [class]="getEstadoClass(pedido.estadoNombre)">{{ pedido.estadoNombre }}</span>
+      </div>
+
+      <div class="pedido-body">
+        <div class="info-item">
+          <ion-icon name="person-outline"></ion-icon>
+          <span>{{ pedido.nombreCliente }}</span>
+        </div>
+        @if (pedido.nombreRepartidor) {
+        <div class="info-item">
+          <ion-icon name="bicycle-outline"></ion-icon>
+          <span>{{ pedido.nombreRepartidor }}</span>
+        </div>
+        }
+        <div class="info-item info-item--price">
+          <ion-icon name="cash-outline"></ion-icon>
+          <span class="precio">{{ pedido.precioTotal | euro }}</span>
+        </div>
+      </div>
+
+      <div class="pedido-estado-edit">
+        <span class="label-est">Estado:</span>
+        @if (!isPedidoFinalizado(pedido.estadoNombre)) {
+          <div class="select-estado-wrapper">
+            <select (change)="actualizarEstado(pedido.id, $event)"
+                    [disabled]="actualizandoEstadoId() === pedido.id"
+                    class="select-estado">
+              @for (estado of estadosList(); track estado.id) {
+                <option [value]="estado.id" [selected]="estado.nombre === pedido.estadoNombre">{{ estado.nombre }}</option>
+              }
+            </select>
+            @if (actualizandoEstadoId() === pedido.id) {
+              <div class="spinner-xs text-primary"></div>
+            }
+          </div>
+        } @else {
+          <span class="estado-locked">No modificable</span>
+        }
+      </div>
+
+      <div class="pedido-footer">
+        <span class="productos-count">{{ pedido.detalles.length || 0 }} productos</span>
+        <button class="btn-ver" (click)="abrirDetalle(pedido)">
+          <ion-icon name="eye-outline"></ion-icon>
+          Ver detalle
+        </button>
+      </div>
+    </li>
+    }
+  </ul>
+
+  <div class="paginacion">
+    <button class="btn-pag" [disabled]="currentPage() === 0" (click)="cambiarPagina(-1)">
+      <ion-icon name="chevron-back-outline"></ion-icon>
+      Anterior
+    </button>
+    <span class="pag-info">Pág. {{ currentPage() + 1 }} / {{ totalPages() || 1 }}</span>
+    <button class="btn-pag" [disabled]="currentPage() >= totalPages() - 1" (click)="cambiarPagina(1)">
+      Siguiente
+      <ion-icon name="chevron-forward-outline"></ion-icon>
+    </button>
+  </div>
+  }
+
+</div>
+
+@if (pedidoDetalle()) {
+<div class="modal-overlay" (click)="cerrarDetalle()">
+  <div class="modal-detalle" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div>
+        <h2>Pedido #{{ pedidoDetalle()!.id }}</h2>
+        <p class="modal-fecha">{{ pedidoDetalle()!.fechaCompra | date:'dd/MM/yyyy · HH:mm' }}</p>
+      </div>
+      <button class="btn-close" (click)="cerrarDetalle()">
+        <ion-icon name="close-outline"></ion-icon>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="detail-grid">
+        <div class="detail-item">
+          <ion-icon name="person-outline"></ion-icon>
+          <div>
+            <span class="det-label">Cliente</span>
+            <span class="det-value">{{ pedidoDetalle()!.nombreCliente }}</span>
+          </div>
+        </div>
+        <div class="detail-item">
+          <ion-icon name="location-outline"></ion-icon>
+          <div>
+            <span class="det-label">Dirección</span>
+            <span class="det-value">{{ pedidoDetalle()!.direccionEntrega || 'No especificada' }}</span>
+          </div>
+        </div>
+        @if (pedidoDetalle()!.nombreRepartidor) {
+        <div class="detail-item">
+          <ion-icon name="bicycle-outline"></ion-icon>
+          <div>
+            <span class="det-label">Repartidor</span>
+            <span class="det-value">{{ pedidoDetalle()!.nombreRepartidor }}</span>
+          </div>
+        </div>
+        }
+        <div class="detail-item">
+          <ion-icon name="cart-outline"></ion-icon>
+          <div>
+            <span class="det-label">Estado</span>
+            <span class="det-value estado-text" [class]="getEstadoClass(pedidoDetalle()!.estadoNombre)">
+              {{ pedidoDetalle()!.estadoNombre }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="productos-title">Productos</h3>
+      <ul class="productos-detalle">
+        @for (d of pedidoDetalle()!.detalles; track d.id) {
+        <li class="producto-det-row">
+          <span class="qty">{{ d.cantidad }}×</span>
+          <span class="nombre">{{ d.nombreProducto }}</span>
+          <span class="subtotal">{{ d.subtotal | euro }}</span>
+        </li>
+        }
+      </ul>
+
+      <div class="total-row">
+        <span>Total del pedido</span>
+        <strong>{{ pedidoDetalle()!.precioTotal | euro }}</strong>
+      </div>
+    </div>
+  </div>
+</div>
+}

@@ -24,12 +24,13 @@ public class DetalleCarrito {
     @JoinColumn(name = "producto_id")
     private Producto producto;
 
+    private int cantidad;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof User)) return false;
-        User user = (User) o;
-        return id != null && id.equals(user.getId());
+        if (!(o instanceof DetalleCarrito detalleCarrito)) return false;
+        return id != null && id.equals(detalleCarrito.getId());
     }
 
     @Override

@@ -19,7 +19,7 @@ public class DetallePedido {
     private Long id;
 
     @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal precio;
+    private BigDecimal precioUnitario;
 
     @Column(nullable = false)
     private Integer cantidad;

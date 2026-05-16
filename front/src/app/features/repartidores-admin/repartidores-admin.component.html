@@ -1,0 +1,289 @@
+<div class="admin-container h-full flex flex-col">
+  <header class="admin-header px-8 py-5 shadow-sm">
+    <div class="header-content flex justify-between items-center max-w-[1200px] mx-auto w-full">
+      <h1 class="title text-xl font-bold tracking-wide">
+        {{ mostrarSolicitudes() ? 'Solicitudes de Registro' : 'Repartidores Aprobados' }}
+        <span class="count-badge ml-2 text-sm opacity-60">({{ totalElements() }})</span>
+      </h1>
+      <button
+        class="btn-new border-none px-5 py-2.5 rounded-md font-bold text-sm flex items-center gap-2 cursor-pointer transition-all hover:shadow-md"
+        (click)="abrirModalNuevo()">
+        <ion-icon name="add-circle-outline" class="text-lg"></ion-icon>
+        NUEVO REPARTIDOR
+      </button>
+    </div>
+  </header>
+
+  <div class="main-content p-8 flex-1 overflow-y-auto">
+    <div class="table-card max-w-[1200px] mx-auto bg-white rounded-xl shadow-lg border overflow-hidden">
+      
+      <div class="tabs-toolbar flex border-b">
+        <button 
+          class="tab-btn px-6 py-4 text-sm font-bold transition-all border-b-2"
+          [class.active]="!mostrarSolicitudes()"
+          (click)="setMostrarSolicitudes(false)">
+          APROBADOS
+        </button>
+        <button 
+          class="tab-btn px-6 py-4 text-sm font-bold transition-all border-b-2 flex items-center gap-2"
+          [class.active]="mostrarSolicitudes()"
+          (click)="setMostrarSolicitudes(true)">
+          SOLICITUDES
+          @if (solicitudesCount() > 0) {
+            <span class="sol-badge px-2 py-0.5 rounded-full text-[10px] bg-red-500 text-white">{{ solicitudesCount() }}</span>
+          }
+        </button>
+      </div>
+
+      <div class="table-toolbar p-6 flex justify-between items-center bg-white border-b">
+        <div
+          class="search-box flex items-center border rounded-lg px-4 py-2 w-[350px] transition-all focus-within:shadow-sm">
+          <ion-icon name="search-outline"></ion-icon>
+          <input type="text" placeholder="Buscar por nombre..."
+            class="bg-transparent border-none ml-3 w-full outline-none text-sm" (input)="onSearch($event)">
+        </div>
+
+        <div class="pagination-size text-sm font-medium flex items-center">
+          <span>Mostrar:</span>
+          <select [ngModel]="pageSize()"
+            (ngModelChange)="pageSize.set($event); currentPage.set(0); cargarRepartidores()"
+            class="ml-2 border rounded-md px-2 py-1 outline-none">
+            <option [value]="5">5</option>
+            <option [value]="10">10</option>
+            <option [value]="20">20</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="data-table w-full border-collapse">
+          <thead>
+            <tr>
+              <th class="text-left px-6 py-4 text-xs font-semibold opacity-70 tracking-wider uppercase border-y">NOMBRE
+              </th>
+              <th class="text-left px-6 py-4 text-xs font-semibold opacity-70 tracking-wider uppercase border-y">EMAIL
+              </th>
+              <th class="text-center px-6 py-4 text-xs font-semibold opacity-70 tracking-wider uppercase border-y">
+                DISPONIBLE</th>
+              <th class="text-right px-6 py-4 text-xs font-semibold opacity-70 tracking-wider uppercase border-y">
+                ACCIONES</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (repartidor of repartidores(); track repartidor.id) {
+            <tr class="transition-colors group">
+              <td class="td-name px-6 py-4 border-b font-bold">{{ repartidor.nombre }}</td>
+              <td class="td-email px-6 py-4 border-b text-sm">{{ repartidor.email }}</td>
+              <td class="px-6 py-4 border-b text-center">
+                <ion-toggle [checked]="repartidor.disponible" (ionChange)="toggleDisponibilidad(repartidor, $event)"
+                  class="deli-toggle"></ion-toggle>
+              </td>
+              <td class="px-6 py-4 border-b">
+                <div class="actions flex justify-end gap-2">
+                  <button class="btn-icon view border rounded-md p-1.5 text-xl cursor-pointer transition-all"
+                    (click)="abrirModalVer(repartidor)" title="Ver detalle">
+                    <ion-icon name="eye-outline"></ion-icon>
+                  </button>
+                  
+                  @if (mostrarSolicitudes()) {
+                    <button class="btn-icon approve border rounded-md p-1.5 text-xl cursor-pointer transition-all"
+                      (click)="aprobarRepartidor(repartidor.id!)" title="Aprobar Repartidor">
+                      <ion-icon name="checkmark-circle-outline"></ion-icon>
+                    </button>
+                  } @else {
+                    <button class="btn-icon edit border rounded-md p-1.5 text-xl cursor-pointer transition-all"
+                      (click)="abrirModalEditar(repartidor)" title="Editar">
+                      <ion-icon name="create-outline"></ion-icon>
+                    </button>
+                  }
+
+                  <button class="btn-icon delete border rounded-md p-1.5 text-xl cursor-pointer transition-all"
+                    (click)="confirmarEliminar(repartidor.id!)" title="Eliminar">
+                    <ion-icon name="trash-outline"></ion-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <footer class="table-footer px-6 py-4 flex justify-between items-center bg-white border-t">
+        <span class="page-info text-xs font-medium">Página {{ currentPage() + 1 }} de {{ totalPages() }}</span>
+        <div class="nav-buttons flex gap-2">
+          <button [disabled]="currentPage() === 0" (click)="cambiarPagina(-1)"
+            class="bg-white border px-3 py-1.5 rounded-md text-xs font-bold cursor-pointer transition-colors disabled:opacity-30 flex items-center gap-1">
+            <ion-icon name="chevron-back-outline"></ion-icon> ANTERIOR
+          </button>
+          <button [disabled]="currentPage() >= totalPages() - 1" (click)="cambiarPagina(1)"
+            class="bg-white border px-3 py-1.5 rounded-md text-xs font-bold cursor-pointer transition-colors disabled:opacity-30 flex items-center gap-1">
+            SIGUIENTE <ion-icon name="chevron-forward-outline"></ion-icon>
+          </button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <ion-modal [isOpen]="isModalOpen()" (didDismiss)="isModalOpen.set(false)" class="custom-modal-form">
+    <ng-template>
+      <div class="modal-wrapper flex flex-col w-full h-full">
+        <div class="modal-header py-4 px-6 font-bold tracking-wide text-lg flex justify-between items-center">
+          <span>{{ editingRepartidor() ? 'Editar' : 'Nuevo' }} Repartidor</span>
+          <button (click)="isModalOpen.set(false)"
+            class="btn-icon-close text-white hover:opacity-75 transition-opacity">
+            <ion-icon name="close-outline" class="text-2xl"></ion-icon>
+          </button>
+        </div>
+
+        <div class="modal-body flex-1 overflow-y-auto bg-base p-6">
+          <form (ngSubmit)="guardarRepartidor()" class="modern-form flex flex-col gap-5">
+            <div class="form-grid grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div class="form-group md:col-span-2">
+                <ion-item lines="none" class="rounded-lg shadow-sm">
+                  <ion-input label="Nombre Completo" labelPlacement="stacked" [(ngModel)]="repartidorForm.nombre"
+                    name="nombre" placeholder="Ej. Carlos Martínez" class="font-medium"></ion-input>
+                </ion-item>
+              </div>
+
+              <div class="form-group">
+                <ion-item lines="none" class="rounded-lg shadow-sm">
+                  <ion-input label="Email" labelPlacement="stacked" type="email" [(ngModel)]="repartidorForm.email"
+                    name="email" placeholder="correo@ejemplo.com" class="font-medium"></ion-input>
+                </ion-item>
+              </div>
+
+              @if (!editingRepartidor()) {
+              <div class="form-group">
+                <ion-item lines="none" class="rounded-lg shadow-sm">
+                  <ion-input label="Contraseña" labelPlacement="stacked" type="password"
+                    [(ngModel)]="repartidorForm.password" name="password" placeholder="••••••••"
+                    class="font-medium"></ion-input>
+                </ion-item>
+              </div>
+              }
+
+              <div class="form-group">
+                <ion-item lines="none" class="rounded-lg shadow-sm">
+                  <ion-input label="Teléfono" labelPlacement="stacked" type="tel" [(ngModel)]="repartidorForm.telefono"
+                    name="telefono" placeholder="666 ..." class="font-medium"></ion-input>
+                </ion-item>
+              </div>
+
+              <div class="form-group md:col-span-2">
+                <ion-item lines="none" class="rounded-lg shadow-sm">
+                  <ion-input label="Dirección" labelPlacement="stacked" [(ngModel)]="repartidorForm.direccion"
+                    name="direccion" placeholder="Calle, Número, Ciudad" class="font-medium"></ion-input>
+                </ion-item>
+              </div>
+            </div>
+
+            <div class="form-actions flex justify-end gap-3 mt-4 pt-4 border-t">
+              <button type="button"
+                class="btn-cancel px-6 py-3 rounded-lg font-bold text-sm bg-transparent border transition-colors"
+                (click)="isModalOpen.set(false)">CANCELAR</button>
+              <button type="submit"
+                class="btn-submit px-6 py-3 rounded-lg font-bold text-sm text-white transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                [disabled]="!repartidorForm.nombre || !repartidorForm.email">
+                {{ editingRepartidor() ? 'ACTUALIZAR REPARTIDOR' : 'REGISTRAR REPARTIDOR' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </ng-template>
+  </ion-modal>
+
+  <ion-modal [isOpen]="isViewModalOpen()" (didDismiss)="isViewModalOpen.set(false)" class="custom-modal-form">
+    <ng-template>
+      <div class="modal-wrapper flex flex-col w-full h-full">
+        <div class="modal-header py-4 px-6 font-bold tracking-wide text-lg flex justify-between items-center">
+          <span>Detalles del Repartidor</span>
+          <button (click)="isViewModalOpen.set(false)"
+            class="btn-icon-close text-white hover:opacity-75 transition-opacity">
+            <ion-icon name="close-outline" class="text-2xl"></ion-icon>
+          </button>
+        </div>
+
+        <div class="modal-body flex-1 overflow-y-auto bg-base">
+          @if (viewingRepartidor()) {
+          <div class="p-8 max-w-3xl mx-auto">
+            <div class="detail-card bg-white rounded-2xl shadow-xl overflow-hidden border">
+              <div class="detail-header p-8 flex flex-col items-center border-b relative">
+                <div
+                  class="avatar w-24 h-24 rounded-full flex items-center justify-center text-white text-3xl font-bold mb-4 shadow-lg border-4 border-white overflow-hidden">
+                  @if (viewingRepartidor()!.foto) {
+                    <img [src]="environment.storageUrl + '/' + viewingRepartidor()!.foto" alt="Foto de perfil" class="w-full h-full object-cover">
+                  } @else {
+                    {{ viewingRepartidor()!.nombre.charAt(0).toUpperCase() }}
+                  }
+                </div>
+                <h2 class="name text-2xl font-bold mb-1">{{ viewingRepartidor()!.nombre }}</h2>
+                <div class="flex gap-2">
+                  <span
+                    class="role text-sm font-medium px-3 py-1 rounded-full bg-primary/10 text-primary">Repartidor</span>
+                  <span class="role text-sm font-medium px-3 py-1 rounded-full text-white"
+                    [class]="viewingRepartidor()!.disponible ? 'bg-green-600' : 'bg-red-600'">
+                    {{ viewingRepartidor()!.disponible ? 'Disponible' : 'No Disponible' }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="p-8">
+                <h3 class="section-title text-sm font-bold uppercase tracking-wider mb-6 pb-2 border-b">Información de
+                  Contacto</h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div class="detail-item flex gap-4 items-start">
+                    <div class="icon-box w-10 h-10 rounded-full flex items-center justify-center shrink-0">
+                      <ion-icon name="mail-outline" class="text-xl"></ion-icon>
+                    </div>
+                    <div>
+                      <p class="label text-xs font-bold uppercase">Email</p>
+                      <p class="value font-medium mt-1 break-all">{{ viewingRepartidor()!.email }}</p>
+                    </div>
+                  </div>
+
+                  <div class="detail-item flex gap-4 items-start">
+                    <div class="icon-box w-10 h-10 rounded-full flex items-center justify-center shrink-0">
+                      <ion-icon name="call-outline" class="text-xl"></ion-icon>
+                    </div>
+                    <div>
+                      <p class="label text-xs font-bold uppercase">Teléfono</p>
+                      <p class="value font-medium mt-1">{{ viewingRepartidor()!.telefono || 'No especificado' }}</p>
+                    </div>
+                  </div>
+
+                  <div class="detail-item flex gap-4 items-start">
+                    <div class="icon-box w-10 h-10 rounded-full flex items-center justify-center shrink-0">
+                      <ion-icon name="location-outline" class="text-xl"></ion-icon>
+                    </div>
+                    <div>
+                      <p class="label text-xs font-bold uppercase">Dirección</p>
+                      <p class="value font-medium mt-1">{{ viewingRepartidor()!.direccion || 'No especificada' }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="footer px-8 py-4 flex justify-end border-t">
+                <button
+                  class="btn-close bg-white border px-6 py-2.5 rounded-lg font-bold text-sm transition-colors shadow-sm"
+                  (click)="isViewModalOpen.set(false)">
+                  CERRAR
+                </button>
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+    </ng-template>
+  </ion-modal>
+
+  <app-confirm-modal [isOpen]="isConfirmModalOpen()" title="Eliminar Repartidor"
+    message="¿Estás seguro de que deseas eliminar este repartidor? Se perderá su acceso." confirmText="ELIMINAR"
+    [dangerAction]="true" (confirm)="ejecutarEliminacion()" (cancel)="isConfirmModalOpen.set(false)">
+  </app-confirm-modal>
+
+</div>

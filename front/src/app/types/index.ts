@@ -14,3 +14,4 @@ export * from './repartidor';
 export * from './rol';
 export * from './user';
 export * from './custom-error';
+export * from './tipococina';

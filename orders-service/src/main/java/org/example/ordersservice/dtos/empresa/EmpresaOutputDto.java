@@ -2,8 +2,11 @@ package org.example.ordersservice.dtos.empresa;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.example.ordersservice.dtos.apertura.AperturaOutputDto;
 import org.example.ordersservice.dtos.user.UserOutputDto;
 import org.example.ordersservice.dtos.producto.ProductoOutputDto;
+import org.example.ordersservice.dtos.tipococina.TipoCocinaOutputDto;
+
 import java.util.List;
 
 @Data
@@ -13,10 +16,11 @@ public class EmpresaOutputDto extends UserOutputDto {
     private String descripcion;
     private String correoContacto;
     private String telefonoContacto;
-    private String tipoCocina;
+    private TipoCocinaOutputDto tipoCocina;
 
     private List<ProductoOutputDto> productos;
 
+    private List<AperturaOutputDto> aperturas;
 
 
 }

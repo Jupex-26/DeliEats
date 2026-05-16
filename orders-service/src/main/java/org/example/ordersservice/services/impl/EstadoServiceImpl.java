@@ -49,8 +49,4 @@ public class EstadoServiceImpl implements EstadoService {
         estadoRepository.deleteById(id);
     }
 
-    @Override
-    public boolean existsByNombre(String nombre) {
-        return estadoRepository.findByNombre(nombre).isPresent();
-    }
 }

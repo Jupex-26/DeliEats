@@ -4,7 +4,6 @@ import { RouterModule } from '@angular/router';
 import { HeaderAdminComponent } from '../header-admin/header-admin.component';
 import { AsideComponent } from '../aside/aside.component';
 
-
 @Component({
   selector: 'app-admin-layout',
   templateUrl: './admin-layout.component.html',
@@ -13,7 +12,7 @@ import { AsideComponent } from '../aside/aside.component';
   imports: [IonicModule, RouterModule, HeaderAdminComponent, AsideComponent],
 })
 export class AdminLayoutComponent {
-  // Estado para el menú lateral en móvil
+  
   isAsideOpen = false;
 
   toggleAside() {

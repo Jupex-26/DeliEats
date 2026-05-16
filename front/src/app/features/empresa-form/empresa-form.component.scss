@@ -1,37 +1,53 @@
-@import '../../../styles/styles';
+@use '../../../styles/variables' as *;
 
 :host {
   display: block;
 }
 
-.input-group {
-  margin-bottom: 1.5rem;
+.custom-input {
+  background-color: white !important;
+  border-color: rgba($color-bg-alt, 0.5);
 }
 
-ion-item {
-  --background: transparent;
-  --color: #{$color-text-main};
-  --border-color: #{$color-text-main};
-  --highlight-color-focused: #{$color-primary};
-  --padding-start: 0;
-  --inner-padding-end: 0;
-  margin-bottom: 1rem;
-}
-
-ion-input, ion-textarea {
-  --placeholder-color: #{$color-text-main};
-  --placeholder-opacity: 0.5;
-  color: #{$color-text-main};
-  font-size: 1rem;
-}
-
-.textarea-item {
-  margin-top: 1rem;
+.section-title {
+  color: $color-primary;
+  border-bottom-color: rgba($color-bg-alt, 0.5);
 }
 
 .error-text {
-  color: #{$color-error};
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
-  padding-left: 0.5rem;
+  color: $color-error;
+}
+
+.btn-submit {
+  background-color: $color-primary;
+  color: white;
+  &:hover {
+    background-color: rgba($color-primary, 0.9);
+  }
+}
+
+ion-item {
+  --background: white !important;
+  --highlight-color-focused: #{$color-primary} !important;
+  --padding-start: 16px;
+  --inner-padding-end: 16px;
+  
+  &::part(native) {
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+}
+
+ion-input, ion-textarea, ion-select {
+  color: $color-text-main;
+}
+
+ion-select {
+  --placeholder-color: rgba(#{$color-text-main}, 0.4);
+  --placeholder-opacity: 1;
+  width: 100%;
+  
+  &::part(container) {
+    padding-top: 4px;
+  }
 }

@@ -55,4 +55,10 @@ public class ClienteController {
         clienteService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/{id}/solicitar-repartidor")
+    public ResponseEntity<Void> solicitarRepartidor(@PathVariable Long id) {
+        clienteService.solicitarSerRepartidor(id);
+        return  ResponseEntity.noContent().build();
+    }
 }

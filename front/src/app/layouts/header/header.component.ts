@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth/auth-service';
 
 @Component({
@@ -10,19 +10,31 @@ import { AuthService } from '../../services/auth/auth-service';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent {
-  public authService = inject(AuthService);
+  private authService = inject(AuthService);
   isMenuOpen = false;
-  public user = this.authService.currentUser().userOutputDto;
+  private router = inject(Router);
+
+  public currentUser = this.authService.currentUser;
+
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
   }
 
   logout() {
     this.authService.logout();
-    // Opcional: redirigir al inicio tras cerrar sesión
+    this.isMenuOpen = false;
+    this.router.navigate(['/']);
   }
 
-  protected isLogin() {
+  isLogin() {
     return this.authService.isLogin();
+  }
+
+  getRol(): string | null {
+    return this.authService.getRol();
+  }
+
+  getPerfilRoute(): string {
+    return this.getRol() === 'ROLE_EMPRESA' ? '/empresa-perfil' : '/perfil';
   }
 }

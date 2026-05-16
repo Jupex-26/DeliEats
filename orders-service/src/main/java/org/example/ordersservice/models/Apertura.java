@@ -3,7 +3,7 @@ package org.example.ordersservice.models;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "apertura")
@@ -18,15 +18,15 @@ public class Apertura {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String dia;
+    private Dia dia;
 
     @Column(name = "hora_apertura")
-    private LocalDateTime horaApertura;
+    private LocalTime horaApertura;
 
     @Column(name = "hora_cierre")
-    private LocalDateTime horaCierre;
+    private LocalTime horaCierre;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "empresa_id")
@@ -35,9 +35,8 @@ public class Apertura {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof User)) return false;
-        User user = (User) o;
-        return id != null && id.equals(user.getId());
+        if (!(o instanceof Apertura apertura)) return false;
+        return id != null && id.equals(apertura.getId());
     }
 
     @Override

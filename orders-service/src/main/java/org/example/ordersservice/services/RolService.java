@@ -4,7 +4,6 @@ import org.example.ordersservice.models.Rol;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-
 public interface RolService {
 
     Rol save(Rol rol);
@@ -18,6 +17,4 @@ public interface RolService {
     Rol update(Long id, Rol rol);
 
     void deleteById(Long id);
-
-    boolean existsByNombre(String nombre);
 }

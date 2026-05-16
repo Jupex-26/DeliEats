@@ -49,6 +49,15 @@ public class RepartidorController {
         return ResponseEntity.ok(dtos);
     }
 
+    @GetMapping("/aprobado")
+    public ResponseEntity<Page<RepartidorOutputDto>> findByAprobado(
+            @RequestParam boolean aprobado, 
+            @PageableDefault Pageable pageable) {
+        Page<RepartidorOutputDto> dtos = repartidorService.findByAprobado(aprobado, pageable)
+                .map(repartidorMapper::toDto);
+        return ResponseEntity.ok(dtos);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<RepartidorOutputDto> update(@PathVariable Long id, @Valid @RequestBody RepartidorInputDto dto) {
         Repartidor entity = repartidorMapper.toEntity(dto);

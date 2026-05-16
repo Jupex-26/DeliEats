@@ -3,7 +3,10 @@ package org.example.ordersservice.models;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Entity
@@ -25,8 +28,9 @@ public class Empresa extends User {
     @Column(name = "telefono_contacto")
     private String telefonoContacto;
 
-    @Column(name = "tipo_cocina")
-    private String tipoCocina;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tipo_cocina_id")
+    private TipoCocina tipoCocina;
 
     @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL)
     @ToString.Exclude
@@ -35,6 +39,10 @@ public class Empresa extends User {
     @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<Apertura> aperturas;
+
+    @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private List<Pedido> pedidos;
 
     @Override
     public boolean equals(Object o) {
@@ -47,5 +55,29 @@ public class Empresa extends User {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    public boolean hasAperturas() {
+        return !CollectionUtils.isEmpty(this.aperturas);
+    }
+
+    public boolean isNotOpen() {
+        if (!hasAperturas()) {
+            return true;
+        }
+
+        LocalDateTime ahora = LocalDateTime.now();
+        Dia hoy = Dia.from(ahora.getDayOfWeek());
+        LocalTime horaActual = ahora.toLocalTime();
+
+        boolean estaAbierta = this.aperturas.stream()
+                .filter(a -> a.getDia() == hoy)
+                .anyMatch(a -> {
+                    boolean despuesOIgualApertura = !horaActual.isBefore(a.getHoraApertura());
+                    boolean antesOIgualCierre = !horaActual.isAfter(a.getHoraCierre());
+                    return despuesOIgualApertura && antesOIgualCierre;
+                });
+
+        return !estaAbierta;
     }
 }
