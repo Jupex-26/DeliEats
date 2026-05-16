@@ -71,7 +71,7 @@ public class RepartidorController {
         return ResponseEntity.ok(repartidorMapper.toDto(updated));
     }
 
-    @PatchMapping("/cliente/{clienteId}/disponibilidad")
+    @PatchMapping("/{clienteId}/disponibilidad")
     public ResponseEntity<RepartidorOutputDto> updateDisponibilidad(@PathVariable Long clienteId, @RequestParam boolean disponible) {
         Repartidor updated = repartidorService.updateDisponibilidad(clienteId, disponible);
         return ResponseEntity.ok(repartidorMapper.toDto(updated));
