@@ -35,7 +35,6 @@ export class WebSocketService {
     }
 
     if (this.stompClient && this.stompClient.active) {
-      // Si ya está activo y tenemos el ID, intentamos suscribirnos si no lo estamos
       if (this.stompClient.connected) {
         this.suscribirAMensajesPrivados();
       }
@@ -65,8 +64,6 @@ export class WebSocketService {
 
   private suscribirAMensajesPrivados() {
     if (!this.miUsuarioId || !this.stompClient || !this.stompClient.connected) return;
-    
-    // Evitar múltiples suscripciones al mismo canal
     if (this.mensajeSubscription) return;
 
     console.log(`Suscribiéndose a /topic/mensajes/${this.miUsuarioId}`);
@@ -75,11 +72,6 @@ export class WebSocketService {
         this.ngZone.run(() => {
           const msg = JSON.parse(mensaje.body);
           this.mensajeSubject.next(msg);
-          
-          if (msg.pedidoId) {
-            const sig = this.getMensajesPedido(msg.pedidoId);
-            sig.update(prev => [...prev, msg]);
-          }
         });
       }
     });
