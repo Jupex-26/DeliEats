@@ -68,7 +68,9 @@ class MensajeServiceImplTest {
         Mensaje result = mensajeService.save(mensaje);
 
         assertNotNull(result);
-        verify(userService, times(2)).findById(anyLong());
+        // validateUsersRole llama a findById dos veces, y luego el save del servicio llama a findById dos veces más.
+        // Por lo tanto, se esperan 4 llamadas en total.
+        verify(userService, times(4)).findById(anyLong()); 
         verify(mensajeRepository).save(mensaje);
     }
 
@@ -133,6 +135,8 @@ class MensajeServiceImplTest {
         Page<Mensaje> result = mensajeService.findChat(id1, id2, pageable);
 
         assertFalse(result.isEmpty());
+        // validateUsersRole llama a findById dos veces
+        verify(userService, times(2)).findById(anyLong());
         verify(mensajeRepository).findByEmisor_IdAndReceptor_IdOrEmisor_IdAndReceptor_IdOrderByFechaAsc(id1, id2, id2, id1, pageable);
     }
 

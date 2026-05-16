@@ -27,4 +27,6 @@ public interface RepartidorService {
 
     void aprobarRepartidor(Long id, boolean aprobado);
 
+    boolean existsById(Long id);
+    boolean isRepartidor(Long id);
 }

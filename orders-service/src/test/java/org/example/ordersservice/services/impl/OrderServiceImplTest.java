@@ -39,13 +39,13 @@ class OrderServiceImplTest {
     private OrderServiceImpl orderService;
 
     private Carrito carrito;
-    private User cliente;
+    private Cliente cliente; // Changed from User to Cliente
     private Empresa empresa;
     private Producto producto;
 
     @BeforeEach
     void setUp() {
-        cliente = new User();
+        cliente = new Cliente(); // Instantiate Cliente directly
         cliente.setId(1L);
 
         empresa = new Empresa();
@@ -63,7 +63,7 @@ class OrderServiceImplTest {
 
         carrito = new Carrito();
         carrito.setId(1L);
-        carrito.setCliente((Cliente) cliente);
+        carrito.setCliente(cliente); // Assign the Cliente instance
         carrito.setDetalles(new ArrayList<>(List.of(detalle)));
     }
 

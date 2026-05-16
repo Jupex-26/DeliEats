@@ -27,6 +27,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -55,14 +56,16 @@ class EmpresaServiceImplTest {
         empresa = new Empresa();
         empresa.setId(1L);
         empresa.setEmail("test@empresa.com");
-        empresa.setPassword("Password123!");
+        empresa.setPassword("Password123!"); // Contraseña que cumple el formato
         empresa.setRol(rolEmpresa);
     }
 
     @Test
     void save_Success() {
+        String originalPassword = empresa.getPassword(); // guardar antes
+
         when(userRepository.existsByEmail(empresa.getEmail())).thenReturn(false);
-        when(passwordEncoder.encode(empresa.getPassword())).thenReturn("encodedPassword");
+        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
         when(rolService.findByNombre("ROLE_EMPRESA")).thenReturn(rolEmpresa);
         when(empresaRepository.save(empresa)).thenReturn(empresa);
 
@@ -72,7 +75,7 @@ class EmpresaServiceImplTest {
         assertEquals("encodedPassword", result.getPassword());
         assertEquals(rolEmpresa, result.getRol());
         verify(userRepository).existsByEmail(empresa.getEmail());
-        verify(passwordEncoder).encode(empresa.getPassword());
+        verify(passwordEncoder).encode(originalPassword); // usar el original
         verify(rolService).findByNombre("ROLE_EMPRESA");
         verify(empresaRepository).save(empresa);
     }
@@ -136,7 +139,7 @@ class EmpresaServiceImplTest {
 
         when(empresaRepository.findById(id)).thenReturn(Optional.of(existingEmpresa));
         when(userRepository.existsByEmail(empresa.getEmail())).thenReturn(false);
-        when(passwordEncoder.encode(empresa.getPassword())).thenReturn("newEncodedPassword");
+        when(passwordEncoder.encode(anyString())).thenReturn("newEncodedPassword"); // anyString()
         when(rolService.findByNombre("ROLE_EMPRESA")).thenReturn(rolEmpresa);
         when(empresaRepository.save(any(Empresa.class))).thenReturn(empresa);
 
@@ -171,7 +174,7 @@ class EmpresaServiceImplTest {
 
         when(empresaRepository.findById(id)).thenReturn(Optional.of(existingEmpresa));
         when(userRepository.existsByEmail(empresa.getEmail())).thenReturn(false);
-        when(passwordEncoder.encode(empresa.getPassword())).thenReturn("newEncodedPassword");
+        when(passwordEncoder.encode(anyString())).thenReturn("newEncodedPassword"); // anyString()
         when(rolService.findByNombre("ROLE_EMPRESA")).thenReturn(rolEmpresa);
         when(empresaRepository.save(any(Empresa.class))).thenReturn(empresa);
 
