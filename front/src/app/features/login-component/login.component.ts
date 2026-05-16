@@ -1,7 +1,9 @@
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { IonContent, IonInput, IonItem, IonSpinner } from '@ionic/angular/standalone';
+import { IonContent, IonInput, IonItem, IonSpinner, IonButton, IonIcon } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { eyeOutline, eyeOffOutline } from 'ionicons/icons';
 import { AuthService } from '../../services/auth/auth-service';
 import { LoginRequestDto, CustomError } from '../../types';
 import { InfoModalComponent } from '../../shared/info-modal/info-modal.component';
@@ -16,6 +18,8 @@ import { Validador } from '../../validadores/validador';
     IonInput,
     IonItem,
     IonSpinner,
+    IonButton,
+    IonIcon,
     ReactiveFormsModule,
     RouterLink,
     InfoModalComponent,
@@ -38,6 +42,11 @@ export class LoginComponent {
   });
 
   isLoading = false;
+  showPassword = signal(false);
+
+  constructor() {
+    addIcons({ eyeOutline, eyeOffOutline });
+  }
 
   isModalOpen = false;
   modalTitle = '';
