@@ -6,6 +6,7 @@ import org.example.ordersservice.models.Mensaje;
 import org.example.ordersservice.models.Rol;
 import org.example.ordersservice.models.User;
 import org.example.ordersservice.repositories.MensajeRepository;
+import org.example.ordersservice.services.RepartidorService;
 import org.example.ordersservice.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,8 @@ class MensajeServiceImplTest {
     private MensajeRepository mensajeRepository;
     @Mock
     private UserService userService;
+    @Mock
+    private RepartidorService repartidorService;
 
     @InjectMocks
     private MensajeServiceImpl mensajeService;
@@ -43,7 +46,6 @@ class MensajeServiceImplTest {
     @BeforeEach
     void setUp() {
         Rol rolCliente = new Rol(1L, "ROLE_CLIENTE");
-        Rol rolRepartidor = new Rol(2L, "ROLE_REPARTIDOR");
 
         cliente = new User();
         cliente.setId(1L);
@@ -51,7 +53,7 @@ class MensajeServiceImplTest {
 
         repartidor = new User();
         repartidor.setId(2L);
-        repartidor.setRol(rolRepartidor);
+        repartidor.setRol(rolCliente); // Todos son ROLE_CLIENTE ahora
 
         mensaje = new Mensaje();
         mensaje.setEmisor(cliente);
@@ -63,13 +65,14 @@ class MensajeServiceImplTest {
     void save_Success() {
         when(userService.findById(1L)).thenReturn(cliente);
         when(userService.findById(2L)).thenReturn(repartidor);
+        when(repartidorService.isRepartidor(1L)).thenReturn(false);
+        when(repartidorService.isRepartidor(2L)).thenReturn(true);
         when(mensajeRepository.save(mensaje)).thenReturn(mensaje);
 
         Mensaje result = mensajeService.save(mensaje);
 
         assertNotNull(result);
         // validateUsersRole llama a findById dos veces, y luego el save del servicio llama a findById dos veces más.
-        // Por lo tanto, se esperan 4 llamadas en total.
         verify(userService, times(4)).findById(anyLong()); 
         verify(mensajeRepository).save(mensaje);
     }
@@ -83,6 +86,10 @@ class MensajeServiceImplTest {
 
         when(userService.findById(1L)).thenReturn(cliente);
         when(userService.findById(3L)).thenReturn(otroCliente);
+        
+        // Ninguno es repartidor
+        when(repartidorService.isRepartidor(1L)).thenReturn(false);
+        when(repartidorService.isRepartidor(3L)).thenReturn(false);
 
         assertThrows(ConflictException.class, () -> mensajeService.save(mensaje));
         verify(mensajeRepository, never()).save(any(Mensaje.class));
@@ -129,6 +136,8 @@ class MensajeServiceImplTest {
 
         when(userService.findById(id1)).thenReturn(cliente);
         when(userService.findById(id2)).thenReturn(repartidor);
+        when(repartidorService.isRepartidor(1L)).thenReturn(false);
+        when(repartidorService.isRepartidor(2L)).thenReturn(true);
         when(mensajeRepository.findByEmisor_IdAndReceptor_IdOrEmisor_IdAndReceptor_IdOrderByFechaAsc(id1, id2, id2, id1, pageable))
                 .thenReturn(page);
 

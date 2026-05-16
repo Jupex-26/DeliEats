@@ -169,7 +169,7 @@ export class PerfilComponent implements OnInit, OnDestroy {
     const id = this.cliente()?.id;
     if (!id) return;
     this.loadingRepartidor.set(true);
-    this.repartidorService.obtenerPorId(id).subscribe({
+    this.repartidorService.obtenerPorClienteId(id).subscribe({
       next: (rep) => {
         this.repartidor.set(rep);
         this.loadingRepartidor.set(false);
@@ -363,10 +363,8 @@ export class PerfilComponent implements OnInit, OnDestroy {
       console.log('Rastreo detenido para el pedido:', pedido.id);
     } else {
       
-      if (this.trackingPedidoId() !== null) {
-        this.trackingService.desconectar();
-      }
-
+      // Iniciamos el rastreo para el nuevo pedido
+      // Importante: usamos clienteId del repartidor para el emisor si el backend identifica por User.id
       this.trackingService.iniciarRastreo(repId, pedido.clienteId, pedido.id);
       this.trackingPedidoId.set(pedido.id);
       console.log('Emitiendo ubicación en vivo por socket para el pedido:', pedido.id);

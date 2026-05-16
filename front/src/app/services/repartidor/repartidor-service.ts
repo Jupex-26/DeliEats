@@ -25,6 +25,10 @@ export class RepartidorService {
     return this.http.get<RepartidorOutputDto>(`${this.urlApi}/${id}`);
   }
 
+  obtenerPorClienteId(clienteId: number): Observable<RepartidorOutputDto> {
+    return this.http.get<RepartidorOutputDto>(`${this.urlApi}/cliente/${clienteId}`);
+  }
+
   obtenerDisponibles(page: number = 0, size: number = 10, sort?: string): Observable<any> {
     let params = new HttpParams().set('page', page).set('size', size);
     if (sort) params = params.set('sort', sort);

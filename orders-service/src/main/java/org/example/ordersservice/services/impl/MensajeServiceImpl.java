@@ -7,6 +7,7 @@ import org.example.ordersservice.models.Mensaje;
 import org.example.ordersservice.models.User;
 import org.example.ordersservice.repositories.MensajeRepository;
 import org.example.ordersservice.services.MensajeService;
+import org.example.ordersservice.services.RepartidorService;
 import org.example.ordersservice.services.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +21,7 @@ public class MensajeServiceImpl implements MensajeService {
 
     private final MensajeRepository mensajeRepository;
     private final UserService userService;
+    private final RepartidorService repartidorService;
 
     @Override
     public Mensaje save(Mensaje mensaje) {
@@ -70,14 +72,14 @@ public class MensajeServiceImpl implements MensajeService {
     
     @Override
     public void validateUsersRole(Long emisorId, Long receptorId) {
-        User emisor = userService.findById(emisorId);
-        User receptor = userService.findById(receptorId);
+        // Asegurarnos de que los usuarios existen
+        userService.findById(emisorId);
+        userService.findById(receptorId);
         
-        String emisorRol = emisor.getRol().getNombre();
-        String receptorRol = receptor.getRol().getNombre();
-        
-        boolean validCombination = (emisorRol.equals("ROLE_CLIENTE") && receptorRol.equals("ROLE_REPARTIDOR")) ||
-                                   (emisorRol.equals("ROLE_REPARTIDOR") && receptorRol.equals("ROLE_CLIENTE"));
+        boolean isEmisorRepartidor = repartidorService.isRepartidor(emisorId);
+        boolean isReceptorRepartidor = repartidorService.isRepartidor(receptorId);
+
+        boolean validCombination = isEmisorRepartidor || isReceptorRepartidor;
                                    
         if (!validCombination) {
             throw new ConflictException("Los mensajes solo están permitidos entre clientes y repartidores.");
