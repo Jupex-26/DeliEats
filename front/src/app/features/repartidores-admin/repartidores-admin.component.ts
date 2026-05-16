@@ -7,8 +7,6 @@ import {
   IonItem,
   IonToggle,
   IonButton,
-  IonButtons,
-  IonContent,
   IonSpinner
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
