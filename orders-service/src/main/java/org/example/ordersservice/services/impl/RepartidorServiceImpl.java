@@ -1,10 +1,13 @@
 package org.example.ordersservice.services.impl;
 
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.exception.custom.EmailExistsException;
 import org.example.ordersservice.exception.custom.NotFoundException;
 import org.example.ordersservice.models.Cliente;
 import org.example.ordersservice.models.Repartidor;
+import org.example.ordersservice.repositories.ClienteRepository;
 import org.example.ordersservice.repositories.RepartidorRepository;
 import org.example.ordersservice.repositories.UserRepository;
 import org.example.ordersservice.services.RepartidorService;
@@ -27,7 +30,8 @@ public class RepartidorServiceImpl implements RepartidorService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JdbcTemplate jdbcTemplate;
-
+    private final EntityManager entityManager;
+    private final ClienteRepository clienteRepository;
     private final RolService rolService;
     private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$");
 
@@ -111,17 +115,28 @@ public class RepartidorServiceImpl implements RepartidorService {
     }
 
     @Override
+    @Transactional
     public Repartidor updateDisponibilidad(Long id, boolean disponible) {
         Repartidor repartidor = findById(id);
         repartidor.setDisponible(disponible);
 
-        if (disponible){
+        if (disponible) {
             repartidor.setRol(rolService.findByNombre("ROLE_REPARTIDOR"));
-        } else{
+            clienteRepository.deleteById(id);
+        } else {
             repartidor.setRol(rolService.findByNombre("ROLE_CLIENTE"));
+            if (!clienteRepository.existsById(id)) {
+                Cliente cliente = new Cliente();
+                cliente.setId(id);
+                clienteRepository.save(cliente);
+            }
         }
-        return repartidorRepository.save(repartidor);
+
+        Repartidor result = repartidorRepository.save(repartidor);
+        entityManager.clear(); // limpiar caché de Hibernate
+        return result;
     }
+
 
     @Override
     public void createFromCliente(Cliente cliente) {
