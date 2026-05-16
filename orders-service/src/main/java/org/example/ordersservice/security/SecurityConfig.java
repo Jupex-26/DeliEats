@@ -33,6 +33,7 @@ public class SecurityConfig {
                     CorsConfiguration corsConfiguration = new CorsConfiguration();
                     corsConfiguration.addAllowedOrigin("http://localhost:4200");
                     corsConfiguration.addAllowedOrigin("http://www.delieats.com");
+                    corsConfiguration.addAllowedOrigin("capacitor://localhost");
                     corsConfiguration.addAllowedHeader("*");
                     corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
                     corsConfiguration.setAllowCredentials(true);
