@@ -1,13 +1,9 @@
 package org.example.ordersservice.services.impl;
 
-import org.example.ordersservice.exception.custom.EmailExistsException;
 import org.example.ordersservice.exception.custom.NotFoundException;
 import org.example.ordersservice.models.Cliente;
 import org.example.ordersservice.models.Repartidor;
-import org.example.ordersservice.models.Rol;
 import org.example.ordersservice.repositories.RepartidorRepository;
-import org.example.ordersservice.repositories.UserRepository;
-import org.example.ordersservice.services.RolService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,8 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,50 +26,31 @@ class RepartidorServiceImplTest {
 
     @Mock
     private RepartidorRepository repartidorRepository;
-    @Mock
-    private UserRepository userRepository;
-    @Mock
-    private PasswordEncoder passwordEncoder;
-    @Mock
-    private RolService rolService;
-    @Mock
-    private JdbcTemplate jdbcTemplate;
 
     @InjectMocks
     private RepartidorServiceImpl repartidorService;
 
     private Repartidor repartidor;
-    private Rol rolRepartidor;
+    private Cliente cliente;
 
     @BeforeEach
     void setUp() {
-        rolRepartidor = new Rol(1L, "ROLE_REPARTIDOR");
+        cliente = new Cliente();
+        cliente.setId(1L);
+
         repartidor = new Repartidor();
-        repartidor.setId(1L);
-        repartidor.setEmail("repartidor@test.com");
-        repartidor.setPassword("Password123!");
-        repartidor.setRol(rolRepartidor);
+        repartidor.setId(10L);
+        repartidor.setCliente(cliente);
+        repartidor.setDisponible(true);
+        repartidor.setAprobado(true);
     }
 
     @Test
     void save_Success() {
-        when(userRepository.existsByEmail(repartidor.getEmail())).thenReturn(false);
-        when(passwordEncoder.encode(repartidor.getPassword())).thenReturn("encodedPassword");
-        when(rolService.findByNombre("ROLE_REPARTIDOR")).thenReturn(rolRepartidor);
         when(repartidorRepository.save(repartidor)).thenReturn(repartidor);
-
         Repartidor result = repartidorService.save(repartidor);
-
         assertNotNull(result);
-        assertEquals("encodedPassword", result.getPassword());
         verify(repartidorRepository).save(repartidor);
-    }
-
-    @Test
-    void save_EmailExists() {
-        when(userRepository.existsByEmail(repartidor.getEmail())).thenReturn(true);
-        assertThrows(EmailExistsException.class, () -> repartidorService.save(repartidor));
-        verify(repartidorRepository, never()).save(any(Repartidor.class));
     }
 
     @Test
@@ -92,7 +67,7 @@ class RepartidorServiceImplTest {
 
     @Test
     void findById_Found() {
-        Long id = 1L;
+        Long id = 10L;
         when(repartidorRepository.findById(id)).thenReturn(Optional.of(repartidor));
         Repartidor result = repartidorService.findById(id);
         assertNotNull(result);
@@ -101,10 +76,27 @@ class RepartidorServiceImplTest {
 
     @Test
     void findById_NotFound() {
-        Long id = 1L;
+        Long id = 10L;
         when(repartidorRepository.findById(id)).thenReturn(Optional.empty());
         assertThrows(NotFoundException.class, () -> repartidorService.findById(id));
         verify(repartidorRepository).findById(id);
+    }
+
+    @Test
+    void findByClienteId_Found() {
+        Long clienteId = 1L;
+        when(repartidorRepository.findByClienteId(clienteId)).thenReturn(Optional.of(repartidor));
+        Repartidor result = repartidorService.findByClienteId(clienteId);
+        assertNotNull(result);
+        verify(repartidorRepository).findByClienteId(clienteId);
+    }
+
+    @Test
+    void findByClienteId_NotFound() {
+        Long clienteId = 1L;
+        when(repartidorRepository.findByClienteId(clienteId)).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, () -> repartidorService.findByClienteId(clienteId));
+        verify(repartidorRepository).findByClienteId(clienteId);
     }
 
     @Test
@@ -133,13 +125,12 @@ class RepartidorServiceImplTest {
 
     @Test
     void update() {
-        Long id = 1L;
+        Long id = 10L;
         Repartidor existingRepartidor = new Repartidor();
-        existingRepartidor.setEmail("old@test.com");
+        existingRepartidor.setId(id);
+        existingRepartidor.setDisponible(false);
+        
         when(repartidorRepository.findById(id)).thenReturn(Optional.of(existingRepartidor));
-        when(userRepository.existsByEmail(repartidor.getEmail())).thenReturn(false);
-        when(passwordEncoder.encode(repartidor.getPassword())).thenReturn("newEncodedPassword");
-        when(rolService.findByNombre("ROLE_REPARTIDOR")).thenReturn(rolRepartidor);
         when(repartidorRepository.save(any(Repartidor.class))).thenReturn(repartidor);
 
         Repartidor result = repartidorService.update(id, repartidor);
@@ -150,7 +141,7 @@ class RepartidorServiceImplTest {
 
     @Test
     void deleteById() {
-        Long id = 1L;
+        Long id = 10L;
         doNothing().when(repartidorRepository).deleteById(id);
         repartidorService.deleteById(id);
         verify(repartidorRepository).deleteById(id);
@@ -158,31 +149,39 @@ class RepartidorServiceImplTest {
 
     @Test
     void updateDisponibilidad() {
-        Long id = 1L;
-        when(repartidorRepository.findById(id)).thenReturn(Optional.of(repartidor));
-        when(rolService.findByNombre(anyString())).thenReturn(rolRepartidor);
+        Long clienteId = 1L;
+        when(repartidorRepository.findByClienteId(clienteId)).thenReturn(Optional.of(repartidor));
         when(repartidorRepository.save(any(Repartidor.class))).thenReturn(repartidor);
 
-        repartidorService.updateDisponibilidad(id, true);
+        repartidorService.updateDisponibilidad(clienteId, false);
 
-        assertTrue(repartidor.getDisponible());
+        assertFalse(repartidor.getDisponible());
         verify(repartidorRepository).save(repartidor);
     }
 
     @Test
-    void createFromCliente() {
-        Cliente cliente = new Cliente();
-        cliente.setId(1L);
-        when(jdbcTemplate.update(anyString(), anyLong(), anyBoolean(), anyBoolean())).thenReturn(1);
+    void createFromCliente_New() {
+        when(repartidorRepository.existsByClienteId(cliente.getId())).thenReturn(false);
+        when(repartidorRepository.save(any(Repartidor.class))).thenReturn(repartidor);
         
         repartidorService.createFromCliente(cliente);
 
-        verify(jdbcTemplate).update(anyString(), eq(1L), eq(false), eq(false));
+        verify(repartidorRepository).save(any(Repartidor.class));
+    }
+
+    @Test
+    void createFromCliente_AlreadyExists() {
+        when(repartidorRepository.existsByClienteId(cliente.getId())).thenReturn(true);
+        
+        repartidorService.createFromCliente(cliente);
+
+        verify(repartidorRepository, never()).save(any(Repartidor.class));
     }
 
     @Test
     void aprobarRepartidor() {
-        Long id = 1L;
+        Long id = 10L;
+        repartidor.setAprobado(false);
         when(repartidorRepository.findById(id)).thenReturn(Optional.of(repartidor));
         when(repartidorRepository.save(any(Repartidor.class))).thenReturn(repartidor);
 
@@ -190,5 +189,27 @@ class RepartidorServiceImplTest {
 
         assertTrue(repartidor.getAprobado());
         verify(repartidorRepository).save(repartidor);
+    }
+
+    @Test
+    void isRepartidor_True() {
+        Long clienteId = 1L;
+        when(repartidorRepository.findByClienteId(clienteId)).thenReturn(Optional.of(repartidor));
+        assertTrue(repartidorService.isRepartidor(clienteId));
+    }
+
+    @Test
+    void isRepartidor_False_NotApproved() {
+        Long clienteId = 1L;
+        repartidor.setAprobado(false);
+        when(repartidorRepository.findByClienteId(clienteId)).thenReturn(Optional.of(repartidor));
+        assertFalse(repartidorService.isRepartidor(clienteId));
+    }
+
+    @Test
+    void isRepartidor_False_NotFound() {
+        Long clienteId = 1L;
+        when(repartidorRepository.findByClienteId(clienteId)).thenReturn(Optional.empty());
+        assertFalse(repartidorService.isRepartidor(clienteId));
     }
 }
