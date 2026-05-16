@@ -16,12 +16,13 @@
         @if (currentStep === 'empresa') { Registra tu local y llega a más clientes. }
       </p>
 
-      @if (isLoading) {
-        <div class="loading-container">
-          <ion-spinner name="crescent"></ion-spinner>
-          <p>Procesando registro...</p>
-        </div>
-      } @else {
+      <div class="relative">
+        @if (isLoading) {
+          <div class="loading-overlay absolute inset-0 bg-white/80 z-50 flex flex-col items-center justify-center rounded-xl transition-all">
+            <ion-spinner name="crescent"></ion-spinner>
+            <p class="mt-2 font-medium text-main">Procesando registro...</p>
+          </div>
+        }
 
         @if (currentStep === 'seleccion') {
           <div class="selection-group">
@@ -49,8 +50,7 @@
         @if (currentStep === 'empresa') {
           <app-empresa-form (submitForm)="onEmpresaSubmit($event)"></app-empresa-form>
         }
-
-      }
+      </div>
 
     </div>
   </div>

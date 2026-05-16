@@ -2,12 +2,19 @@
   <header class="admin-header px-8 py-5 shadow-sm">
     <div class="header-content flex justify-between items-center max-w-[1200px] mx-auto w-full">
       <h1 class="title text-xl font-bold tracking-wide">Pedidos ({{ totalElements() }})</h1>
-      <button
-        class="btn-new border-none px-5 py-2.5 rounded-md font-bold text-sm flex items-center gap-2 cursor-pointer transition-all hover:shadow-md"
-        (click)="abrirModalNuevo()">
-        <ion-icon name="add-circle-outline" class="text-lg"></ion-icon>
-        NUEVO PEDIDO
-      </button>
+      <div class="flex gap-3">
+        <button
+          class="btn-refresh border-none px-4 py-2.5 rounded-md font-bold text-sm flex items-center gap-2 cursor-pointer transition-all hover:opacity-80"
+          (click)="refrescarTodo()" title="Refrescar datos">
+          <ion-icon name="refresh-outline" class="text-lg"></ion-icon>
+        </button>
+        <button
+          class="btn-new border-none px-5 py-2.5 rounded-md font-bold text-sm flex items-center gap-2 cursor-pointer transition-all hover:shadow-md"
+          (click)="abrirModalNuevo()">
+          <ion-icon name="add-circle-outline" class="text-lg"></ion-icon>
+          NUEVO PEDIDO
+        </button>
+      </div>
     </div>
   </header>
 
@@ -58,7 +65,8 @@
               <td class="td-id px-6 py-4 border-b font-bold">#{{ pedido.id }}</td>
               <td class="td-fecha px-6 py-4 border-b text-sm">{{ pedido.fechaCompra | date:'short' }}</td>
               <td class="td-cliente px-6 py-4 border-b text-sm font-medium">{{ pedido.nombreCliente }}</td>
-              <td class="td-empresa px-6 py-4 border-b text-sm font-bold text-primary">{{ pedido.nombreEmpresa }}</td>
+              <td class="td-empresa px-6 py-4 border-b text-sm font-bold text-primary">{{ getNombreEmpresa(pedido) }}
+              </td>
               <td class="px-6 py-4 border-b">
                 <span class="px-3 py-1 rounded-full text-xs font-bold border"
                   [class]="getEstadoColor(pedido.estadoNombre)">
@@ -251,14 +259,18 @@
               }
             </div>
 
-            <div class="form-actions flex justify-end gap-3 mt-4 pt-4 border-t">
+            <div class="form-actions flex justify-end gap-3 mt-6 pt-4 border-t">
               <button type="button"
                 class="btn-cancel px-6 py-3 rounded-lg font-bold text-sm bg-transparent border transition-colors"
                 (click)="isModalOpen.set(false)">CANCELAR</button>
               <button type="submit"
-                class="btn-submit px-6 py-3 rounded-lg font-bold text-sm text-white transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
-                [disabled]="!editingPedido() ? (!pedidoForm.clienteId || pedidoForm.detalles.length === 0) : false">
+                class="btn-submit px-6 py-3 rounded-lg font-bold text-sm text-white transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-h-[48px] min-w-[200px]"
+                [disabled]="!editingPedido() ? (!pedidoForm.clienteId || pedidoForm.detalles.length === 0 || isLoading()) : isLoading()">
+                @if (isLoading()) {
+                <ion-spinner name="crescent" color="light"></ion-spinner>
+                } @else {
                 {{ editingPedido() ? 'ACTUALIZAR PEDIDO' : 'CREAR PEDIDO' }}
+                }
               </button>
             </div>
           </form>
@@ -318,7 +330,8 @@
                     </div>
                     <div>
                       <p class="label text-xs font-bold uppercase">Restaurante</p>
-                      <p class="value font-medium mt-1 text-primary font-bold">{{ viewingPedido()!.nombreEmpresa }}</p>
+                      <p class="value font-medium mt-1 text-primary font-bold">{{ getNombreEmpresa(viewingPedido()) }}
+                      </p>
                     </div>
                   </div>
 

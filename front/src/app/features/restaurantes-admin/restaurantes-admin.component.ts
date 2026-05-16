@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CurrencyPipe } from '@angular/common';
-import { timer, Subscription } from 'rxjs';
+import { timer, Subscription, Subject, debounceTime, distinctUntilChanged, finalize } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import {
   IonHeader,
@@ -14,6 +14,7 @@ import {
   IonModal,
   IonInput,
   IonItem,
+  IonSpinner,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -30,15 +31,14 @@ import {
   fastFoodOutline,
   restaurantOutline,
   locationOutline,
-  cameraOutline
+  cameraOutline,
+  refreshOutline
 } from 'ionicons/icons';
 import { EmpresaService } from '../../services/empresa/empresa-service';
 import { ProductoService } from '../../services/producto/producto-service';
 import { TipoCocinaService } from '../../services/tipococina/tipococina-service';
 import { EmpresaOutputDto, EmpresaInputDto, ProductoOutputDto, ProductoInputDto, TipoCocinaOutputDto, CustomError } from '../../types';
 import { ConfirmModalComponent } from '../../shared/confirm-modal/confirm-modal.component';
-
-import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { InfoModalComponent } from '../../shared/info-modal/info-modal.component';
 import { environment } from '../../../environments/environment';
 
@@ -59,12 +59,13 @@ import { environment } from '../../../environments/environment';
     ConfirmModalComponent,
     InfoModalComponent,
     IonItem,
+    IonSpinner,
     CurrencyPipe,
   ],
   templateUrl: './restaurantes-admin.component.html',
   styleUrls: ['./restaurantes-admin.component.scss'],
 })
-export class RestaurantesAdminComponent implements OnInit {
+export class RestaurantesAdminComponent implements OnInit, OnDestroy {
   private empresaService = inject(EmpresaService);
   private productoService = inject(ProductoService);
   private tipoCocinaService = inject(TipoCocinaService);
@@ -107,6 +108,7 @@ export class RestaurantesAdminComponent implements OnInit {
   modalType = signal<'success' | 'error' | 'info'>('info');
   modalErrorData = signal<CustomError | null>(null);
   protected environment = environment;
+  isLoading = signal(false);
 
   diasSemana = ['LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO', 'DOMINGO'];
 
@@ -127,6 +129,11 @@ export class RestaurantesAdminComponent implements OnInit {
     }
   }
 
+  refrescarTodo() {
+    this.cargarEmpresas();
+    this.cargarTiposCocina();
+  }
+
   private debouncer = new Subject<string>();
 
   constructor() {
@@ -144,7 +151,8 @@ export class RestaurantesAdminComponent implements OnInit {
       fastFoodOutline,
       restaurantOutline,
       locationOutline,
-      cameraOutline
+      cameraOutline,
+      refreshOutline
     });
 
     this.debouncer.pipe(debounceTime(400), distinctUntilChanged()).subscribe((valor) => {
@@ -244,9 +252,17 @@ export class RestaurantesAdminComponent implements OnInit {
       ? this.empresaService.actualizar(editId, this.empresaForm)
       : this.empresaService.crear(this.empresaForm);
 
-    request.subscribe(() => {
-      this.isModalOpen.set(false);
-      this.cargarEmpresas();
+    this.isLoading.set(true);
+    request.pipe(
+      finalize(() => this.isLoading.set(false))
+    ).subscribe({
+      next: () => {
+        this.isModalOpen.set(false);
+        this.cargarEmpresas();
+      },
+      error: (err) => {
+        console.error('Error al guardar empresa:', err);
+      }
     });
   }
 

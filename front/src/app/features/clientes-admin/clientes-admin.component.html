@@ -2,12 +2,19 @@
   <header class="admin-header px-8 py-5 shadow-sm">
     <div class="header-content flex justify-between items-center max-w-[1200px] mx-auto w-full">
       <h1 class="title text-xl font-bold tracking-wide">Clientes ({{ totalElements() }})</h1>
-      <button
-        class="btn-new border-none px-5 py-2.5 rounded-md font-bold text-sm flex items-center gap-2 cursor-pointer transition-all hover:shadow-md"
-        (click)="abrirModalNuevo()">
-        <ion-icon name="add-circle-outline" class="text-lg"></ion-icon>
-        NUEVO CLIENTE
-      </button>
+      <div class="flex gap-3">
+        <button
+          class="btn-refresh border-none px-4 py-2.5 rounded-md font-bold text-sm flex items-center gap-2 cursor-pointer transition-all hover:opacity-80"
+          (click)="refrescarTodo()" title="Refrescar datos">
+          <ion-icon name="refresh-outline" class="text-lg"></ion-icon>
+        </button>
+        <button
+          class="btn-new border-none px-5 py-2.5 rounded-md font-bold text-sm flex items-center gap-2 cursor-pointer transition-all hover:shadow-md"
+          (click)="abrirModalNuevo()">
+          <ion-icon name="add-circle-outline" class="text-lg"></ion-icon>
+          NUEVO CLIENTE
+        </button>
+      </div>
     </div>
   </header>
 
@@ -156,9 +163,13 @@
                 class="btn-cancel px-6 py-3 rounded-lg font-bold text-sm bg-transparent border transition-colors"
                 (click)="isModalOpen.set(false)">CANCELAR</button>
               <button type="submit"
-                class="btn-submit px-6 py-3 rounded-lg font-bold text-sm text-white transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
-                [disabled]="!clienteForm.nombre || !clienteForm.email">
-                {{ editingCliente() ? 'ACTUALIZAR DATOS' : 'REGISTRAR CLIENTE' }}
+                class="btn-submit px-6 py-3 rounded-lg font-bold text-sm text-white transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-h-[48px] min-w-[160px]"
+                [disabled]="!clienteForm.nombre || !clienteForm.email || isLoading()">
+                @if (isLoading()) {
+                  <ion-spinner name="crescent" color="light"></ion-spinner>
+                } @else {
+                  {{ editingCliente() ? 'ACTUALIZAR DATOS' : 'REGISTRAR CLIENTE' }}
+                }
               </button>
             </div>
           </form>

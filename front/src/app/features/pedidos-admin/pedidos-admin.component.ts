@@ -5,7 +5,8 @@ import {
   IonIcon,
   IonModal,
   IonInput,
-  IonItem
+  IonItem,
+  IonSpinner,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -21,7 +22,8 @@ import {
   cashOutline,
   personOutline,
   bicycleOutline,
-  locationOutline
+  locationOutline,
+  refreshOutline
 } from 'ionicons/icons';
 import { PedidoService } from '../../services/pedido/pedido-service';
 import { ClienteService } from '../../services/cliente/cliente-service';
@@ -33,7 +35,7 @@ import { PedidoOutputDto, PedidoInputDto } from '../../types/pedido';
 import { DetallePedidoInputDto } from '../../types/detalle-pedido';
 import { ClienteOutputDto, ProductoOutputDto, EmpresaOutputDto, EstadoOutputDto, RepartidorOutputDto } from '../../types';
 import { ConfirmModalComponent } from '../../shared/confirm-modal/confirm-modal.component';
-import { Subject, debounceTime, distinctUntilChanged, forkJoin } from 'rxjs';
+import { Subject, debounceTime, distinctUntilChanged, forkJoin, finalize } from 'rxjs';
 
 @Component({
   selector: 'app-pedidos-admin',
@@ -45,6 +47,7 @@ import { Subject, debounceTime, distinctUntilChanged, forkJoin } from 'rxjs';
     IonInput,
     ConfirmModalComponent,
     IonItem,
+    IonSpinner,
     DatePipe,
     CurrencyPipe
   ],
@@ -84,6 +87,18 @@ export class PedidosAdminComponent implements OnInit {
   tempProductoId: number | null = null;
   tempCantidad: number = 1;
 
+  getNombreEmpresa(empresaId: any): string {
+    if (!empresaId) return 'Empresa';
+    const id = Number(empresaId);
+    const empresa = this.empresasList().find(e => Number(e.id) === id);
+    return empresa ? empresa.nombre : '...';
+  }
+
+  refrescarTodo() {
+    this.cargarPedidos();
+    this.cargarListadosDesplegables();
+  }
+
   pedidoForm: PedidoInputDto = this.getEmptyPedidoForm();
 
   private debouncer = new Subject<string>();
@@ -102,7 +117,8 @@ export class PedidosAdminComponent implements OnInit {
       cashOutline,
       personOutline,
       bicycleOutline,
-      locationOutline
+      locationOutline,
+      refreshOutline
     });
 
     this.debouncer.pipe(debounceTime(400), distinctUntilChanged()).subscribe((valor) => {
@@ -157,7 +173,7 @@ export class PedidosAdminComponent implements OnInit {
 
   cargarPedidos() {
     if (this.terminoBusqueda() && !isNaN(Number(this.terminoBusqueda()))) {
-      
+
       this.pedidoService
         .listarPorCliente(Number(this.terminoBusqueda()), this.currentPage(), this.pageSize())
         .subscribe({
@@ -168,7 +184,7 @@ export class PedidosAdminComponent implements OnInit {
           },
         });
     } else {
-      
+
       this.pedidoService
         .listar(this.currentPage(), this.pageSize())
         .subscribe({
@@ -208,7 +224,7 @@ export class PedidosAdminComponent implements OnInit {
   }
 
   onEmpresaChange() {
-    this.tempProductoId = null; 
+    this.tempProductoId = null;
   }
 
   agregarDetalle() {
@@ -222,7 +238,7 @@ export class PedidosAdminComponent implements OnInit {
     }
 
     const nuevoDetalle: DetallePedidoInputDto = {
-      pedidoId: 0, 
+      pedidoId: 0,
       productoId: productoEncontrado.id,
       cantidad: this.tempCantidad,
       precioUnitario: productoEncontrado.precio
@@ -252,7 +268,7 @@ export class PedidosAdminComponent implements OnInit {
     this.pedidoService.obtenerPorId(pedido.id).subscribe({
       next: (pedidoCompleto) => {
         this.editingPedido.set(pedidoCompleto);
-        
+
         this.pedidoForm = {
           clienteId: pedidoCompleto.clienteId,
           empresaId: pedidoCompleto.empresaId,
@@ -297,8 +313,12 @@ export class PedidosAdminComponent implements OnInit {
     }
   }
 
+  isLoading = signal(false);
+
   guardarPedido() {
     const editId = this.editingPedido()?.id;
+    this.isLoading.set(true);
+
     if (editId) {
       const peticiones = [];
       
@@ -308,15 +328,28 @@ export class PedidosAdminComponent implements OnInit {
         peticiones.push(this.pedidoService.actualizarEstado(editId, this.nuevoEstadoId));
       }
 
-      forkJoin(peticiones).subscribe(() => {
-        this.isModalOpen.set(false);
-        this.cargarPedidos();
+      forkJoin(peticiones).pipe(
+        finalize(() => this.isLoading.set(false))
+      ).subscribe({
+        next: () => {
+          this.isModalOpen.set(false);
+          this.cargarPedidos();
+        },
+        error: (err) => {
+          console.error('Error al actualizar pedido:', err);
+        }
       });
     } else {
-      
-      this.pedidoService.crear(this.pedidoForm).subscribe(() => {
-        this.isModalOpen.set(false);
-        this.cargarPedidos();
+      this.pedidoService.crear(this.pedidoForm).pipe(
+        finalize(() => this.isLoading.set(false))
+      ).subscribe({
+        next: () => {
+          this.isModalOpen.set(false);
+          this.cargarPedidos();
+        },
+        error: (err) => {
+          console.error('Error al crear pedido:', err);
+        }
       });
     }
   }

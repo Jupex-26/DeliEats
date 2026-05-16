@@ -69,6 +69,11 @@
               {
                 "input": "src/theme/variables.css"
               }
+            ],
+            "allowedCommonJsDependencies": [
+              "leaflet",
+              "@stomp/stompjs",
+              "sockjs-client"
             ]
           },
           "configurations": {
