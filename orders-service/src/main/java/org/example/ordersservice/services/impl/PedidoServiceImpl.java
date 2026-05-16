@@ -3,10 +3,7 @@ package org.example.ordersservice.services.impl;
 import lombok.RequiredArgsConstructor;
 import org.example.ordersservice.exception.custom.NotFoundException;
 import org.example.ordersservice.exception.custom.UnauthorizedException;
-import org.example.ordersservice.models.Cliente;
-import org.example.ordersservice.models.Empresa;
-import org.example.ordersservice.models.Estado;
-import org.example.ordersservice.models.Pedido;
+import org.example.ordersservice.models.*;
 import org.example.ordersservice.repositories.PedidoRepository;
 import org.example.ordersservice.services.*;
 import org.jspecify.annotations.NonNull;
@@ -125,7 +122,9 @@ public class PedidoServiceImpl implements PedidoService {
         }
 
         if (pedido.hasRepartidor()) {
-            if (Objects.equals(pedido.getRepartidor().getCliente().getId(), pedido.getCliente().getId())) {
+            Repartidor repartidor = repartidorService.findById(pedido.getRepartidor().getId());
+
+            if (Objects.equals(repartidor.getCliente().getId(), pedido.getCliente().getId())) {
                 throw new UnauthorizedException("No puede asignarse el mismo repartidor que cliente");
             }
             pedido.setRepartidor(repartidorService.findById(pedido.getRepartidor().getId()));
