@@ -31,12 +31,12 @@ export class RepartidorService {
     return this.http.get<any>(`${this.urlApi}/disponibles`, { params });
   }
 
-  actualizar(id: number, repartidor: RepartidorInputDto): Observable<RepartidorOutputDto> {
+  actualizar(id: number, repartidor: any): Observable<RepartidorOutputDto> {
     return this.http.put<RepartidorOutputDto>(`${this.urlApi}/${id}`, repartidor);
   }
 
   actualizarDisponibilidad(id: number, disponible: boolean): Observable<RepartidorOutputDto> {
-    return this.http.patch<RepartidorOutputDto>(`${this.urlApi}/${id}/disponibilidad?disponible=${disponible}`, {});
+    return this.http.put<RepartidorOutputDto>(`${this.urlApi}/${id}/disponibilidad?disponible=${disponible}`, {});
   }
 
   eliminar(id: number): Observable<void> {

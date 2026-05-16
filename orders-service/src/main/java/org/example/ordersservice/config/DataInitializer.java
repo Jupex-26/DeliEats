@@ -149,23 +149,13 @@ public class DataInitializer implements CommandLineRunner {
 
         // 7. Crear Repartidores
         Repartidor repartidor1 = repartidorRepository.save(Repartidor.builder()
-                .nombre("Carlos Gómez")
-                .email("carlos@repartidor.com")
-                .password(defaultPassword)
-                .telefono(777888999L)
-                .direccion("Calle Central 10")
-                .rol(rolRepartidor)
+                .cliente(cliente1)
                 .disponible(true)
                 .aprobado(true)
                 .build());
 
         Repartidor repartidor2 = repartidorRepository.save(Repartidor.builder()
-                .nombre("Ana Torres")
-                .email("ana@repartidor.com")
-                .password(defaultPassword)
-                .telefono(101010101L)
-                .direccion("Calle Norte 5")
-                .rol(rolRepartidor)
+                .cliente(cliente2)
                 .disponible(false)
                 .aprobado(true)
                 .build());

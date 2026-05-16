@@ -37,7 +37,11 @@
           </div>
           <div class="repartidor-info">
             <div class="repartidor-avatar">
-              <ion-icon name="person-outline"></ion-icon>
+              @if (pedido()!.fotoRepartidor) {
+                <img [src]="environment.storageUrl + '/' + pedido()!.fotoRepartidor" alt="Avatar Repartidor" class="avatar-img">
+              } @else {
+                <ion-icon name="person-outline"></ion-icon>
+              }
             </div>
             <div>
               <p class="repartidor-nombre">{{ nombreRepartidor }}</p>
@@ -45,7 +49,7 @@
                 <p class="repartidor-hint">Se asignará cuando el pedido esté en camino</p>
               }
             </div>
-            @if (pedido()!.repartidorId) {
+            @if (pedido()!.repartidorClienteId) {
               <button (click)="abrirChatRepartidor()" class="btn-chat-repartidor">
                 <ion-icon name="chatbubbles-outline"></ion-icon>
                 Chat

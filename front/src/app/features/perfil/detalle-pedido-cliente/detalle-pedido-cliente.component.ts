@@ -27,6 +27,7 @@ import { TrackingService } from '../../../services/tracking/tracking-service';
 import { PedidoOutputDto } from '../../../types';
 import { EuroPipe } from '../../../pipe/euro.pipe';
 import { ChatModalComponent } from '../../../shared/chat-modal/chat-modal.component';
+import { environment } from '../../../../environments/environment';
 
 const iconDefault = L.icon({
   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
@@ -72,6 +73,7 @@ export class DetallePedidoClienteComponent implements OnInit, AfterViewInit, OnD
   private router = inject(Router);
   private pedidoService = inject(PedidoService);
   private trackingService = inject(TrackingService);
+  protected environment = environment;
 
   pedido = signal<PedidoOutputDto | null>(null);
   loading = signal(true);
@@ -281,8 +283,8 @@ export class DetallePedidoClienteComponent implements OnInit, AfterViewInit, OnD
 
   abrirChatRepartidor() {
     const p = this.pedido();
-    if (p?.repartidorId) {
-      this.chatReceptorId.set(p.repartidorId);
+    if (p?.repartidorClienteId) {
+      this.chatReceptorId.set(p.repartidorClienteId);
       this.chatReceptorNombre.set(p.nombreRepartidor || 'Repartidor');
       this.isChatOpen.set(true);
     }

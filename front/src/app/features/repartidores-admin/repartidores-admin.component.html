@@ -5,12 +5,8 @@
         {{ mostrarSolicitudes() ? 'Solicitudes de Registro' : 'Repartidores Aprobados' }}
         <span class="count-badge ml-2 text-sm opacity-60">({{ totalElements() }})</span>
       </h1>
-      <button
-        class="btn-new border-none px-5 py-2.5 rounded-md font-bold text-sm flex items-center gap-2 cursor-pointer transition-all hover:shadow-md"
-        (click)="abrirModalNuevo()">
-        <ion-icon name="add-circle-outline" class="text-lg"></ion-icon>
-        NUEVO REPARTIDOR
-      </button>
+      <!-- El registro ahora se hace desde la solicitud del cliente -->
+      <div class="header-actions"></div>
     </div>
   </header>
 
@@ -72,8 +68,8 @@
           <tbody>
             @for (repartidor of repartidores(); track repartidor.id) {
             <tr class="transition-colors group">
-              <td class="td-name px-6 py-4 border-b font-bold">{{ repartidor.nombre }}</td>
-              <td class="td-email px-6 py-4 border-b text-sm">{{ repartidor.email }}</td>
+              <td class="td-name px-6 py-4 border-b font-bold">{{ repartidor.nombreCliente }}</td>
+              <td class="td-email px-6 py-4 border-b text-sm">{{ repartidor.emailCliente }}</td>
               <td class="px-6 py-4 border-b text-center">
                 <ion-toggle [checked]="repartidor.disponible" (ionChange)="toggleDisponibilidad(repartidor, $event)"
                   class="deli-toggle"></ion-toggle>
@@ -138,42 +134,18 @@
 
         <div class="modal-body flex-1 overflow-y-auto bg-base p-6">
           <form (ngSubmit)="guardarRepartidor()" class="modern-form flex flex-col gap-5">
-            <div class="form-grid grid grid-cols-1 md:grid-cols-2 gap-5">
-              <div class="form-group md:col-span-2">
+            <div class="form-grid grid grid-cols-1 gap-5">
+              <div class="form-group">
                 <ion-item lines="none" class="rounded-lg shadow-sm">
-                  <ion-input label="Nombre Completo" labelPlacement="stacked" [(ngModel)]="repartidorForm.nombre"
-                    name="nombre" placeholder="Ej. Carlos Martínez" class="font-medium"></ion-input>
+                  <ion-input label="Cliente ID" labelPlacement="stacked" type="number" [(ngModel)]="repartidorForm.clienteId"
+                    name="clienteId" placeholder="ID del cliente" class="font-medium"></ion-input>
                 </ion-item>
               </div>
 
               <div class="form-group">
-                <ion-item lines="none" class="rounded-lg shadow-sm">
-                  <ion-input label="Email" labelPlacement="stacked" type="email" [(ngModel)]="repartidorForm.email"
-                    name="email" placeholder="correo@ejemplo.com" class="font-medium"></ion-input>
-                </ion-item>
-              </div>
-
-              @if (!editingRepartidor()) {
-              <div class="form-group">
-                <ion-item lines="none" class="rounded-lg shadow-sm">
-                  <ion-input label="Contraseña" labelPlacement="stacked" type="password"
-                    [(ngModel)]="repartidorForm.password" name="password" placeholder="••••••••"
-                    class="font-medium"></ion-input>
-                </ion-item>
-              </div>
-              }
-
-              <div class="form-group">
-                <ion-item lines="none" class="rounded-lg shadow-sm">
-                  <ion-input label="Teléfono" labelPlacement="stacked" type="tel" [(ngModel)]="repartidorForm.telefono"
-                    name="telefono" placeholder="666 ..." class="font-medium"></ion-input>
-                </ion-item>
-              </div>
-
-              <div class="form-group md:col-span-2">
-                <ion-item lines="none" class="rounded-lg shadow-sm">
-                  <ion-input label="Dirección" labelPlacement="stacked" [(ngModel)]="repartidorForm.direccion"
-                    name="direccion" placeholder="Calle, Número, Ciudad" class="font-medium"></ion-input>
+                <ion-item lines="none" class="rounded-lg shadow-sm flex items-center gap-4 px-4 py-2">
+                  <label class="text-sm font-bold text-gray-700 uppercase">Disponible</label>
+                  <ion-toggle [(ngModel)]="repartidorForm.disponible" name="disponible" class="deli-toggle"></ion-toggle>
                 </ion-item>
               </div>
             </div>
@@ -184,8 +156,8 @@
                 (click)="isModalOpen.set(false)">CANCELAR</button>
               <button type="submit"
                 class="btn-submit px-6 py-3 rounded-lg font-bold text-sm text-white transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
-                [disabled]="!repartidorForm.nombre || !repartidorForm.email">
-                {{ editingRepartidor() ? 'ACTUALIZAR REPARTIDOR' : 'REGISTRAR REPARTIDOR' }}
+                [disabled]="!repartidorForm.clienteId">
+                {{ editingRepartidor() ? 'ACTUALIZAR' : 'ASIGNAR REPARTIDOR' }}
               </button>
             </div>
           </form>
@@ -212,13 +184,13 @@
               <div class="detail-header p-8 flex flex-col items-center border-b relative">
                 <div
                   class="avatar w-24 h-24 rounded-full flex items-center justify-center text-white text-3xl font-bold mb-4 shadow-lg border-4 border-white overflow-hidden">
-                  @if (viewingRepartidor()!.foto) {
-                    <img [src]="environment.storageUrl + '/' + viewingRepartidor()!.foto" alt="Foto de perfil" class="w-full h-full object-cover">
+                  @if (viewingRepartidor()!.fotoCliente) {
+                    <img [src]="environment.storageUrl + '/' + viewingRepartidor()!.fotoCliente" alt="Foto de perfil" class="w-full h-full object-cover">
                   } @else {
-                    {{ viewingRepartidor()!.nombre.charAt(0).toUpperCase() }}
+                    {{ viewingRepartidor()!.nombreCliente.charAt(0).toUpperCase() }}
                   }
                 </div>
-                <h2 class="name text-2xl font-bold mb-1">{{ viewingRepartidor()!.nombre }}</h2>
+                <h2 class="name text-2xl font-bold mb-1">{{ viewingRepartidor()!.nombreCliente }}</h2>
                 <div class="flex gap-2">
                   <span
                     class="role text-sm font-medium px-3 py-1 rounded-full bg-primary/10 text-primary">Repartidor</span>
@@ -240,7 +212,7 @@
                     </div>
                     <div>
                       <p class="label text-xs font-bold uppercase">Email</p>
-                      <p class="value font-medium mt-1 break-all">{{ viewingRepartidor()!.email }}</p>
+                      <p class="value font-medium mt-1 break-all">{{ viewingRepartidor()!.emailCliente }}</p>
                     </div>
                   </div>
 
@@ -250,7 +222,7 @@
                     </div>
                     <div>
                       <p class="label text-xs font-bold uppercase">Teléfono</p>
-                      <p class="value font-medium mt-1">{{ viewingRepartidor()!.telefono || 'No especificado' }}</p>
+                      <p class="value font-medium mt-1">{{ viewingRepartidor()!.telefonoCliente || 'No especificado' }}</p>
                     </div>
                   </div>
 
@@ -260,7 +232,7 @@
                     </div>
                     <div>
                       <p class="label text-xs font-bold uppercase">Dirección</p>
-                      <p class="value font-medium mt-1">{{ viewingRepartidor()!.direccion || 'No especificada' }}</p>
+                      <p class="value font-medium mt-1">{{ viewingRepartidor()!.direccionCliente || 'No especificada' }}</p>
                     </div>
                   </div>
                 </div>

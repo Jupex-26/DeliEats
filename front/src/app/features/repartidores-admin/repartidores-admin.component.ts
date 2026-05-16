@@ -151,7 +151,10 @@ export class RepartidoresAdminComponent implements OnInit {
 
   abrirModalEditar(repartidor: RepartidorOutputDto) {
     this.editingRepartidor.set(repartidor);
-    this.repartidorForm = { ...repartidor, rolId: 4 }; 
+    this.repartidorForm = { 
+      clienteId: repartidor.clienteId,
+      disponible: repartidor.disponible
+    }; 
     this.isModalOpen.set(true);
   }
 
@@ -209,14 +212,9 @@ export class RepartidoresAdminComponent implements OnInit {
     });
   }
 
-  private getEmptyRepartidorForm(): RepartidorInputDto {
+  private getEmptyRepartidorForm(): any {
     return {
-      nombre: '',
-      email: '',
-      telefono: undefined,
-      direccion: '',
-      foto: '',
-      rolId: 4, 
+      clienteId: null,
       disponible: false,
     };
   }

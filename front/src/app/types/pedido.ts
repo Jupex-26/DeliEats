@@ -28,6 +28,8 @@ export interface PedidoOutputDto {
     direccionEntrega?: string;
     estadoNombre: string;
     repartidorId?: number;
+    repartidorClienteId?: number;
     nombreRepartidor?: string;
+    fotoRepartidor?: string;
     detalles: DetallePedidoOutputDto[];
 }

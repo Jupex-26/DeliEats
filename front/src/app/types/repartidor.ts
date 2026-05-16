@@ -1,13 +1,16 @@
-import { User, UserInputDto, UserOutputDto } from './user';
-
-export interface Repartidor extends User {
+export interface RepartidorOutputDto {
+    id: number;
+    clienteId: number;
+    nombreCliente: string;
+    emailCliente: string;
+    telefonoCliente: string;
+    direccionCliente: string;
+    fotoCliente?: string;
     disponible: boolean;
+    aprobado: boolean;
 }
 
-export interface RepartidorInputDto extends UserInputDto {
-    disponible: boolean;
-}
-
-export interface RepartidorOutputDto extends UserOutputDto {
+export interface RepartidorInputDto {
+    clienteId: number;
     disponible: boolean;
 }
