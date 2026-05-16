@@ -114,7 +114,6 @@ public class RepartidorServiceImpl implements RepartidorService {
     public Repartidor updateDisponibilidad(Long id, boolean disponible) {
         Repartidor repartidor = findById(id);
         repartidor.setDisponible(disponible);
-        repartidor.setRol(rolService.findByNombre("ROLE_REPARTIDOR"));
         return repartidorRepository.save(repartidor);
     }
 
