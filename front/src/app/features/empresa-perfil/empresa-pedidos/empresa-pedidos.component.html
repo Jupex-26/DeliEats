@@ -112,10 +112,18 @@
 
       <div class="pedido-footer">
         <span class="productos-count">{{ pedido.detalles.length || 0 }} productos</span>
-        <button class="btn-ver" (click)="abrirDetalle(pedido)">
-          <ion-icon name="eye-outline"></ion-icon>
-          Ver detalle
-        </button>
+        <div class="pedido-actions">
+          @if (pedido.estadoNombre.toLowerCase().includes('entregado')) {
+            <button class="btn-factura-descargar" (click)="descargarFactura(pedido, $event)" [disabled]="descargando() === pedido.id">
+              <ion-icon name="download-outline"></ion-icon>
+              Factura
+            </button>
+          }
+          <button class="btn-ver" (click)="abrirDetalle(pedido)">
+            <ion-icon name="eye-outline"></ion-icon>
+            Ver detalle
+          </button>
+        </div>
       </div>
     </li>
     }
@@ -200,6 +208,15 @@
         <span>Total del pedido</span>
         <strong>{{ pedidoDetalle()!.precioTotal | euro }}</strong>
       </div>
+
+      @if (pedidoDetalle()!.estadoNombre.toLowerCase().includes('entregado')) {
+        <div class="modal-invoice-section">
+          <button class="btn-factura-modal" (click)="descargarFactura(pedidoDetalle()!, $event)" [disabled]="descargando() === pedidoDetalle()!.id">
+            <ion-icon name="download-outline"></ion-icon>
+            {{ descargando() === pedidoDetalle()!.id ? 'Descargando...' : 'Descargar Factura PDF' }}
+          </button>
+        </div>
+      }
     </div>
   </div>
 </div>

@@ -15,7 +15,8 @@ import {
   bicycleOutline,
   locationOutline,
   cartOutline,
-  refreshOutline
+  refreshOutline,
+  downloadOutline
 } from 'ionicons/icons';
 import { PedidoService } from '../../../services/pedido/pedido-service';
 import { EstadoService } from '../../../services/estado/estado-service';
@@ -49,6 +50,7 @@ export class EmpresaPedidosComponent implements OnInit {
 
   estadosList = signal<EstadoOutputDto[]>([]);
   actualizandoEstadoId = signal<number | null>(null);
+  descargando = signal<number | null>(null);
 
   mesSeleccionado = signal<number>(new Date().getMonth() + 1);
   anioSeleccionado = signal<number>(new Date().getFullYear());
@@ -66,7 +68,8 @@ export class EmpresaPedidosComponent implements OnInit {
     addIcons({
       chevronBackOutline, chevronForwardOutline, receiptOutline,
       timeOutline, calendarOutline, cashOutline, eyeOutline,
-      closeOutline, personOutline, bicycleOutline, locationOutline, cartOutline, refreshOutline
+      closeOutline, personOutline, bicycleOutline, locationOutline, cartOutline, refreshOutline,
+      downloadOutline
     });
 
     const year = new Date().getFullYear();
@@ -181,5 +184,24 @@ export class EmpresaPedidosComponent implements OnInit {
     if (e.includes('entregado')) return 'estado--entregado';
     if (e.includes('cancelado')) return 'estado--cancelado';
     return '';
+  }
+
+  descargarFactura(pedido: PedidoOutputDto, event: Event) {
+    event.stopPropagation();
+    if (this.descargando() === pedido.id) return;
+
+    this.descargando.set(pedido.id);
+    this.pedidoService.descargarFactura(pedido.id).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `factura-pedido-${pedido.id}.pdf`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+        this.descargando.set(null);
+      },
+      error: () => this.descargando.set(null)
+    });
   }
 }
