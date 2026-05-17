@@ -16,7 +16,7 @@ spec: # Especificación del despliegue
     spec: # Especificación de los contenedores
       containers:
       - name: delieats-front # Nombre del contenedor
-        image: delieats-front:v12 # Imagen del frontend
+        image: delieats-front:v13 # Imagen del frontend
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80 # Puerto expuesto por el contenedor

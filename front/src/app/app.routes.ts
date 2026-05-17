@@ -10,6 +10,7 @@ import { RegistroComponent } from './features/registro/registro.component';
 import { ClientesAdminComponent } from './features/clientes-admin/clientes-admin.component';
 import { RestaurantesAdminComponent } from './features/restaurantes-admin/restaurantes-admin.component';
 import { RepartidoresAdminComponent } from './features/repartidores-admin/repartidores-admin.component';
+import { PedidosAdminComponent } from './features/pedidos-admin/pedidos-admin.component';
 
 import { roleGuard } from './guards/role-guard';
 
@@ -97,7 +98,7 @@ export const routes: Routes = [
       },
       {
         path: 'pedidos',
-        loadComponent: () => import('./features/pedidos-admin/pedidos-admin.component').then(m => m.PedidosAdminComponent)
+        component: PedidosAdminComponent
       }
     ],
   },
