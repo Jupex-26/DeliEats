@@ -22,6 +22,12 @@ export class TrackingService {
   ubicacion$ = this.ubicacionSubject.asObservable();
 
   conectar(clienteId: number): void {
+    // Guardia: si ya hay una suscripción activa, no crear otra duplicada
+    if (this.locationSub && !this.locationSub.closed) {
+      console.log(`[TrackingService] Ya conectado al canal del cliente ${clienteId}, omitiendo.`);
+      return;
+    }
+
     console.log(`[TrackingService] Conectando al canal de ubicación del cliente ${clienteId}...`);
     this.wsService.conectar();
 

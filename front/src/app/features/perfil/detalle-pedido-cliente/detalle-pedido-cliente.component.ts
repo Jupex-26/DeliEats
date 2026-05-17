@@ -127,10 +127,10 @@ export class DetallePedidoClienteComponent implements OnInit, AfterViewInit, OnD
     // Primera carga (con loading = true)
     this.cargarPedido(id, true);
 
-    // Encuesta cada 1 segundo en segundo plano (sin parpadeo)
+    // Encuesta cada 10 segundos para detectar cambios de estado (el tiempo real va por WebSocket)
     this.refreshInterval = setInterval(() => {
       this.cargarPedido(id, false);
-    }, 1000);
+    }, 10000);
   }
 
   private cargarPedido(id: number, mostrarLoading: boolean) {

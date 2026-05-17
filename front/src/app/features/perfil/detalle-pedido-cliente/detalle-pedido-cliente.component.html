@@ -165,13 +165,11 @@
   </div>
 
   @if (isChatOpen() && pedido() && chatReceptorId()) {
-    @defer (on immediate) {
-      <app-chat-modal [isOpen]="isChatOpen()"
-                      [pedidoId]="pedido()!.id"
-                      [receptorId]="chatReceptorId()!"
-                      [receptorNombre]="chatReceptorNombre()"
-                      (closed)="isChatOpen.set(false)">
-      </app-chat-modal>
-    }
+    <app-chat-modal [isOpen]="isChatOpen()"
+                    [pedidoId]="pedido()!.id"
+                    [receptorId]="chatReceptorId()!"
+                    [receptorNombre]="chatReceptorNombre()"
+                    (closed)="isChatOpen.set(false)">
+    </app-chat-modal>
   }
 </ion-content>

@@ -242,13 +242,11 @@
   </app-info-modal>
 
   @if (isChatOpen() && chatPedidoId() && chatReceptorId()) {
-    @defer (on immediate) {
-      <app-chat-modal [isOpen]="isChatOpen()"
-                      [pedidoId]="chatPedidoId()!"
-                      [receptorId]="chatReceptorId()!"
-                      [receptorNombre]="chatReceptorNombre()"
-                      (closed)="isChatOpen.set(false)">
-      </app-chat-modal>
-    }
+    <app-chat-modal [isOpen]="isChatOpen()"
+                    [pedidoId]="chatPedidoId()!"
+                    [receptorId]="chatReceptorId()!"
+                    [receptorNombre]="chatReceptorNombre()"
+                    (closed)="isChatOpen.set(false)">
+    </app-chat-modal>
   }
 </ion-content>

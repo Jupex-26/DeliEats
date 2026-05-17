@@ -28,6 +28,7 @@ export class WebSocketService {
 
   private ubicacionSubject = new ReplaySubject<UbicacionPayload>(1);
   private ubicacionObservable = this.ubicacionSubject.asObservable();
+  private locationStompSub: any = null; // guardia para evitar suscripciones duplicadas
 
   conectar(miUsuarioId?: number) {
     if (miUsuarioId) {
@@ -89,7 +90,10 @@ export class WebSocketService {
       filter(connected => connected === true),
       take(1)
     ).subscribe(() => {
-      this.stompClient.subscribe(`/topic/location/${clienteId}`, (mensaje) => {
+      // Guardia: no crear suscripción duplicada al mismo topic
+      if (this.locationStompSub) return;
+
+      this.locationStompSub = this.stompClient.subscribe(`/topic/location/${clienteId}`, (mensaje) => {
         if (mensaje.body) {
           const data = JSON.parse(mensaje.body);
           this.ngZone.run(() => this.ubicacionSubject.next(data));
@@ -127,5 +131,6 @@ export class WebSocketService {
     this.connected$.next(false);
     this.mensajeSubscription = null;
     this.miUsuarioId = null;
+    this.locationStompSub = null; // resetear para permitir nueva suscripción
   }
 }
