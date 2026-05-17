@@ -1,4 +1,4 @@
-# 🍔 DeliEats
+# DeliEats
 
 DeliEats es una plataforma moderna y completa de reparto de comida a domicilio (Food Delivery). Conecta a **clientes**, **restaurantes (empresas)** y **repartidores** en un ecosistema interactivo que opera con flujos de datos en tiempo real para mensajería y seguimiento GPS.
 
@@ -6,7 +6,7 @@ La plataforma permite a los usuarios registrarse, explorar menús de restaurante
 
 ---
 
-## 🏗 Arquitectura y Tecnologías
+## Arquitectura y Tecnologías
 
 El proyecto está estructurado con una arquitectura robusta de microservicios, lista para producción y completamente orquestada en **Kubernetes**.
 
@@ -20,7 +20,7 @@ El proyecto está estructurado con una arquitectura robusta de microservicios, l
 
 ---
 
-## 🚀 Guía de Despliegue en Local (Minikube)
+## Guía de Despliegue en Local (Minikube)
 
 Sigue estos pasos detallados para compilar y levantar toda la infraestructura del ecosistema DeliEats en tu máquina local.
 
@@ -78,11 +78,11 @@ Crea un puente de red para que el clúster redirija las peticiones locales del d
 minikube tunnel
 ```
 
-🌐 **¡Perfecto!** Ahora abre tu navegador web favorito y dirígete a: **[http://www.delieats.com](http://www.delieats.com)**
+**¡Perfecto!** Ahora abre tu navegador web favorito y dirígete a: **[http://www.delieats.com](http://www.delieats.com)**
 
 ---
 
-## ⚡️ Estabilización y Mejoras de Tiempo Real Recientes
+## Estabilización y Mejoras de Tiempo Real Recientes
 
 Durante las fases de desarrollo recientes, se han aplicado optimizaciones críticas al sistema de comunicación en tiempo real para garantizar un flujo impecable:
 
@@ -101,7 +101,7 @@ Durante las fases de desarrollo recientes, se han aplicado optimizaciones críti
 
 ---
 
-## 🛠 Notas Técnicas y de Almacenamiento
+## Notas Técnicas y de Almacenamiento
 
 *   **Persistencia de Subidas (Fotos):** Las imágenes de avatares de usuarios y fotos de comida del menú de restaurantes se almacenan en un `PersistentVolumeClaim` (PVC). Esto previene que se borren al reiniciar o recrear los contenedores.
 *   **Límites de Carga en Nginx:** Configurado con directivas de cliente para aceptar subidas de archivos multipartes de hasta **50MB**.
