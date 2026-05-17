@@ -140,7 +140,6 @@ class EmpresaServiceImplTest {
         when(empresaRepository.findById(id)).thenReturn(Optional.of(existingEmpresa));
         when(userRepository.existsByEmail(empresa.getEmail())).thenReturn(false);
         when(passwordEncoder.encode(anyString())).thenReturn("newEncodedPassword"); // anyString()
-        when(rolService.findByNombre("ROLE_EMPRESA")).thenReturn(rolEmpresa);
         when(empresaRepository.save(any(Empresa.class))).thenReturn(empresa);
 
         Empresa result = empresaService.update(id, empresa);
@@ -175,7 +174,6 @@ class EmpresaServiceImplTest {
         when(empresaRepository.findById(id)).thenReturn(Optional.of(existingEmpresa));
         when(userRepository.existsByEmail(empresa.getEmail())).thenReturn(false);
         when(passwordEncoder.encode(anyString())).thenReturn("newEncodedPassword"); // anyString()
-        when(rolService.findByNombre("ROLE_EMPRESA")).thenReturn(rolEmpresa);
         when(empresaRepository.save(any(Empresa.class))).thenReturn(empresa);
 
         Empresa result = empresaService.update(id, empresa);
