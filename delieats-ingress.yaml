@@ -4,6 +4,7 @@ metadata: # Metadatos del Ingress
   name: delieats-ingress
   annotations:
     kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
 spec: # Especificación del Ingress
   ingressClassName: nginx
   rules: # Reglas de enrutamiento para el Ingress

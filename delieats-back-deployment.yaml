@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: delieats-back
-        image: delieats-back:latest
+        image: delieats-back:v2
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
@@ -33,7 +33,7 @@ spec:
             value: "kafka:9092"
         volumeMounts:
         - name: uploads-storage
-          mountPath: /app/uploads
+          mountPath: /uploads
       volumes:
       - name: uploads-storage
         persistentVolumeClaim:
