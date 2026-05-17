@@ -11,7 +11,7 @@ La plataforma permite a los usuarios registrarse, explorar menús de restaurante
 El proyecto está estructurado con una arquitectura robusta de microservicios, lista para producción y completamente orquestada en **Kubernetes**.
 
 *   **Frontend:** Aplicación SPA desarrollada en **Angular 18 + Ionic (Standalone)**. Incluye un sistema de reactividad moderna basado en *Signals*, enrutamiento robusto y mapas dinámicos con *Leaflet*. Es servida por un servidor web y proxy reverso **Nginx** optimizado.
-*   **Backend:** API REST y servicios asíncronos creados con **Java 17 + Spring Boot 3**.
+*   **Backend:** API REST y servicios asíncronos creados con **Java 21** y **Spring Boot 4 (versión parent 4.0.5)**.
 *   **Base de Datos:** **MySQL** para la persistencia transaccional y relacional de usuarios, pedidos, menús y chats.
 *   **Mensajería Asíncrona & Tiempo Real (Event-Driven):** **Apache Kafka & Zookeeper** para desacoplar el procesamiento interno de eventos y orquestar el flujo de mensajes de chat y geolocalización.
 *   **Protocolo de Comunicación Bidireccional:** **WebSockets + STOMP / SockJS** para empujar las notificaciones, chats y coordenadas GPS instantáneamente a los navegadores sin necesidad de polling.
