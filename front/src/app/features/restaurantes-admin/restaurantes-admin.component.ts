@@ -166,7 +166,7 @@ export class RestaurantesAdminComponent implements OnInit, OnDestroy {
     this.cargarTiposCocina();
     
     this.pollSubscription = timer(0, 15000).pipe(
-      switchMap(() => this.empresaService.listar(this.currentPage(), this.pageSize()))
+      switchMap(() => this.empresaService.listar(this.currentPage(), this.pageSize(), this.terminoBusqueda()))
     ).subscribe({
       next: (response) => {
         this.empresas.set(response.content);

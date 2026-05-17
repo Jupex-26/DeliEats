@@ -46,8 +46,8 @@ eval $(minikube docker-env)
 # Compilar la imagen del Backend (v5)
 docker build -t delieats-back:v5 -f ./orders-service/Dockerfile ./orders-service
 
-# Compilar la imagen del Frontend (v11 - Versión Estable)
-docker build -t delieats-front:v11 -f ./front/Dockerfile ./front
+# Compilar la imagen del Frontend (v12 - Versión Estable)
+docker build -t delieats-front:v12 -f ./front/Dockerfile ./front
 ```
 
 ### 4. Desplegar los Recursos en Kubernetes

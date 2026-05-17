@@ -23,7 +23,8 @@ import {
   personOutline,
   bicycleOutline,
   locationOutline,
-  refreshOutline
+  refreshOutline,
+  restaurantOutline
 } from 'ionicons/icons';
 import { PedidoService } from '../../services/pedido/pedido-service';
 import { ClienteService } from '../../services/cliente/cliente-service';
@@ -123,7 +124,8 @@ export class PedidosAdminComponent implements OnInit {
       personOutline,
       bicycleOutline,
       locationOutline,
-      refreshOutline
+      refreshOutline,
+      restaurantOutline
     });
 
     this.debouncer.pipe(debounceTime(400), distinctUntilChanged()).subscribe((valor) => {
