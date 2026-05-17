@@ -43,11 +43,11 @@ Para que el clúster local de Kubernetes acceda a tus imágenes locales sin nece
 # Conectar tu terminal al Docker de Minikube
 eval $(minikube docker-env)
 
-# Compilar la imagen del Backend (v2)
-docker build -t delieats-back:v2 -f ./orders-service/Dockerfile ./orders-service
+# Compilar la imagen del Backend (v3)
+docker build -t delieats-back:v3 -f ./orders-service/Dockerfile ./orders-service
 
-# Compilar la imagen del Frontend (v5 - Versión Estable)
-docker build -t delieats-front:v6 -f ./front/Dockerfile ./front
+# Compilar la imagen del Frontend (v8 - Versión Estable)
+docker build -t delieats-front:v8 -f ./front/Dockerfile ./front
 ```
 
 ### 4. Desplegar los Recursos en Kubernetes

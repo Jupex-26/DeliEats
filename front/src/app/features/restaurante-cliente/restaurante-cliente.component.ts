@@ -157,7 +157,7 @@ export class RestauranteClienteComponent implements OnInit {
     const clienteId = user.userOutputDto.id;
     this.carritoService.obtenerPorUsuario(clienteId).subscribe({
       next: (c) => {
-        if (this.empresa() && c.empresaId !== this.empresa()?.id) {
+        if (this.empresa() && c.empresaId && Number(c.empresaId) !== Number(this.empresa()?.id)) {
           this.carritoService.eliminar(c.id).subscribe(() => {
             this.carritoId.set(null);
           });

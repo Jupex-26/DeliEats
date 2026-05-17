@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: delieats-back
-        image: delieats-back:v2
+        image: delieats-back:v3
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
