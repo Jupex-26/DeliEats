@@ -143,7 +143,7 @@ export class RepartidoresAdminComponent implements OnInit {
   cargarRepartidores() {
     const filtroAprobado = !this.mostrarSolicitudes();
     this.repartidorService
-      .obtenerPorAprobado(filtroAprobado, this.currentPage(), this.pageSize())
+      .obtenerPorAprobado(filtroAprobado, this.currentPage(), this.pageSize(), this.terminoBusqueda())
       .subscribe({
         next: (response: any) => {
           this.repartidores.set(response.content);

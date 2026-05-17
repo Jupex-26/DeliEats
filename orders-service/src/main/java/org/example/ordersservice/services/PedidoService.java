@@ -10,6 +10,8 @@ public interface PedidoService {
 
     Page<Pedido> findAll(Pageable pageable);
 
+    Page<Pedido> findAll(String search, Pageable pageable);
+
     Pedido findById(Long id);
 
     Page<Pedido> findByClienteId(Long clienteId, Pageable pageable);

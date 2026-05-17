@@ -190,7 +190,7 @@ export class RestaurantesAdminComponent implements OnInit, OnDestroy {
 
   cargarEmpresas() {
     this.empresaService
-      .listar(this.currentPage(), this.pageSize())
+      .listar(this.currentPage(), this.pageSize(), this.terminoBusqueda())
       .subscribe({
         next: (response) => {
           this.empresas.set(response.content);

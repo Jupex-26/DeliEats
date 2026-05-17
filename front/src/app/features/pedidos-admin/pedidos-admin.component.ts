@@ -177,29 +177,15 @@ export class PedidosAdminComponent implements OnInit {
   }
 
   cargarPedidos() {
-    if (this.terminoBusqueda() && !isNaN(Number(this.terminoBusqueda()))) {
-
-      this.pedidoService
-        .listarPorCliente(Number(this.terminoBusqueda()), this.currentPage(), this.pageSize())
-        .subscribe({
-          next: (response) => {
-            this.pedidos.set(response.content);
-            this.totalPages.set(response.totalPages);
-            this.totalElements.set(response.totalElements);
-          },
-        });
-    } else {
-
-      this.pedidoService
-        .listar(this.currentPage(), this.pageSize())
-        .subscribe({
-          next: (response) => {
-            this.pedidos.set(response.content);
-            this.totalPages.set(response.totalPages);
-            this.totalElements.set(response.totalElements);
-          },
-        });
-    }
+    this.pedidoService
+      .listar(this.currentPage(), this.pageSize(), this.terminoBusqueda())
+      .subscribe({
+        next: (response) => {
+          this.pedidos.set(response.content);
+          this.totalPages.set(response.totalPages);
+          this.totalElements.set(response.totalElements);
+        },
+      });
   }
 
   onSearch(event: any) {

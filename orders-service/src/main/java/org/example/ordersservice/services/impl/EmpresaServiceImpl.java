@@ -63,6 +63,14 @@ public class EmpresaServiceImpl implements EmpresaService {
     }
 
     @Override
+    public Page<Empresa> findAll(String search, Pageable pageable) {
+        if (search == null || search.trim().isEmpty()) {
+            return empresaRepository.findAll(pageable);
+        }
+        return empresaRepository.findByNombreContainingIgnoreCaseOrEmailContainingIgnoreCase(search, search, pageable);
+    }
+
+    @Override
     public Empresa findById(Long id) {
         return empresaRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Empresa no encontrada con ID: " + id));

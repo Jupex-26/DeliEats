@@ -35,8 +35,10 @@ public class PedidoController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<PedidoOutputDto>> findAll(@PageableDefault Pageable pageable) {
-        Page<PedidoOutputDto> dtos = pedidoService.findAll(pageable)
+    public ResponseEntity<Page<PedidoOutputDto>> findAll(
+            @RequestParam(required = false) String search,
+            @PageableDefault Pageable pageable) {
+        Page<PedidoOutputDto> dtos = pedidoService.findAll(search, pageable)
                 .map(pedidoMapper::toDto);
         return ResponseEntity.ok(dtos);
     }

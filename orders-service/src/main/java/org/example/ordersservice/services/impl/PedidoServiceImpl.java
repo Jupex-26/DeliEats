@@ -38,6 +38,14 @@ public class PedidoServiceImpl implements PedidoService {
     }
 
     @Override
+    public Page<Pedido> findAll(String search, Pageable pageable) {
+        if (search == null || search.trim().isEmpty()) {
+            return pedidoRepository.findAll(pageable);
+        }
+        return pedidoRepository.searchGlobal(search, pageable);
+    }
+
+    @Override
     public Pedido findById(Long id) {
         return pedidoRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Pedido no encontrado con ID: " + id));

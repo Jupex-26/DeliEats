@@ -58,8 +58,9 @@ public class RepartidorController {
     @GetMapping("/aprobado")
     public ResponseEntity<Page<RepartidorOutputDto>> findByAprobado(
             @RequestParam boolean aprobado, 
+            @RequestParam(required = false) String search,
             @PageableDefault Pageable pageable) {
-        Page<RepartidorOutputDto> dtos = repartidorService.findByAprobado(aprobado, pageable)
+        Page<RepartidorOutputDto> dtos = repartidorService.findByAprobado(aprobado, search, pageable)
                 .map(repartidorMapper::toDto);
         return ResponseEntity.ok(dtos);
     }

@@ -22,8 +22,9 @@ export class PedidoService {
     return this.http.post<PedidoOutputDto>(this.urlApi, pedido);
   }
 
-  listar(page: number = 0, size: number = 10, sort: string = 'fechaCompra,desc'): Observable<any> {
+  listar(page: number = 0, size: number = 10, search?: string, sort: string = 'fechaCompra,desc'): Observable<any> {
     let params = new HttpParams().set('page', page).set('size', size).set('sort', sort);
+    if (search) params = params.set('search', search);
     return this.http.get<any>(this.urlApi, { params });
   }
 

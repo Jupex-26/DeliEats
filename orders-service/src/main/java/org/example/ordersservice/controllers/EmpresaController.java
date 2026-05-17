@@ -30,8 +30,10 @@ public class EmpresaController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<EmpresaOutputDto>> findAll(@PageableDefault Pageable pageable) {
-        Page<EmpresaOutputDto> dtos = empresaService.findAll(pageable)
+    public ResponseEntity<Page<EmpresaOutputDto>> findAll(
+            @RequestParam(required = false) String search,
+            @PageableDefault Pageable pageable) {
+        Page<EmpresaOutputDto> dtos = empresaService.findAll(search, pageable)
                 .map(empresaMapper::toDto);
         return ResponseEntity.ok(dtos);
     }

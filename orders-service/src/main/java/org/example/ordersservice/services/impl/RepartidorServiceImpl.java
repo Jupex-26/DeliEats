@@ -50,6 +50,14 @@ public class RepartidorServiceImpl implements RepartidorService {
     }
 
     @Override
+    public Page<Repartidor> findByAprobado(boolean aprobado, String search, Pageable pageable) {
+        if (search == null || search.trim().isEmpty()) {
+            return repartidorRepository.findByAprobado(aprobado, pageable);
+        }
+        return repartidorRepository.searchByAprobado(aprobado, search, pageable);
+    }
+
+    @Override
     public Repartidor update(Long id, Repartidor repartidor) {
         Repartidor existingRepartidor = findById(id);
         

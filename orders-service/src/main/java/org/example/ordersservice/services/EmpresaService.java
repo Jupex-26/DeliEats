@@ -10,6 +10,8 @@ public interface EmpresaService {
 
     Page<Empresa> findAll(Pageable pageable);
 
+    Page<Empresa> findAll(String search, Pageable pageable);
+
     Empresa findById(Long id);
 
     Empresa update(Long id, Empresa empresa);

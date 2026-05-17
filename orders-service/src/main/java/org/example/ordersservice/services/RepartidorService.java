@@ -19,6 +19,8 @@ public interface RepartidorService {
     
     Page<Repartidor> findByAprobado(boolean aprobado, Pageable pageable);
 
+    Page<Repartidor> findByAprobado(boolean aprobado, String search, Pageable pageable);
+
     Repartidor update(Long id, Repartidor repartidor);
 
     void deleteById(Long id);
