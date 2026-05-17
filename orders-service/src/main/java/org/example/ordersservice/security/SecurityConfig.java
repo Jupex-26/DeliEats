@@ -32,7 +32,10 @@ public class SecurityConfig {
                 .cors(cors->cors.configurationSource(request -> {
                     CorsConfiguration corsConfiguration = new CorsConfiguration();
                     corsConfiguration.addAllowedOrigin("http://localhost:4200");
+                    corsConfiguration.addAllowedOrigin("http://localhost:8080");
+                    corsConfiguration.addAllowedOrigin("http://127.0.0.1:8080");
                     corsConfiguration.addAllowedOrigin("http://www.delieats.com");
+                    corsConfiguration.addAllowedOrigin("http://www.delieats.com:8080");
                     corsConfiguration.addAllowedOrigin("capacitor://localhost");
                     corsConfiguration.addAllowedOrigin("https://localhost");
                     corsConfiguration.addAllowedHeader("*");

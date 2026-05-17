@@ -117,7 +117,7 @@ export class MisPedidosComponent implements OnInit, OnDestroy {
   }
 
   esClickable(estado: string): boolean {
-    return estado !== 'ENTREGADO' && estado !== 'CANCELADO';
+    return true;
   }
 
   formatFecha(fecha: string): string {

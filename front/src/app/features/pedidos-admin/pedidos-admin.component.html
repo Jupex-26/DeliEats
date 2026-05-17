@@ -246,7 +246,7 @@
                   <div class="border rounded-lg shadow-sm bg-white overflow-hidden p-1">
                     <select [(ngModel)]="pedidoForm.idRepartidor" name="idRepartidor"
                       (mousedown)="refrescarRepartidores()"
-                      class="w-full border rounded-lg px-4 py-3 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-primary outline-none transition-all">
+                      class="w-full border rounded-lg px-4 py-3 bg-gray-50 text-gray-900 focus:bg-white focus:ring-2 focus:ring-primary outline-none transition-all">
                       <option [value]="undefined">-- Seleccionar Repartidor --</option>
                       @for (rep of repartidoresList(); track rep.id) {
                       <option [value]="rep.id">{{ rep.nombre || rep.cliente?.nombre }} ({{ rep.email ||
@@ -296,10 +296,6 @@
             <div class="detail-card bg-white rounded-2xl shadow-xl overflow-hidden border">
 
               <div class="detail-header p-8 flex flex-col items-center border-b">
-                <div
-                  class="avatar w-20 h-20 rounded-full flex items-center justify-center text-white text-3xl font-bold mb-4 shadow-md border-4 border-white">
-                  <ion-icon name="cart-outline"></ion-icon>
-                </div>
                 <h2 class="name text-2xl font-bold mb-2">{{ viewingPedido()!.precioTotal | currency:'EUR' }}</h2>
                 <span class="role px-4 py-1 rounded-full text-sm font-bold border"
                   [class]="getEstadoColor(viewingPedido()!.estadoNombre)">
@@ -405,4 +401,13 @@
     [dangerAction]="true" (confirm)="ejecutarEliminacion()" (cancel)="isConfirmModalOpen.set(false)">
   </app-confirm-modal>
 
+  <app-info-modal
+    [isOpen]="infoModal().open"
+    [title]="infoModal().title"
+    [message]="infoModal().message"
+    [type]="infoModal().type"
+    (modalClosed)="infoModal.update(s => ({ ...s, open: false }))">
+  </app-info-modal>
+
 </div>
+

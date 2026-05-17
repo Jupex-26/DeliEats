@@ -25,6 +25,7 @@ import { HoraPipe } from '../../pipe/hora.pipe';
 import { AperturaHoyPipe } from '../../pipe/apertura-hoy.pipe';
 import { EuroPipe } from '../../pipe/euro.pipe';
 import { InfoModalComponent } from '../../shared/info-modal/info-modal.component';
+import { ConfirmModalComponent } from '../../shared/confirm-modal/confirm-modal.component';
 import { EmpresaOutputDto, ProductoOutputDto, CarritoOutputDto } from '../../types';
 
 import { environment } from '../../../environments/environment';
@@ -32,7 +33,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-restaurante-cliente',
   standalone: true,
-  imports: [CommonModule, IonContent, IonIcon, EuroPipe, CarritoComponent, HoraPipe, AperturaHoyPipe, InfoModalComponent],
+  imports: [CommonModule, IonContent, IonIcon, EuroPipe, CarritoComponent, HoraPipe, AperturaHoyPipe, InfoModalComponent, ConfirmModalComponent],
   templateUrl: './restaurante-cliente.component.html',
   styleUrls: ['./restaurante-cliente.component.scss']
 })

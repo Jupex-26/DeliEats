@@ -36,6 +36,8 @@ import { DetallePedidoInputDto } from '../../types/detalle-pedido';
 import { ClienteOutputDto, ProductoOutputDto, EmpresaOutputDto, EstadoOutputDto, RepartidorOutputDto } from '../../types';
 import { ConfirmModalComponent } from '../../shared/confirm-modal/confirm-modal.component';
 import { Subject, debounceTime, distinctUntilChanged, forkJoin, finalize } from 'rxjs';
+import { InfoModalComponent } from '../../shared/info-modal/info-modal.component';
+import { CustomError } from '../../types';
 
 @Component({
   selector: 'app-pedidos-admin',
@@ -46,6 +48,7 @@ import { Subject, debounceTime, distinctUntilChanged, forkJoin, finalize } from 
     IonModal,
     IonInput,
     ConfirmModalComponent,
+    InfoModalComponent,
     IonItem,
     IonSpinner,
     DatePipe,
@@ -72,6 +75,9 @@ export class PedidosAdminComponent implements OnInit {
   isModalOpen = signal(false);
   isConfirmModalOpen = signal(false);
   isViewModalOpen = signal(false);
+  infoModal = signal<{ open: boolean; title: string; message: string; type: 'success' | 'error' | 'info' }>({
+    open: false, title: '', message: '', type: 'error'
+  });
 
   editingPedido = signal<PedidoOutputDto | null>(null);
   viewingPedido = signal<PedidoOutputDto | null>(null);
@@ -87,10 +93,9 @@ export class PedidosAdminComponent implements OnInit {
   tempProductoId: number | null = null;
   tempCantidad: number = 1;
 
-  getNombreEmpresa(empresaId: any): string {
-    if (!empresaId) return 'Empresa';
-    const id = Number(empresaId);
-    const empresa = this.empresasList().find(e => Number(e.id) === id);
+  getNombreEmpresa(pedido: PedidoOutputDto | null | undefined): string {
+    if (!pedido?.empresaId) return 'Sin restaurante';
+    const empresa = this.empresasList().find(e => Number(e.id) === Number(pedido.empresaId));
     return empresa ? empresa.nombre : '...';
   }
 
@@ -336,7 +341,13 @@ export class PedidosAdminComponent implements OnInit {
           this.cargarPedidos();
         },
         error: (err) => {
-          console.error('Error al actualizar pedido:', err);
+          const body = err?.error;
+          this.infoModal.set({
+            open: true,
+            type: 'error',
+            title: 'Error al actualizar el pedido',
+            message: body?.message || body?.error || 'Ha ocurrido un error inesperado.'
+          });
         }
       });
     } else {
@@ -348,7 +359,13 @@ export class PedidosAdminComponent implements OnInit {
           this.cargarPedidos();
         },
         error: (err) => {
-          console.error('Error al crear pedido:', err);
+          const body = err?.error;
+          this.infoModal.set({
+            open: true,
+            type: 'error',
+            title: 'Error al crear el pedido',
+            message: body?.message || body?.error || 'Ha ocurrido un error inesperado.'
+          });
         }
       });
     }

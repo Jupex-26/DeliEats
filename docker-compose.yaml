@@ -1,0 +1,97 @@
+services:
+
+  # ==========================================
+  # Base de datos MySQL
+  # ==========================================
+  mysql:
+    image: mysql:8.0
+    container_name: delieats-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: orders_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: admin
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+      interval: 5s
+    networks:
+      - deliEats-net
+
+  # ==========================================
+  # Zookeeper (requerido por Kafka)
+  # ==========================================
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: delieats-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - deliEats-net
+
+  # ==========================================
+  # Kafka (mensajería asíncrona)
+  # ==========================================
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: delieats-kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - deliEats-net
+
+  # ==========================================
+  # Backend Spring Boot (orders-service)
+  # ==========================================
+  delieats-back:
+    build:
+      context: ./orders-service
+    container_name: delieats-back
+    volumes:
+      - ./orders-service/uploads:/app/uploads
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/orders_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      mysql:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    networks:
+      - deliEats-net
+
+  # ==========================================
+  # Frontend Angular / Ionic (Nginx)
+  # ==========================================
+  delieats-front:
+    build:
+      context: ./front
+    container_name: delieats-front
+    ports:
+      - "80:80"
+    depends_on:
+      - delieats-back
+    networks:
+      - deliEats-net
+
+volumes:
+  mysql_data:
+
+networks:
+  deliEats-net:
+    driver: bridge
+    name: deliEats-network

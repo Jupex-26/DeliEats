@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service # Tipo de recurso: Service
+metadata: # Metadatos del servicio
+  name: delieats-back
+spec: # Especificación del servicio
+  type: ClusterIP # Tipo de servicio: ClusterIP para comunicación interna
+  selector: # Selector para identificar los pods del backend
+    app: delieats
+    component: backend
+  ports: # Puertos expuestos por el servicio
+  - port: 8080
+    targetPort: 8080

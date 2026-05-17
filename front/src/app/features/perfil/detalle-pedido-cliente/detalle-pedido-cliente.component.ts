@@ -98,6 +98,7 @@ export class DetallePedidoClienteComponent implements OnInit, AfterViewInit, OnD
   private clienteMarker?: L.Marker;
   private trackingSub?: Subscription;
   private ultimaUbicacionRecibida?: { lat: number, lng: number };
+  private refreshInterval: any;
 
   constructor() {
     addIcons({
@@ -123,13 +124,37 @@ export class DetallePedidoClienteComponent implements OnInit, AfterViewInit, OnD
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (!id) { this.router.navigate(['/perfil']); return; }
 
+    // Primera carga (con loading = true)
+    this.cargarPedido(id, true);
+
+    // Encuesta cada 1 segundo en segundo plano (sin parpadeo)
+    this.refreshInterval = setInterval(() => {
+      this.cargarPedido(id, false);
+    }, 1000);
+  }
+
+  private cargarPedido(id: number, mostrarLoading: boolean) {
+    if (mostrarLoading) {
+      this.loading.set(true);
+    }
     this.pedidoService.obtenerPorId(id).subscribe({
       next: (p) => {
-        this.pedido.set(p);
-        this.loading.set(false);
+        const actual = this.pedido();
+        // Solo actualizar si hay cambios reales en el estado, repartidor o detalles
+        if (!actual || 
+            actual.estadoNombre !== p.estadoNombre || 
+            actual.repartidorId !== p.repartidorId || 
+            actual.nombreRepartidor !== p.nombreRepartidor || 
+            JSON.stringify(actual.detalles) !== JSON.stringify(p.detalles)) {
+          this.pedido.set(p);
+        }
+        
+        if (mostrarLoading) {
+          this.loading.set(false);
+        }
 
         // Si no tenemos repartidorClienteId pero sí repartidorId, lo buscamos para habilitar el chat
-        if (!p.repartidorClienteId && p.repartidorId) {
+        if (p.repartidorId && (!actual || actual.repartidorId !== p.repartidorId || !p.repartidorClienteId)) {
           this.repartidorService.obtenerPorId(p.repartidorId).subscribe({
             next: (rep) => {
               this.pedido.update(current => {
@@ -141,8 +166,10 @@ export class DetallePedidoClienteComponent implements OnInit, AfterViewInit, OnD
         }
       },
       error: () => {
-        this.loading.set(false);
-        this.router.navigate(['/perfil']);
+        if (mostrarLoading) {
+          this.loading.set(false);
+          this.router.navigate(['/perfil']);
+        }
       }
     });
   }
@@ -232,6 +259,9 @@ export class DetallePedidoClienteComponent implements OnInit, AfterViewInit, OnD
   }
 
   ngOnDestroy() {
+    if (this.refreshInterval) {
+      clearInterval(this.refreshInterval);
+    }
     this.trackingSub?.unsubscribe();
     this.trackingService.desconectar();
     this.map?.remove();

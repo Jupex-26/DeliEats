@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: delieats-back-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: delieats
+      component: backend
+  template:
+    metadata:
+      labels:
+        app: delieats
+        component: backend
+    spec:
+      containers:
+      - name: delieats-back
+        image: delieats-back:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        env:
+          - name: SPRING_DATASOURCE_URL
+            value: "jdbc:mysql://mysql:3306/orders_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true"
+          - name: SPRING_DATASOURCE_USERNAME
+            value: "user"
+          - name: SPRING_DATASOURCE_PASSWORD
+            value: "admin"
+          - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+            value: "update"
+          - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+            value: "kafka:9092"
+        volumeMounts:
+        - name: uploads-storage
+          mountPath: /app/uploads
+      volumes:
+      - name: uploads-storage
+        persistentVolumeClaim:
+          claimName: fotos-pvc

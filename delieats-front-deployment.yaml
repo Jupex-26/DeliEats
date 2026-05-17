@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment # Tipo de recurso: Deployment
+metadata:
+  name: delieats-front-deployment
+spec: # Especificación del despliegue
+  replicas: 3 # Aumentamos a 3 réplicas para el frontend
+  selector: # Selector para identificar los pods del frontend
+    matchLabels:
+      app: delieats # Etiqueta para identificar la aplicación
+      component: frontend # Etiqueta para identificar el frontend
+  template: # Plantilla para los pods del frontend
+    metadata:
+      labels:
+        app: delieats 
+        component: frontend 
+    spec: # Especificación de los contenedores
+      containers:
+      - name: delieats-front # Nombre del contenedor
+        image: delieats-front:latest # Imagen del frontend
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80 # Puerto expuesto por el contenedor

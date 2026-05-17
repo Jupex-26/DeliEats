@@ -1,4 +1,15 @@
-<div class="mis-pedidos">
+<div class="mis-pedidos px-4 py-4">
+
+  <div class="flex items-center justify-between mb-6 pb-2 border-b border-gray-100">
+    <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2 m-0" style="font-family: 'Merriweather', serif;">
+      <ion-icon name="receipt-outline" class="text-primary text-2xl"></ion-icon>
+      Historial de Pedidos
+    </h2>
+    <button (click)="cargarPedidos()" [disabled]="loading()"
+            class="btn-refresh p-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 transition cursor-pointer text-gray-600 flex items-center justify-center shadow-sm">
+      <ion-icon name="refresh-outline" [class.animate-spin]="loading()"></ion-icon>
+    </button>
+  </div>
 
   @if (loading()) {
     <div class="loading-state">

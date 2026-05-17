@@ -206,12 +206,15 @@
   </div>
   }
 
-  <app-info-modal [isOpen]="showExitWarningModal()"
-                  title="Aviso de Carrito"
-                  message="Si sales se vaciará el carrito"
-                  type="info"
-                  (modalClosed)="confirmarSalida()">
-  </app-info-modal>
+  <app-confirm-modal
+    [isOpen]="showExitWarningModal()"
+    title="¿Salir del restaurante?"
+    message="Tienes productos en el carrito. Si sales ahora, se vaciará el carrito. ¿Quieres continuar?"
+    confirmText="SÍ, SALIR"
+    [dangerAction]="true"
+    (confirm)="confirmarSalida()"
+    (cancel)="showExitWarningModal.set(false)">
+  </app-confirm-modal>
 
   <app-info-modal [isOpen]="showEnterpriseWarningModal()"
                   title="Acción no permitida"

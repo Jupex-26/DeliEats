@@ -35,11 +35,11 @@ ion-modal.custom-modal {
 }
 
 .btn-cancel {
-  background-color: transparent;
-  border-color: $color-bg-alt;
-  color: $color-text-main;
+  background-color: $color-primary;
+  border-color: $color-primary;
+  color: white;
   &:hover {
-    background-color: rgba($color-bg-alt, 0.3);
+    background-color: rgba($color-primary, 0.9);
   }
 }
 
