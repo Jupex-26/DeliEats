@@ -59,6 +59,14 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
+    public Page<Cliente> findAll(String search, Pageable pageable) {
+        if (search == null || search.trim().isEmpty()) {
+            return clienteRepository.findAll(pageable);
+        }
+        return clienteRepository.findByNombreContainingIgnoreCaseOrEmailContainingIgnoreCase(search, search, pageable);
+    }
+
+    @Override
     public Cliente findById(Long id) {
         return clienteRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Cliente no encontrado con ID: " + id));

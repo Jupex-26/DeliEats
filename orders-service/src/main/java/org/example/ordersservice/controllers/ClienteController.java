@@ -31,8 +31,10 @@ public class ClienteController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ClienteOutputDto>> findAll(@PageableDefault Pageable pageable) {
-        Page<ClienteOutputDto> dtos = clienteService.findAll(pageable)
+    public ResponseEntity<Page<ClienteOutputDto>> findAll(
+            @RequestParam(required = false) String search,
+            @PageableDefault Pageable pageable) {
+        Page<ClienteOutputDto> dtos = clienteService.findAll(search, pageable)
                 .map(clienteMapper::toDto);
         return ResponseEntity.ok(dtos);
     }

@@ -10,6 +10,8 @@ public interface ClienteService {
 
     Page<Cliente> findAll(Pageable pageable);
 
+    Page<Cliente> findAll(String search, Pageable pageable);
+
     Cliente findById(Long id);
 
     Cliente update(Long id, Cliente cliente);

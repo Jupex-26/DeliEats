@@ -15,8 +15,9 @@ export class ClienteService {
     return this.http.post<ClienteOutputDto>(this.urlApi, cliente);
   }
 
-  listar(page: number = 0, size: number = 10, sort?: string): Observable<any> {
+  listar(page: number = 0, size: number = 10, search?: string, sort?: string): Observable<any> {
     let params = new HttpParams().set('page', page).set('size', size);
+    if (search) params = params.set('search', search);
     if (sort) params = params.set('sort', sort);
     return this.http.get<any>(this.urlApi, { params });
   }
