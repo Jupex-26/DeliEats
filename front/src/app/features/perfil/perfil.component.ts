@@ -199,7 +199,7 @@ export class PerfilComponent implements OnInit, OnDestroy {
     if (!currentUserId || !repId) return;
 
     this.loadingPedidos.set(true);
-    this.pedidoService.listar(0, 100, 'fechaCompra,desc').subscribe({
+    this.pedidoService.listar(0, 100).subscribe({
       next: (res) => {
         const todos: PedidoOutputDto[] = res.content || [];
 
